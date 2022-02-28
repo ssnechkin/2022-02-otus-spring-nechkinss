@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="questionsCsv" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg name="path" value="/questions.csv"/>
+    </bean>
+
+    <bean id="questionCsvLineToObjectService" class="ru.otus.homework.service.mapping.QuestionCsvLineToObjectServiceImpl"/>
+    <bean id="questionCsvLineService" class="ru.otus.homework.service.QuestionCsvLineServiceImpl"/>
+
+    <bean id="resourceReaderDao" class="ru.otus.homework.dao.CsvResourceReaderDao">
+        <constructor-arg name="classPathResource" ref="questionsCsv"/>
+        <constructor-arg name="csvLineToObjectService" ref="questionCsvLineToObjectService"/>
+        <constructor-arg name="csvLineService" ref="questionCsvLineService"/>
+    </bean>
+
+</beans>
