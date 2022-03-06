@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
  *
  * @author NechkinSS
  */
-public class CsvResourceReaderDao {
+public class CsvResourceReaderDao implements ResourceReaderDao {
 
     public CsvResourceReaderDao(ClassPathResource classPathResource, CsvLineToObjectService csvLineToObjectService, CsvLineService csvLineService) throws IOException, CsvValidationException {
         try (InputStreamReader inputStreamReader = new InputStreamReader(classPathResource.getInputStream());
@@ -32,6 +32,7 @@ public class CsvResourceReaderDao {
      * @throws CsvValidationException Файл не соответствует csv-формату
      * @throws IOException            Ошибка чтения файла
      */
+    @Override
     public void read(CSVReader reader, CsvLineToObjectService csvLineToObjectService, CsvLineService csvLineService) throws CsvValidationException, IOException {
         String[] record;
 

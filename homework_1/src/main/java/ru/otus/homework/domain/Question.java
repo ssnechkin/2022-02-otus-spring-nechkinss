@@ -1,22 +1,22 @@
 package ru.otus.homework.domain;
 
+import java.util.List;
+
 public class Question {
-    private String question;
-    private String[] answerOptions;
+    private final String question;
+    private final List<String> answerOptions;
+
+    public Question(String question, List<String> answerOptions) {
+        this.question = question;
+        this.answerOptions = answerOptions;
+    }
 
     public String getQuestion() {
         return question;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public String[] getAnswerOptions() {
+    public List<String> getAnswerOptions() {
         return answerOptions;
     }
 
-    public void setAnswerOptions(String[] answerOptions) {
-        this.answerOptions = answerOptions;
-    }
 }

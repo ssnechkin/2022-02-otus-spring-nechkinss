@@ -1,5 +1,7 @@
 package ru.otus.homework.service.mapping;
 
+import ru.otus.homework.domain.Question;
+
 public interface CsvLineToObjectService {
-    Object convert(String[] line);
+    Question convert(String[] line);
 }

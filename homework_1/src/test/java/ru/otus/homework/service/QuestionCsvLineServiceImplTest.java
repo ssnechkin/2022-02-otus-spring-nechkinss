@@ -4,21 +4,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.homework.domain.Question;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("Класс QuestionCsvLineServiceImplTest")
 class QuestionCsvLineServiceImplTest {
     @DisplayName("выполняется вывод теста без Exception")
     @Test
     void PrintOneQuestion() {
-        String[] answerOption = new String[2];
-        answerOption[0] = "answer1";
-        answerOption[1] = "answer2";
+        List<String> answerOption = new ArrayList<>();
 
-        Question question = new Question();
-        question.setQuestion("Question1");
-        question.setAnswerOptions(answerOption);
+        answerOption.add("answer1");
+        answerOption.add("answer2");
+
+        Question question = new Question("Question1", answerOption);
 
         CsvLineService csvLineService = new QuestionCsvLineServiceImpl();
 

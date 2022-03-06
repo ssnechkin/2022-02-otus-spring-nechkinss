@@ -5,9 +5,7 @@ import ru.otus.homework.domain.Question;
 public class QuestionCsvLineServiceImpl implements CsvLineService {
 
     @Override
-    public void processAline(Object line) {
-        Question question = (Question) line;
-
+    public void processAline(Question question) {
         if (question.getQuestion() != null && question.getQuestion().length() > 1) {
             System.out.println(question.getQuestion());
             System.out.println("------------");
