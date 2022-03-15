@@ -5,5 +5,5 @@ import ru.otus.homework.domain.Question;
 import java.util.List;
 
 public interface CsvToQuestionConverter {
-    List<Question> getQuestionList();
+    List<Question> getQuestionList(List<String[]> lineList);
 }

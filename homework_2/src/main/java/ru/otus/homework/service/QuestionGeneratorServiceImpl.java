@@ -1,9 +1,12 @@
 package ru.otus.homework.service;
 
+import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.homework.dao.CsvReaderDao;
 import ru.otus.homework.domain.Question;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,9 +18,21 @@ public class QuestionGeneratorServiceImpl implements QuestionGeneratorService {
 
     private int currentQuestionNumber = 0;
 
-    public QuestionGeneratorServiceImpl(CsvToQuestionConverter csvToQuestionConverter, @Value("${totalQuestions}") Integer totalQuestions) {
-        this.questions = csvToQuestionConverter.getQuestionList();
+    public QuestionGeneratorServiceImpl(CsvReaderDao csvReaderDao,
+                                        CsvToQuestionConverter csvToQuestionConverter,
+                                        @Value("${totalQuestions}") Integer totalQuestions) throws CsvValidationException, IOException {
+        this.questions = csvToQuestionConverter.getQuestionList(csvReaderDao.getLineList());
         questionNumbers = generateAQuestionNumbers(Math.min(questions.size(), totalQuestions));
+    }
+
+    @Override
+    public Question getNextQuestion() {
+        return questions.get(questionNumbers.get(currentQuestionNumber++));
+    }
+
+    @Override
+    public int getTotalQuestions() {
+        return questionNumbers.size();
     }
 
     private List<Integer> generateAQuestionNumbers(Integer totalNumbers) {
@@ -47,15 +62,5 @@ public class QuestionGeneratorServiceImpl implements QuestionGeneratorService {
             }
         }
         return false;
-    }
-
-    @Override
-    public Question getNextQuestion() {
-        return questions.get(questionNumbers.get(currentQuestionNumber++));
-    }
-
-    @Override
-    public int getTotalQuestions() {
-        return questionNumbers.size();
     }
 }

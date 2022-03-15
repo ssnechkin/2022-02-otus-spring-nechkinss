@@ -17,8 +17,13 @@ public class CsvReaderDaoImpl implements CsvReaderDao {
     private final List<String[]> lineList = new ArrayList<>();
 
     public CsvReaderDaoImpl(@Value("${csv-file}") String path) {
-        ClassPathResource classPathResource = new ClassPathResource(path);
-        this.classPathResource = classPathResource;
+        this.classPathResource = new ClassPathResource(path);
+    }
+
+    @Override
+    public List<String[]> getLineList() throws CsvValidationException, IOException {
+        read();
+        return this.lineList;
     }
 
     private void read() throws IOException, CsvValidationException {
@@ -29,11 +34,5 @@ public class CsvReaderDaoImpl implements CsvReaderDao {
                 lineList.add(record);
             }
         }
-    }
-
-    @Override
-    public List<String[]> getLineList() throws CsvValidationException, IOException {
-        read();
-        return this.lineList;
     }
 }

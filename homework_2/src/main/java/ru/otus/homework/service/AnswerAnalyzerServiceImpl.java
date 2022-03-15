@@ -31,6 +31,11 @@ public class AnswerAnalyzerServiceImpl implements AnswerAnalyzerService {
         return false;
     }
 
+    @Override
+    public boolean isTestPassed() {
+        return score >= passingScore;
+    }
+
     private boolean isExistAllAnswer(List<Integer> correctAnswers, String[] answers) {
         for (String answer : answers) {
             if (!isExistAnswer(correctAnswers, answer)) {
@@ -47,10 +52,5 @@ public class AnswerAnalyzerServiceImpl implements AnswerAnalyzerService {
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean isTestPassed() {
-        return score >= passingScore;
     }
 }
