@@ -1,28 +1,31 @@
 package ru.otus.homework.service;
 
-import com.opencsv.exceptions.CsvValidationException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.homework.config.ApplicationConfig;
 import ru.otus.homework.dao.CsvReaderDao;
 import ru.otus.homework.domain.Question;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 @Service
 public class QuestionGeneratorServiceImpl implements QuestionGeneratorService {
-    private final List<Question> questions;
-    private final List<Integer> questionNumbers;
-
-    private int currentQuestionNumber = 0;
+    private List<Question> questions;
+    private List<Integer> questionNumbers;
+    private int currentQuestionNumber;
+    private final CsvToQuestionConverter csvToQuestionConverter;
+    private final CsvReaderDao csvReaderDao;
+    private final ApplicationConfig applicationConfig;
 
     public QuestionGeneratorServiceImpl(CsvReaderDao csvReaderDao,
                                         CsvToQuestionConverter csvToQuestionConverter,
-                                        @Value("${totalQuestions}") Integer totalQuestions) throws CsvValidationException, IOException {
-        this.questions = csvToQuestionConverter.getQuestionList(csvReaderDao.getLineList());
-        questionNumbers = generateAQuestionNumbers(Math.min(questions.size(), totalQuestions));
+                                        ApplicationConfig applicationConfig) {
+        this.csvToQuestionConverter = csvToQuestionConverter;
+        this.csvReaderDao = csvReaderDao;
+        this.applicationConfig = applicationConfig;
+        setLocale(Locale.forLanguageTag("en-EN"));
     }
 
     @Override
@@ -33,6 +36,13 @@ public class QuestionGeneratorServiceImpl implements QuestionGeneratorService {
     @Override
     public int getTotalQuestions() {
         return questionNumbers.size();
+    }
+
+    @Override
+    public void setLocale(Locale locale) {
+        this.currentQuestionNumber = 0;
+        this.questions = csvToQuestionConverter.getQuestionList(csvReaderDao.getLineList(locale));
+        this.questionNumbers = generateAQuestionNumbers(Math.min(questions.size(), applicationConfig.getTotalQuestions()));
     }
 
     private List<Integer> generateAQuestionNumbers(Integer totalNumbers) {

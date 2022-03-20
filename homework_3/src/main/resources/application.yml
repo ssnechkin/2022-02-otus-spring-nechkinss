@@ -1,0 +1,13 @@
+application:
+  total-questions: 5
+  passing-score: 4
+  number-of-points-for-the-correct-answer: 1
+  csv-file-locale-path:
+    en-EN: i18n/questions_en_EN.csv
+    it-IT: i18n/questions_it_IT.csv
+    ru-RU: i18n/questions_ru_RU.csv
+
+spring:
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8

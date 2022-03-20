@@ -1,7 +1,7 @@
 package ru.otus.homework.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.homework.config.ApplicationConfig;
 import ru.otus.homework.domain.Question;
 
 import java.util.List;
@@ -12,9 +12,9 @@ public class AnswerAnalyzerServiceImpl implements AnswerAnalyzerService {
     private final int numberOfPointsForTheCorrectAnswer;
     private Integer score = 0;
 
-    public AnswerAnalyzerServiceImpl(@Value("${passing-score}") Integer passingScore, @Value("${numberOfPointsForTheCorrectAnswer}") Integer numberOfPointsForTheCorrectAnswer) {
-        this.passingScore = passingScore;
-        this.numberOfPointsForTheCorrectAnswer = numberOfPointsForTheCorrectAnswer;
+    public AnswerAnalyzerServiceImpl(ApplicationConfig applicationConfig) {
+        this.passingScore = applicationConfig.getPassingScore();
+        this.numberOfPointsForTheCorrectAnswer = applicationConfig.getNumberOfPointsForTheCorrectAnswer();
     }
 
     @Override
