@@ -4,5 +4,5 @@ import java.util.List;
 import java.util.Locale;
 
 public interface CsvReaderDao {
-    List<String[]> getLineList(Locale locale);
+    List<String[]> getLineList();
 }

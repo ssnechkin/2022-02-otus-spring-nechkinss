@@ -4,28 +4,30 @@ import org.springframework.stereotype.Service;
 import ru.otus.homework.config.ApplicationConfig;
 import ru.otus.homework.dao.CsvReaderDao;
 import ru.otus.homework.domain.Question;
+import ru.otus.homework.service.provider.LocaleProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 @Service
 public class QuestionGeneratorServiceImpl implements QuestionGeneratorService {
-    private List<Question> questions;
-    private List<Integer> questionNumbers;
-    private int currentQuestionNumber;
+    private final LocaleProvider localeProvider;
     private final CsvToQuestionConverter csvToQuestionConverter;
     private final CsvReaderDao csvReaderDao;
     private final ApplicationConfig applicationConfig;
+    private List<Question> questions;
+    private List<Integer> questionNumbers;
+    private int currentQuestionNumber;
 
-    public QuestionGeneratorServiceImpl(CsvReaderDao csvReaderDao,
+    public QuestionGeneratorServiceImpl(LocaleProvider localeProvider, CsvReaderDao csvReaderDao,
                                         CsvToQuestionConverter csvToQuestionConverter,
                                         ApplicationConfig applicationConfig) {
+        this.localeProvider = localeProvider;
         this.csvToQuestionConverter = csvToQuestionConverter;
         this.csvReaderDao = csvReaderDao;
         this.applicationConfig = applicationConfig;
-        setLocale(Locale.forLanguageTag("en-EN"));
+        rereadQuestions();
     }
 
     @Override
@@ -39,9 +41,9 @@ public class QuestionGeneratorServiceImpl implements QuestionGeneratorService {
     }
 
     @Override
-    public void setLocale(Locale locale) {
+    public void rereadQuestions() {
         this.currentQuestionNumber = 0;
-        this.questions = csvToQuestionConverter.getQuestionList(csvReaderDao.getLineList(locale));
+        this.questions = csvToQuestionConverter.getQuestionList(csvReaderDao.getLineList());
         this.questionNumbers = generateAQuestionNumbers(Math.min(questions.size(),
                 applicationConfig.getTotalQuestions()));
     }

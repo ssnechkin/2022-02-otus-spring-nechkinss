@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.homework.config.ApplicationConfig;
+import ru.otus.homework.service.provider.LocaleProviderImpl;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -29,7 +30,7 @@ class CsvReaderDaoImplTest {
     @DisplayName("Чтение csv файла")
     @Test
     void passedTest() {
-        CsvReaderDaoImpl csvReaderDao = new CsvReaderDaoImpl(applicationConfig);
-        assertEquals(csvReaderDao.getLineList(Locale.forLanguageTag("en-EN")).size(), 10);
+        CsvReaderDaoImpl csvReaderDao = new CsvReaderDaoImpl(new LocaleProviderImpl(), applicationConfig);
+        assertEquals(csvReaderDao.getLineList().size(), 10);
     }
 }

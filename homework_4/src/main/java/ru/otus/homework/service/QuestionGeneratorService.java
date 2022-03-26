@@ -9,5 +9,5 @@ public interface QuestionGeneratorService {
 
     int getTotalQuestions();
 
-    void setLocale(Locale locale);
+    void rereadQuestions();
 }

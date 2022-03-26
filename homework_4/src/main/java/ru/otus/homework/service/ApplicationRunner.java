@@ -4,8 +4,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.config.ApplicationConfig;
-import ru.otus.homework.config.IOServiceStreams;
 import ru.otus.homework.domain.Question;
+import ru.otus.homework.service.provider.LocaleProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,14 @@ public class ApplicationRunner implements TestingRunner {
     private final AnswerAnalyzerService answerAnalyzerService;
     private final MessageSource messageSource;
     private final List<Locale> localeList;
-    private Locale locale;
+    private final LocaleProvider localeProvider;
     private String lastFirstName;
 
-    public ApplicationRunner(IOServiceStreams ioService, QuestionGeneratorService generatorService,
+    public ApplicationRunner(LocaleProvider localeProvider, IOServiceStreams ioService,
+                             QuestionGeneratorService generatorService,
                              AnswerAnalyzerService answerAnalyzerService, MessageSource messageSource,
                              ApplicationConfig applicationConfig) {
+        this.localeProvider = localeProvider;
         this.ioService = ioService;
         this.generatorService = generatorService;
         this.answerAnalyzerService = answerAnalyzerService;
@@ -36,14 +38,7 @@ public class ApplicationRunner implements TestingRunner {
         for (Map.Entry<String, String> entry : applicationConfig.getCsvFileLocalePath().entrySet()) {
             localeList.add(Locale.forLanguageTag(entry.getKey()));
         }
-        locale = localeList.get(0);
-    }
-
-    public void run() {
-        outPutLanguage();
-        readLocale();
-        inputLastFirstName();
-        startTesting();
+        localeProvider.setLocale(localeList.get(0));
     }
 
     @Override
@@ -54,8 +49,8 @@ public class ApplicationRunner implements TestingRunner {
     @Override
     public void readLocale() {
         try {
-            locale = localeList.get(Integer.parseInt(ioService.readStringWithPrompt(null)) - 1);
-            generatorService.setLocale(locale);
+            localeProvider.setLocale(localeList.get(Integer.parseInt(ioService.readStringWithPrompt(null)) - 1));
+            generatorService.rereadQuestions();
         } catch (Exception e) {
             ioService.outputString("ERROR: You have entered a non-existent value");
         }
@@ -99,7 +94,7 @@ public class ApplicationRunner implements TestingRunner {
 
     private String getStringByLocal(String text, Object[] textArgs) {
         try {
-            return messageSource.getMessage(text, textArgs, locale);
+            return messageSource.getMessage(text, textArgs, localeProvider.getLocale());
         } catch (NoSuchMessageException e) {
             e.printStackTrace();
             return text;

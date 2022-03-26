@@ -1,4 +1,4 @@
-package ru.otus.homework.config;
+package ru.otus.homework.service;
 
 public interface IOService extends InputService, OutputService {
 
