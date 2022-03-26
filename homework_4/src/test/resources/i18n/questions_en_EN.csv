@@ -1,0 +1,10 @@
+Which line sets AOP Spring to an explicit choice CGLib,1,3,@EnableAspectJAutoProxy,@EnableAspectJAutoProxy(),@EnableAspectJAutoProxy(proxyTargetClass=true),@EnableAspectJAutoProxy(proxyTargetClass=false)
+What AOP functionality is used in Spring, 1,2,AspectForJ,AspectJ,AspectCGLib,Aspect
+What is selected in Spring for AOP operation if the object does not have an interface, 1, 1,CGLib,JDK
+What is waving in Spring AOP, 1,2,Changing the class structure and/or layering hierarchy to add aspect functionality to foreign code,Linking objects with relevant aspects,Called code from the junction point
+What does i18n., 1, 1,Internationalization,Localization
+Select all OOP principles included in SOLID-5, 5,1,2,3,8,9,SRP,DIP,LSP,DDD,DRY,KISS,YAGNI,OCP,ISP
+Which principle of SOLID-5 OOP corresponds to the text: Entities should be open for expansion and closed for changes, 1, 8,SRP,DIP,LSP,DDD,DRY,KISS,YAGNI,OCP,ISP
+Choose the principle of software design in which excessive functionality should be abandoned,1,3,DRY,KISS,YAGNI
+Which SpringBoot annotation is installed to implement the REST request handler,1,1,@Controller,@Service,@Repository,@Component
+In Spring with the lombook library you need to specify an annotation ... to avoid writing a constructor for auto-configuration or @Autowired,1,1,@RequiredArgsConstructors,@Data,@PropertySource,@Conditional
