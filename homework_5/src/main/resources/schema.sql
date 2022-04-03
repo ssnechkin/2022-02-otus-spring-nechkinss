@@ -1,0 +1,12 @@
+SET mode Oracle;
+
+CREATE TABLE books(id BIGINT PRIMARY KEY, name VARCHAR(255));
+CREATE TABLE genres(id BIGINT PRIMARY KEY, name VARCHAR(255), description TEXT);
+CREATE TABLE authors(id BIGINT PRIMARY KEY, surname VARCHAR(255), name VARCHAR(255), patronymic VARCHAR(255));
+
+CREATE TABLE books_authors(book_id BIGINT, author_id BIGINT);
+CREATE TABLE books_genres(book_id BIGINT, genre_id BIGINT);
+
+CREATE SEQUENCE books_sequence START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE genres_sequence START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE authors_sequence START WITH 1 INCREMENT BY 1;
