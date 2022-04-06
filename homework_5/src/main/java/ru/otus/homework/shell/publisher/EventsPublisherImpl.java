@@ -1,0 +1,95 @@
+package ru.otus.homework.shell.publisher;
+
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import ru.otus.homework.shell.event.author.AddAuthorEvent;
+import ru.otus.homework.shell.event.author.DeleteAuthorByIdEvent;
+import ru.otus.homework.shell.event.author.OutputAllAuthorsEvent;
+import ru.otus.homework.shell.event.book.*;
+import ru.otus.homework.shell.event.genre.AddGenreEvent;
+import ru.otus.homework.shell.event.genre.DeleteGenreByIdEvent;
+import ru.otus.homework.shell.event.genre.OutputAllGenresEvent;
+import ru.otus.homework.shell.event.genre.SetGenreDescriptionEvent;
+
+@Service
+public class EventsPublisherImpl implements EventsPublisher {
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    public EventsPublisherImpl(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
+    @Override
+    public void outputBook(long bookId) {
+        applicationEventPublisher.publishEvent(new OutputBookEvent(bookId));
+    }
+
+    @Override
+    public void outputAllBooks() {
+        applicationEventPublisher.publishEvent(new OutputAllBooksEvent());
+    }
+
+    @Override
+    public void addBook(String bookName) {
+        applicationEventPublisher.publishEvent(new AddBookEvent(bookName));
+    }
+
+    @Override
+    public void deleteBookById(long bookId) {
+        applicationEventPublisher.publishEvent(new DeleteBookByIdEvent(bookId));
+    }
+
+    @Override
+    public void addAnAuthorToABook(long bookId, long authorId) {
+        applicationEventPublisher.publishEvent(new AddAnAuthorToABookEvent(bookId, authorId));
+    }
+
+    @Override
+    public void addAnGenreToABook(long bookId, long genreId) {
+        applicationEventPublisher.publishEvent(new AddAnGenreToABookEvent(bookId, genreId));
+    }
+
+    @Override
+    public void removeTheAuthorFromTheBook(long bookId, long authorId) {
+        applicationEventPublisher.publishEvent(new RemoveTheAuthorFromTheBookEvent(bookId, authorId));
+    }
+
+    @Override
+    public void removeTheGenreFromTheBook(long bookId, long genreId) {
+        applicationEventPublisher.publishEvent(new RemoveTheGenreFromTheBookEvent(bookId, genreId));
+    }
+
+    @Override
+    public void outputAllAuthors() {
+        applicationEventPublisher.publishEvent(new OutputAllAuthorsEvent());
+    }
+
+    @Override
+    public void addAuthor(String surname, String name, String patronymic) {
+        applicationEventPublisher.publishEvent(new AddAuthorEvent(surname, name, patronymic));
+    }
+
+    @Override
+    public void deleteAuthorById(long authorId) {
+        applicationEventPublisher.publishEvent(new DeleteAuthorByIdEvent(authorId));
+    }
+
+    @Override
+    public void outputAllGenres() {
+        applicationEventPublisher.publishEvent(new OutputAllGenresEvent());
+    }
+
+    @Override
+    public void addGenre(String genreName) {
+        applicationEventPublisher.publishEvent(new AddGenreEvent(genreName));
+    }
+
+    @Override
+    public void deleteGenreById(long genreId) {
+        applicationEventPublisher.publishEvent(new DeleteGenreByIdEvent(genreId));
+    }
+
+    @Override
+    public void setGenreDescription(long genreId, String description) {
+        applicationEventPublisher.publishEvent(new SetGenreDescriptionEvent(genreId, description));
+    }
+}
