@@ -4,15 +4,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import ru.otus.homework.repository.author.AuthorDaoImpl;
+import ru.otus.homework.repository.book.BookCommentDaoImpl;
 import ru.otus.homework.repository.book.BookDaoImpl;
 import ru.otus.homework.repository.genre.GenreDaoImpl;
 import ru.otus.homework.service.io.IOServiceStreams;
 
+import java.util.UUID;
+
 @DisplayName("Класс BookServiceImpl")
 @DataJpaTest
-@Import({BookServiceImpl.class, AuthorServiceImpl.class, GenreServiceImpl.class, AuthorDaoImpl.class, GenreDaoImpl.class, BookDaoImpl.class, IOServiceStreams.class})
+@ComponentScan("ru.otus.homework")
 class BookServiceImplTest {
     @Autowired
     private BookServiceImpl bookService;
@@ -43,6 +47,12 @@ class BookServiceImplTest {
     }
 
     @Test
+    void addComment() {
+        bookService.add("Name1");
+        bookService.addComment(1, "comment");
+    }
+
+    @Test
     void delete() {
         bookService.add("Name1");
         bookService.add("Name2");
@@ -65,9 +75,12 @@ class BookServiceImplTest {
     void removeAuthor() {
         bookService.add("Name1");
         bookService.add("Name2");
+        bookService.add("Name3");
+        bookService.add("Name4");
+        bookService.add("Name5");
         authorService.add("Surname", "NameY", "Patronymic");
-        bookService.addAuthor(2, 1);
-        bookService.removeAuthor(2, 1);
+        bookService.addAuthor(5, 1);
+        bookService.removeAuthor(5, 1);
     }
 
     @Test
@@ -80,8 +93,23 @@ class BookServiceImplTest {
     }
 
     @Test
-    void setComment() {
+    void updateComment() {
         bookService.add("Name1");
-        bookService.setComment(1, "comment");
+        bookService.addComment(1, "comment1");
+        bookService.updateBookComment(1, "comment2");
+    }
+
+    @Test
+    void updateName() {
+        bookService.add("Name1");
+        bookService.updateBookName(1, "Name2");
+    }
+
+    @Test
+    void removeComment() {
+        String comment = UUID.randomUUID().toString();
+        bookService.add("Name1");
+        bookService.addComment(1, comment);
+        bookService.removeBookComment(1);
     }
 }

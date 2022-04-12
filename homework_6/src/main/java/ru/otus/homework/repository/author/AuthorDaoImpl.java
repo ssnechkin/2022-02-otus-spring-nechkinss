@@ -1,58 +1,53 @@
 package ru.otus.homework.repository.author;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.homework.entity.Author;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
-@Repository
+@Component
 public class AuthorDaoImpl implements AuthorDao {
     @PersistenceContext
-    private final EntityManager entityManager;
+    private final EntityManager em;
 
-    public AuthorDaoImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    @Override
-    public long count() {
-        Query query = entityManager.createQuery("SELECT count(1) FROM Author", Long.class);
-        Long count = (Long) query.getSingleResult();
-        return count == null ? 0 : count;
+    public AuthorDaoImpl(EntityManager em) {
+        this.em = em;
     }
 
     @Override
     public void delete(long id) {
-        Query query = entityManager.createQuery("DELETE Author WHERE id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        em.remove(em.find(Author.class, id));
     }
 
     @Override
     public List<Author> getAll() {
-        TypedQuery<Author> query = entityManager.createQuery("SELECT a FROM Author a", Author.class);
-        return query.getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Author> cq = cb.createQuery(Author.class);
+        Root<Author> rootEntry = cq.from(Author.class);
+        CriteriaQuery<Author> all = cq.select(rootEntry);
+        TypedQuery<Author> allQuery = em.createQuery(all);
+        return allQuery.getResultList();
     }
 
     @Override
-    public List<Author> getById(long id) {
-        TypedQuery<Author> query = entityManager.createQuery("SELECT a FROM Author a WHERE a.id = :id", Author.class);
-        query.setParameter("id", id);
-        return query.getResultList();
+    public Author getById(long id) {
+        return em.find(Author.class, id);
     }
 
     @Override
     public long insert(Author object) {
-        entityManager.persist(object);
+        em.persist(object);
         return object.getId();
     }
 
     @Override
     public void update(Author object) {
-        entityManager.merge(object);
+        em.merge(object);
     }
 }

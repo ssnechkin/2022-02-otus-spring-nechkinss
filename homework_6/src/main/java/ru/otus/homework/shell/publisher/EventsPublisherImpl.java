@@ -49,6 +49,11 @@ public class EventsPublisherImpl implements EventsPublisher {
     }
 
     @Override
+    public void addAnBookCommentToABook(long bookId, String comment) {
+        applicationEventPublisher.publishEvent(new AddBookCommentEvent(bookId, comment));
+    }
+
+    @Override
     public void removeTheAuthorFromTheBook(long bookId, long authorId) {
         applicationEventPublisher.publishEvent(new RemoveTheAuthorFromTheBookEvent(bookId, authorId));
     }
@@ -56,6 +61,11 @@ public class EventsPublisherImpl implements EventsPublisher {
     @Override
     public void removeTheGenreFromTheBook(long bookId, long genreId) {
         applicationEventPublisher.publishEvent(new RemoveTheGenreFromTheBookEvent(bookId, genreId));
+    }
+
+    @Override
+    public void removeTheBookCommentFromTheBook(long bookCommentId) {
+        applicationEventPublisher.publishEvent(new RemoveBookCommentEvent(bookCommentId));
     }
 
     @Override
@@ -94,7 +104,17 @@ public class EventsPublisherImpl implements EventsPublisher {
     }
 
     @Override
-    public void setBookComment(long bookId, String comment) {
-        applicationEventPublisher.publishEvent(new SetBookCommentEvent(bookId, comment));
+    public void updateBookComment(long bookCommentId, String comment) {
+        applicationEventPublisher.publishEvent(new UpdateBookCommentEvent(bookCommentId, comment));
+    }
+
+    @Override
+    public void updateBookName(long bookId, String name) {
+        applicationEventPublisher.publishEvent(new UpdateBookNameEvent(bookId, name));
+    }
+
+    @Override
+    public void outputBookComments(long bookId) {
+        applicationEventPublisher.publishEvent(new OutputBookCommentsEvent(bookId));
     }
 }

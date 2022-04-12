@@ -2,73 +2,74 @@ package ru.otus.homework.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.homework.service.io.IOServiceStreams;
-import ru.otus.homework.repository.genre.GenreDao;
+import ru.otus.homework.entity.Author;
+import ru.otus.homework.entity.Book;
 import ru.otus.homework.entity.Genre;
+import ru.otus.homework.repository.book.BookDao;
+import ru.otus.homework.repository.genre.GenreDao;
+import ru.otus.homework.service.performance.GenrePerformance;
 
 import java.util.List;
 
 @Service
 public class GenreServiceImpl implements GenreService {
     private final GenreDao genreDao;
-    private final IOServiceStreams ioService;
+    private final BookDao bookDao;
+    private final GenrePerformance genrePerformance;
 
-    public GenreServiceImpl(GenreDao genreDao, IOServiceStreams ioService) {
+    public GenreServiceImpl(GenreDao genreDao, BookDao bookDao, GenrePerformance genrePerformance) {
         this.genreDao = genreDao;
-        this.ioService = ioService;
+        this.bookDao = bookDao;
+        this.genrePerformance = genrePerformance;
     }
 
-    @Override
     @Transactional
-    public void delete(long genreId) {
-        if (getGenreOrOutPutNotFound(genreId) != null) {
-            genreDao.delete(genreId);
-            ioService.outputString("Genre deleted. ID: " + genreId);
+    @Override
+    public void delete(long authorId) {
+        Genre genre = genreDao.getById(authorId);
+        if (genre != null) {
+            if (genre.getBooks() != null) {
+                for (Book book : genre.getBooks()) {
+                    book.getGenres().remove(genre);
+                    bookDao.update(book);
+                }
+            }
+            genreDao.delete(authorId);
+            genrePerformance.delete(authorId);
+        } else {
+            genrePerformance.notFound(authorId);
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public void add(String genreName) {
-        long id = genreDao.insert(new Genre(null, genreName, ""));
-        ioService.outputString("Genre added. ID: " + id);
+        Genre genre = new Genre();
+        genre.setName(genreName);
+        long id = genreDao.insert(genre);
+        genrePerformance.add(id);
     }
 
-    @Override
     @Transactional
+    @Override
     public void outputAll() {
         List<Genre> genres = genreDao.getAll();
-        ioService.outputString("Total genres: " + genreDao.count());
+        genrePerformance.total(genres.size());
         for (Genre genre : genres) {
-            outputGenre(genre);
+            genrePerformance.output(genre);
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public void setDescription(long genreId, String description) {
-        Genre genre = getGenreOrOutPutNotFound(genreId);
+        Genre genre = genreDao.getById(genreId);
         if (genre != null) {
             genre.setDescription(description);
             genreDao.update(genre);
-            ioService.outputString("Genre description is set. ID: " + genreId + " Description: " + description);
+            genrePerformance.outputSetDescription(genreId, description);
+        } else {
+            genrePerformance.notFound(genreId);
         }
-    }
-
-    private Genre getGenreOrOutPutNotFound(long genreId) {
-        List<Genre> genres = genreDao.getById(genreId);
-        if (genres.size() == 0) {
-            ioService.outputString("The genre was not found by ID: " + genreId);
-            return null;
-        }
-        return genres.get(0);
-    }
-
-    private void outputGenre(Genre genre) {
-        ioService.outputString("Genre"
-                + " ID: " + genre.getId()
-                + " Name: " + genre.getName()
-                + " Description: " + genre.getDescription()
-        );
     }
 }

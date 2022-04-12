@@ -21,14 +21,15 @@ public class Book {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "comment")
-    private String comment;
+    @Column(name = "genres")
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Genre> genres;
 
-    @Column(name = "genre")
-    @ManyToMany(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Genre> genre;
+    @Column(name = "authors")
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Author> authors;
 
-    @Column(name = "author")
-    @ManyToMany(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Author> author;
+    @Column(name = "comments")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<BookComment> comments;
 }

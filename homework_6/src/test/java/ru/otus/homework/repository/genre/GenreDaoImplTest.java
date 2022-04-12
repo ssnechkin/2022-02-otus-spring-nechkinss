@@ -4,8 +4,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import ru.otus.homework.entity.Genre;
+import ru.otus.homework.service.io.IOServiceStreams;
+import ru.otus.homework.service.performance.GenrePerformanceImpl;
 
 import java.util.List;
 
@@ -13,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Класс GenreDaoImpl")
 @DataJpaTest
-@Import(GenreDaoImpl.class)
+@ComponentScan("ru.otus.homework")
 class GenreDaoImplTest {
     @Autowired
     private GenreDaoImpl genreDao;
@@ -24,8 +27,8 @@ class GenreDaoImplTest {
         Genre genre = new Genre();
         genre.setName("NameS");
         long id = genreDao.insert(genre);
-        List<Genre> genre1 = genreDao.getById(id);
-        assertEquals(genre1.get(0).getName(), "NameS");
+        Genre genre1 = genreDao.getById(id);
+        assertEquals(genre1.getName(), "NameS");
     }
 
     @DisplayName("Обновление")
@@ -38,9 +41,9 @@ class GenreDaoImplTest {
         genre.setName("NameR");
         genre.setDescription("DS2");
         genreDao.update(genre);
-        List<Genre> genre1 = genreDao.getById(id);
-        assertEquals("NameR", genre1.get(0).getName());
-        assertEquals(genre1.get(0).getDescription(), "DS2");
+        Genre genre1 = genreDao.getById(id);
+        assertEquals("NameR", genre1.getName());
+        assertEquals(genre1.getDescription(), "DS2");
     }
 
     @DisplayName("Удаление")
@@ -85,16 +88,7 @@ class GenreDaoImplTest {
         Genre genre = new Genre();
         genre.setName("NameQ");
         long id = genreDao.insert(genre);
-        List<Genre> genre1 = genreDao.getById(id);
-        assertTrue(genre1.size() > 0 && genre1.get(0).getName().equals("NameQ"));
-    }
-
-    @DisplayName("Количество")
-    @Test
-    void count() {
-        Genre genre = new Genre();
-        genre.setName("Name");
-        genreDao.insert(genre);
-        assertTrue(genreDao.count() >= 1);
+        Genre genre1 = genreDao.getById(id);
+        assertEquals("NameQ", genre1.getName());
     }
 }

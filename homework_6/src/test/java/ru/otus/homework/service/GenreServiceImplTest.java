@@ -4,13 +4,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import ru.otus.homework.repository.genre.GenreDaoImpl;
 import ru.otus.homework.service.io.IOServiceStreams;
 
 @DisplayName("Класс GenreServiceImpl")
 @DataJpaTest
-@Import({GenreServiceImpl.class, GenreDaoImpl.class, IOServiceStreams.class})
+@ComponentScan("ru.otus.homework")
 class GenreServiceImplTest {
 
     @Autowired
