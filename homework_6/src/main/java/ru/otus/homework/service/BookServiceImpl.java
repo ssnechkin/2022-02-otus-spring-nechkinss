@@ -4,13 +4,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.entity.Author;
 import ru.otus.homework.entity.Book;
+import ru.otus.homework.entity.BookComment;
 import ru.otus.homework.entity.Genre;
 import ru.otus.homework.repository.author.AuthorDao;
+import ru.otus.homework.repository.book.BookCommentDao;
 import ru.otus.homework.repository.book.BookDao;
 import ru.otus.homework.repository.genre.GenreDao;
-import ru.otus.homework.service.io.IOServiceStreams;
+import ru.otus.homework.service.performance.BookPerformance;
+import ru.otus.homework.service.performance.GenrePerformance;
+import ru.otus.homework.service.performance.Performance;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,216 +21,235 @@ public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
     private final AuthorDao authorDao;
     private final GenreDao genreDao;
-    private final IOServiceStreams ioService;
+    private final BookCommentDao bookCommentDao;
+    private final BookPerformance bookPerformance;
+    private final GenrePerformance genrePerformance;
+    private final Performance<Author> authorPerformance;
 
-    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, GenreDao genreDao, IOServiceStreams ioService) {
+    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, GenreDao genreDao, BookCommentDao bookCommentDao, BookPerformance bookPerformance, GenrePerformance genrePerformance, Performance<Author> authorPerformance) {
         this.bookDao = bookDao;
         this.authorDao = authorDao;
         this.genreDao = genreDao;
-        this.ioService = ioService;
+        this.bookCommentDao = bookCommentDao;
+        this.bookPerformance = bookPerformance;
+        this.genrePerformance = genrePerformance;
+        this.authorPerformance = authorPerformance;
     }
 
-    @Override
     @Transactional
+    @Override
     public void add(String bookName) {
         Book book = new Book();
         book.setName(bookName);
         long id = bookDao.insert(book);
-        ioService.outputString("Book added. ID: " + id);
+        bookPerformance.add(id);
     }
 
-    @Override
     @Transactional
+    @Override
     public void addAuthor(long bookId, long authorId) {
-        List<Book> books = bookDao.getById(bookId);
-        if (books.size() == 0) {
-            ioService.outputString("The book was not found by ID: " + bookId);
-        } else {
-            Book book = books.get(0);
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
             if (getAuthorFromBook(book, authorId) != null) {
-                ioService.outputString("The author has already been added to the selected book ID: " + bookId + " Author ID: " + authorId);
+                bookPerformance.authorAlreadyAdded(bookId, authorId);
             } else {
-                List<Author> authorList = authorDao.getById(authorId);
-                if (authorList.size() > 0) {
-                    if (book.getAuthor() == null) {
-                        book.setAuthor(new ArrayList<>());
-                    }
-                    book.getAuthor().add(authorList.get(0));
+                Author author = authorDao.getById(authorId);
+                if (author != null) {
+                    book.getAuthors().add(author);
                     bookDao.update(book);
-                    ioService.outputString("The author added to the selected book ID: " + bookId + " Author ID: " + authorId);
+                    bookPerformance.authorAdded(bookId, authorId);
                 } else {
-                    ioService.outputString("The author not found. ID: " + authorId);
+                    authorPerformance.notFound(authorId);
                 }
             }
+        } else {
+            bookPerformance.notFound(bookId);
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public void addGenre(long bookId, long genreId) {
-        List<Book> books = bookDao.getById(bookId);
-        if (books.size() == 0) {
-            ioService.outputString("The book was not found by ID: " + bookId);
-        } else {
-            Book book = books.get(0);
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
             if (getGenreFromBook(book, genreId) != null) {
-                ioService.outputString("The genre has already been added to the selected book ID: " + bookId + " Genre ID: " + genreId);
+                bookPerformance.genreAlreadyAdded(bookId, genreId);
             } else {
-                List<Genre> genreList = genreDao.getById(genreId);
-                if (genreList.size() > 0) {
-                    if (book.getGenre() == null) {
-                        book.setGenre(new ArrayList<>());
-                    }
-                    book.getGenre().add(genreList.get(0));
+                Genre genre = genreDao.getById(genreId);
+                if (genre != null) {
+                    book.getGenres().add(genre);
                     bookDao.update(book);
-                    ioService.outputString("The genre added to the selected book ID: " + bookId + " Genre ID: " + genreId);
+                    bookPerformance.genreAdded(bookId, genreId);
                 } else {
-                    ioService.outputString("The genre not found. ID: " + genreId);
+                    genrePerformance.notFound(genreId);
                 }
             }
-        }
-    }
-
-    @Override
-    @Transactional
-    public void delete(long bookId) {
-        List<Book> books = bookDao.getById(bookId);
-        if (books.size() == 0) {
-            ioService.outputString("The book was not found by ID: " + bookId);
         } else {
-            bookDao.delete(bookId);
-            ioService.outputString("Book deleted. ID: " + bookId);
+            bookPerformance.notFound(bookId);
         }
     }
 
-    @Override
     @Transactional
+    @Override
+    public void addComment(long bookId, String comment) {
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
+            BookComment bookComment = new BookComment();
+            bookComment.setComment(comment);
+            bookCommentDao.insert(bookComment);
+            book.getComments().add(bookComment);
+            bookDao.update(book);
+            bookPerformance.commentAdded(bookId, bookComment.getId(), comment);
+        } else {
+            bookPerformance.notFound(bookId);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void delete(long bookId) {
+        if (bookDao.getById(bookId) != null) {
+            bookDao.delete(bookId);
+            bookPerformance.delete(bookId);
+        } else {
+            bookPerformance.notFound(bookId);
+        }
+    }
+
+    @Transactional
+    @Override
     public void outputAll() {
         List<Book> books = bookDao.getAll();
-        ioService.outputString("Total books: " + bookDao.count());
+        bookPerformance.total(books.size());
         for (Book book : books) {
-            outputBook(book);
+            bookPerformance.output(book);
         }
     }
 
-    @Override
     @Transactional
+    @Override
+    public void outputBookComments(long bookId) {
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
+            List<BookComment> bookComments = bookCommentDao.getAll(bookId);
+            bookPerformance.totalComments(bookComments.size());
+            for (BookComment bookComment : bookComments) {
+                bookPerformance.outputBookComment(bookComment.getId(), bookComment.getComment());
+            }
+        } else {
+            bookPerformance.notFound(bookId);
+        }
+    }
+
+    @Transactional
+    @Override
     public void output(long bookId) {
-        List<Book> books = bookDao.getById(bookId);
-        if (books.size() == 0) {
-            ioService.outputString("The book was not found by ID: " + bookId);
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
+            bookPerformance.output(book);
         } else {
-            outputBook(books.get(0));
+            bookPerformance.notFound(bookId);
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public void removeAuthor(long bookId, long authorId) {
-        List<Book> books = bookDao.getById(bookId);
-        if (books.size() == 0) {
-            ioService.outputString("The book was not found by ID: " + bookId);
-        } else {
-            Book book = books.get(0);
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
             Author author = getAuthorFromBook(book, authorId);
             if (author != null) {
-                book.getAuthor().remove(author);
+                book.getAuthors().remove(author);
                 bookDao.update(book);
-                ioService.outputString("The author has been removed from the book. BookId: " + bookId + " AuthorId: " + authorId);
+                bookPerformance.authorRemoved(bookId, authorId);
             } else {
-                ioService.outputString("The author with the ID=" + authorId + " is missing from the book ID: " + bookId);
+                bookPerformance.authorMissing(bookId, authorId);
             }
+        } else {
+            bookPerformance.notFound(bookId);
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public void removeGenre(long bookId, long genreId) {
-        List<Book> books = bookDao.getById(bookId);
-        if (books.size() == 0) {
-            ioService.outputString("The book was not found by ID: " + bookId);
-        } else {
-            Book book = books.get(0);
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
             Genre genre = getGenreFromBook(book, genreId);
             if (genre != null) {
-                book.getGenre().remove(genre);
+                book.getGenres().remove(genre);
                 bookDao.update(book);
-                ioService.outputString("The genre has been removed from the book. BookId: " + bookId + " GenreId: " + genreId);
+                bookPerformance.genreRemoved(bookId, genreId);
             } else {
-                ioService.outputString("The genre with the ID=" + genreId + " is missing from the book ID: " + bookId);
+                bookPerformance.genreMissing(bookId, genreId);
             }
+        } else {
+            bookPerformance.notFound(bookId);
         }
     }
 
-    @Override
     @Transactional
-    public void setComment(long bookId, String comment) {
-        List<Book> books = bookDao.getById(bookId);
-        if (books.size() == 0) {
-            ioService.outputString("The book was not found by ID: " + bookId);
+    @Override
+    public void removeBookComment(long bookCommentId) {
+        BookComment bookComment = bookCommentDao.getById(bookCommentId);
+        if (bookComment == null) {
+            bookPerformance.commentNotFound(bookCommentId);
         } else {
-            Book book = books.get(0);
-            book.setComment(comment);
-            bookDao.update(book);
-            ioService.outputString("Book comment is set. ID: " + bookId + " Comment: " + comment);
+            String comment = bookComment.getComment();
+            for (Book book : bookDao.getAll()) {
+                if (book.getComments().contains(bookComment)) {
+                    book.getComments().remove(bookComment);
+                    bookDao.update(book);
+                    break;
+                }
+            }
+            bookPerformance.removeComment(bookCommentId, comment);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void updateBookComment(long bookCommentId, String comment) {
+        BookComment bookComment = bookCommentDao.getById(bookCommentId);
+        if (bookComment == null) {
+            bookPerformance.commentNotFound(bookCommentId);
+        } else {
+            bookComment.setComment(comment);
+            bookCommentDao.update(bookComment);
+            bookPerformance.updateComment(bookCommentId, comment);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void updateBookName(long bookId, String newName) {
+        Book book = bookDao.getById(bookId);
+        if (book != null) {
+            String oldName = book.getName();
+            book.setName(newName);
+            bookPerformance.updateName(bookId, oldName, newName);
+        } else {
+            bookPerformance.notFound(bookId);
         }
     }
 
     private Author getAuthorFromBook(Book book, long authorId) {
-        List<Author> authors = book.getAuthor();
-        if (authors != null) {
-            for (Author author : authors) {
-                if (author.getId() == authorId) {
-                    return author;
-                }
+        List<Author> authors = book.getAuthors();
+        for (Author author : authors) {
+            if (author.getId() == authorId) {
+                return author;
             }
         }
         return null;
     }
 
     private Genre getGenreFromBook(Book book, long genreId) {
-        List<Genre> genres = book.getGenre();
-        if (genres != null) {
-            for (Genre genre : genres) {
-                if (genre.getId() == genreId) {
-                    return genre;
-                }
+        List<Genre> genres = book.getGenres();
+        for (Genre genre : genres) {
+            if (genre.getId() == genreId) {
+                return genre;
             }
         }
         return null;
-    }
-
-    private void outputBook(Book book) {
-        ioService.outputString("Book"
-                + " ID: " + book.getId()
-                + " Name: " + book.getName()
-                + " Authors: " + getAuthors(book)
-                + " Genres: " + getGenres(book)
-        );
-    }
-
-    private String getAuthors(Book book) {
-        StringBuilder authors = new StringBuilder();
-        if (book.getAuthor() != null) {
-            for (Author author : book.getAuthor()) {
-                authors.append("id: ").append(author.getId()).append(" ")
-                        .append(author.getSurname()).append(" ")
-                        .append(author.getName()).append(" ")
-                        .append(author.getPatronymic()).append("; ");
-            }
-        }
-        return authors.toString();
-    }
-
-    private String getGenres(Book book) {
-        StringBuilder genres = new StringBuilder();
-        if (book.getGenre() != null) {
-            for (Genre genre : book.getGenre()) {
-                genres.append("id: ").append(genre.getId()).append(" ")
-                        .append(genre.getName()).append(" ")
-                        .append(genre.getDescription()).append("; ");
-            }
-        }
-        return genres.toString();
     }
 }

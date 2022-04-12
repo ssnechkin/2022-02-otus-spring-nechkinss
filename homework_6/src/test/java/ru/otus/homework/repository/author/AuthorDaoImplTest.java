@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import ru.otus.homework.entity.Author;
 
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Класс AuthorDaoImpl")
 @DataJpaTest
-@Import(AuthorDaoImpl.class)
+@ComponentScan("ru.otus.homework")
 class AuthorDaoImplTest {
     @Autowired
     private AuthorDaoImpl authorDao;
@@ -26,8 +27,8 @@ class AuthorDaoImplTest {
         author.setName("NameY");
         author.setPatronymic("Patronymic");
         long id = authorDao.insert(author);
-        List<Author> author1 = authorDao.getById(id);
-        assertEquals(author1.get(0).getName(), "NameY");
+        Author author1 = authorDao.getById(id);
+        assertEquals(author1.getName(), "NameY");
     }
 
     @DisplayName("Обновление")
@@ -40,8 +41,8 @@ class AuthorDaoImplTest {
         long id = authorDao.insert(author);
         author.setName("NameF");
         authorDao.update(author);
-        List<Author> author1 = authorDao.getById(id);
-        assertEquals("NameF", author1.get(0).getName());
+        Author author1 = authorDao.getById(id);
+        assertEquals("NameF", author1.getName());
     }
 
     @DisplayName("Удаление")
@@ -94,18 +95,7 @@ class AuthorDaoImplTest {
         author.setName("NameM");
         author.setPatronymic("Patronymic");
         long id = authorDao.insert(author);
-        List<Author> author1 = authorDao.getById(id);
-        assertTrue(author1.size() > 0 && author1.get(0).getName().equals("NameM"));
-    }
-
-    @DisplayName("Количество")
-    @Test
-    void count() {
-        Author author = new Author();
-        author.setSurname("Surname");
-        author.setName("NameC");
-        author.setPatronymic("Patronymic");
-        authorDao.insert(author);
-        assertTrue(authorDao.count() >= 1);
+        Author author1 = authorDao.getById(id);
+        assertEquals("NameM", author1.getName());
     }
 }

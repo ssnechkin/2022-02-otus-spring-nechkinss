@@ -53,7 +53,27 @@ public class BookShellEventListener {
     }
 
     @org.springframework.context.event.EventListener
-    public void setBookCommentEvent(SetBookCommentEvent event) {
-        bookService.setComment(event.getBookId(), event.getComment());
+    public void addBookCommentEvent(AddBookCommentEvent event) {
+        bookService.addComment(event.getBookId(), event.getComment());
+    }
+
+    @org.springframework.context.event.EventListener
+    public void removeBookCommentEvent(RemoveBookCommentEvent event) {
+        bookService.removeBookComment(event.getBookCommentId());
+    }
+
+    @org.springframework.context.event.EventListener
+    public void updateBookCommentEvent(UpdateBookCommentEvent event) {
+        bookService.updateBookComment(event.getBookCommentId(), event.getComment());
+    }
+
+    @org.springframework.context.event.EventListener
+    public void updateBookNameEvent(UpdateBookNameEvent event) {
+        bookService.updateBookName(event.getBookId(), event.getName());
+    }
+
+    @org.springframework.context.event.EventListener
+    public void outputBookCommentsEvent(OutputBookCommentsEvent event) {
+        bookService.outputBookComments(event.getBookId());
     }
 }

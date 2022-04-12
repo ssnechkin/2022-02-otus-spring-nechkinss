@@ -98,9 +98,33 @@ public class AppShellCommands {
         eventsPublisher.removeTheGenreFromTheBook(bookId, genreId);
     }
 
-    @ShellMethod(value = "Set book comment. Accepts book ID and comment", key = {"sbc", "set-book-comment"})
-    public void setBookComment(@ShellOption long bookId, @ShellOption String comment) {
-        eventsPublisher.setBookComment(bookId, comment);
+    @ShellMethod(value = "Add an comment to a book. Accepts comment", key = {"abc", "add-book-comment"})
+    @ShellMethodAvailability(value = "isEmptyBookId")
+    public void addAnCommentToABook(@ShellOption String comment) {
+        eventsPublisher.addAnBookCommentToABook(bookId, comment);
+    }
+
+    @ShellMethod(value = "Update book comment. Accepts BookCommentID and comment", key = {"ubc", "update-book-comment"})
+    public void updateBookComment(@ShellOption long bookCommentId, @ShellOption String comment) {
+        eventsPublisher.updateBookComment(bookCommentId, comment);
+    }
+
+    @ShellMethod(value = "Update book name. Accepts name", key = {"ubn", "update-book-name"})
+    @ShellMethodAvailability(value = "isEmptyBookId")
+    public void updateBookName(@ShellOption String name) {
+        eventsPublisher.updateBookName(bookId, name);
+    }
+
+    @ShellMethod(value = "Remove the comment from the book. Accepts BookCommentID", key = {"rbc", "remove-book-comment"})
+    @ShellMethodAvailability(value = "isEmptyBookId")
+    public void removeTheCommentFromTheBook(@ShellOption long bookCommentId) {
+        eventsPublisher.removeTheBookCommentFromTheBook(bookCommentId);
+    }
+
+    @ShellMethod(value = "Output all comments of the book", key = {"opbc", "output-book-comments"})
+    @ShellMethodAvailability(value = "isEmptyBookId")
+    public void outputBookComments() {
+        eventsPublisher.outputBookComments(bookId);
     }
 
     @ShellMethod(value = "Select a book by ID", key = {"sb", "select-book"})

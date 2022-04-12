@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,4 +23,8 @@ public class Genre {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "books")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres")
+    private List<Book> books;
 }

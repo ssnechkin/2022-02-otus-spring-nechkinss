@@ -2,63 +2,61 @@ package ru.otus.homework.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.homework.service.io.IOServiceStreams;
-import ru.otus.homework.repository.author.AuthorDao;
 import ru.otus.homework.entity.Author;
+import ru.otus.homework.entity.Book;
+import ru.otus.homework.repository.author.AuthorDao;
+import ru.otus.homework.repository.book.BookDao;
+import ru.otus.homework.service.performance.Performance;
 
 import java.util.List;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorDao authorDao;
-    private final IOServiceStreams ioService;
+    private final BookDao bookDao;
+    private final Performance<Author> performance;
 
-    public AuthorServiceImpl(AuthorDao authorDao, IOServiceStreams ioService) {
+    public AuthorServiceImpl(AuthorDao authorDao, BookDao bookDao, Performance<Author> performance) {
         this.authorDao = authorDao;
-        this.ioService = ioService;
+        this.bookDao = bookDao;
+        this.performance = performance;
     }
 
-    @Override
     @Transactional
+    @Override
     public void delete(long authorId) {
-        if (getAuthorOrOutPutNotFound(authorId) != null) {
+        Author author = authorDao.getById(authorId);
+        if (author != null) {
+            if (author.getBooks() != null) {
+                for (Book book : author.getBooks()) {
+                    book.getAuthors().remove(author);
+                    bookDao.update(book);
+                }
+            }
             authorDao.delete(authorId);
-            ioService.outputString("Author deleted. ID: " + authorId);
+            performance.delete(authorId);
+        } else {
+            performance.notFound(authorId);
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public void add(String surname, String name, String patronymic) {
-        long id = authorDao.insert(new Author(null, surname, name, patronymic));
-        ioService.outputString("Author added. ID: " + id);
+        Author author = new Author();
+        author.setSurname(surname);
+        author.setName(name);
+        author.setPatronymic(patronymic);
+        performance.add(authorDao.insert(author));
     }
 
-    @Override
     @Transactional
+    @Override
     public void outputAll() {
         List<Author> authors = authorDao.getAll();
-        ioService.outputString("Total authors: " + authorDao.count());
+        performance.total(authors.size());
         for (Author author : authors) {
-            outputAuthor(author);
+            performance.output(author);
         }
-    }
-
-    private Author getAuthorOrOutPutNotFound(long authorId) {
-        List<Author> authors = authorDao.getById(authorId);
-        if (authors == null) {
-            ioService.outputString("The author was not found by ID: " + authorId);
-            return null;
-        }
-        return authors.get(0);
-    }
-
-    private void outputAuthor(Author author) {
-        ioService.outputString("Author"
-                + " ID: " + author.getId()
-                + " Surname: " + author.getSurname()
-                + " Name: " + author.getName()
-                + " Patronymic: " + author.getPatronymic()
-        );
     }
 }

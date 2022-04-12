@@ -13,9 +13,13 @@ public interface EventsPublisher {
 
     void addAnGenreToABook(long bookId, long genreId);
 
+    void addAnBookCommentToABook(long bookId, String comment);
+
     void removeTheAuthorFromTheBook(long bookId, long authorId);
 
     void removeTheGenreFromTheBook(long bookId, long genreId);
+
+    void removeTheBookCommentFromTheBook(long bookCommentId);
 
     void outputAllAuthors();
 
@@ -31,5 +35,9 @@ public interface EventsPublisher {
 
     void setGenreDescription(long genreId, String description);
 
-    void setBookComment(long bookId, String comment);
+    void updateBookComment(long bookCommentId, String comment);
+
+    void updateBookName(long bookId, String name);
+
+    void outputBookComments(long bookId);
 }
