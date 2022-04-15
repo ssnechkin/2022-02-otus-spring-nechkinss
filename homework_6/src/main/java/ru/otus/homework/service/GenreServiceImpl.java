@@ -46,7 +46,7 @@ public class GenreServiceImpl implements GenreService {
     public void add(String genreName) {
         Genre genre = new Genre();
         genre.setName(genreName);
-        long id = genreDao.insert(genre);
+        long id = genreDao.insert(genre).getId();
         genrePerformance.add(id);
     }
 

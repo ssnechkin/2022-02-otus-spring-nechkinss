@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
     public void add(String bookName) {
         Book book = new Book();
         book.setName(bookName);
-        long id = bookDao.insert(book);
+        long id = bookDao.insert(book).getId();
         bookPerformance.add(id);
     }
 
