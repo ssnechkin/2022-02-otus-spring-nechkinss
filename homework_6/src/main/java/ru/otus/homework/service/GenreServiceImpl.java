@@ -50,7 +50,7 @@ public class GenreServiceImpl implements GenreService {
         genrePerformance.add(id);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public void outputAll() {
         List<Genre> genres = genreDao.getAll();

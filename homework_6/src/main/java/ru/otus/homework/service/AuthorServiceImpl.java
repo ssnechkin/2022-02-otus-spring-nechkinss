@@ -50,7 +50,7 @@ public class AuthorServiceImpl implements AuthorService {
         performance.add(authorDao.insert(author));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public void outputAll() {
         List<Author> authors = authorDao.getAll();
