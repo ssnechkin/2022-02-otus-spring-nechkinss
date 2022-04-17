@@ -42,9 +42,9 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public Book insert(Book object) {
+    public long insert(Book object) {
         em.persist(object);
-        return object;
+        return object.getId();
     }
 
     @Override

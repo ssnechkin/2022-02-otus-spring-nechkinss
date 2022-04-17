@@ -47,10 +47,10 @@ public class AuthorServiceImpl implements AuthorService {
         author.setSurname(surname);
         author.setName(name);
         author.setPatronymic(patronymic);
-        performance.add(authorDao.insert(author).getId());
+        performance.add(authorDao.insert(author));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public void outputAll() {
         List<Author> authors = authorDao.getAll();

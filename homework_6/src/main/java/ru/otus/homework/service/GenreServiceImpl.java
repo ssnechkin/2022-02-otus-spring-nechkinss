@@ -46,11 +46,11 @@ public class GenreServiceImpl implements GenreService {
     public void add(String genreName) {
         Genre genre = new Genre();
         genre.setName(genreName);
-        long id = genreDao.insert(genre).getId();
+        long id = genreDao.insert(genre);
         genrePerformance.add(id);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public void outputAll() {
         List<Genre> genres = genreDao.getAll();

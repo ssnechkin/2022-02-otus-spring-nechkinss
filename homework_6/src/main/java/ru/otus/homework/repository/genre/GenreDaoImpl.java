@@ -41,9 +41,9 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public Genre insert(Genre object) {
+    public long insert(Genre object) {
         em.persist(object);
-        return object;
+        return object.getId();
     }
 
     @Override
