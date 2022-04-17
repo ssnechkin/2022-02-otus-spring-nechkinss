@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
     public void add(String bookName) {
         Book book = new Book();
         book.setName(bookName);
-        long id = bookDao.insert(book);
+        long id = bookDao.insert(book).getId();
         bookPerformance.add(id);
     }
 
@@ -116,7 +116,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public void outputAll() {
         List<Book> books = bookDao.getAll();
@@ -126,7 +126,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public void outputBookComments(long bookId) {
         Book book = bookDao.getById(bookId);
@@ -141,7 +141,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public void output(long bookId) {
         Book book = bookDao.getById(bookId);

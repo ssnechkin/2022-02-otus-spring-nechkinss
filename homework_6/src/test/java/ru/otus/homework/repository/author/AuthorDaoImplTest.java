@@ -26,7 +26,7 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        long id = authorDao.insert(author);
+        long id = authorDao.insert(author).getId();
         Author author1 = authorDao.getById(id);
         assertEquals(author1.getName(), "NameY");
     }
@@ -38,7 +38,7 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameV");
         author.setPatronymic("Patronymic");
-        long id = authorDao.insert(author);
+        long id = authorDao.insert(author).getId();
         author.setName("NameF");
         authorDao.update(author);
         Author author1 = authorDao.getById(id);
@@ -57,8 +57,7 @@ class AuthorDaoImplTest {
         author2.setSurname("Surname");
         author2.setName("Name_delete2");
         author2.setPatronymic("Patronymic");
-        long id = authorDao.insert(author2);
-
+        long id = authorDao.insert(author2).getId();
         authorDao.delete(id);
 
         boolean name1Del = true;
@@ -94,7 +93,7 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameM");
         author.setPatronymic("Patronymic");
-        long id = authorDao.insert(author);
+        long id = authorDao.insert(author).getId();
         Author author1 = authorDao.getById(id);
         assertEquals("NameM", author1.getName());
     }

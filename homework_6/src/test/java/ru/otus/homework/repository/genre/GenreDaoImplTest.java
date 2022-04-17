@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 import ru.otus.homework.entity.Genre;
-import ru.otus.homework.service.io.IOServiceStreams;
-import ru.otus.homework.service.performance.GenrePerformanceImpl;
 
 import java.util.List;
 
@@ -26,7 +23,7 @@ class GenreDaoImplTest {
     void insert() {
         Genre genre = new Genre();
         genre.setName("NameS");
-        long id = genreDao.insert(genre);
+        long id = genreDao.insert(genre).getId();
         Genre genre1 = genreDao.getById(id);
         assertEquals(genre1.getName(), "NameS");
     }
@@ -37,7 +34,7 @@ class GenreDaoImplTest {
         Genre genre = new Genre();
         genre.setName("NameW");
         genre.setDescription("DS");
-        long id = genreDao.insert(genre);
+        long id = genreDao.insert(genre).getId();
         genre.setName("NameR");
         genre.setDescription("DS2");
         genreDao.update(genre);
@@ -54,7 +51,7 @@ class GenreDaoImplTest {
         genreDao.insert(genre1);
         Genre genre2 = new Genre();
         genre2.setName("Name_delete2");
-        long id = genreDao.insert(genre2);
+        long id = genreDao.insert(genre2).getId();
 
         genreDao.delete(id);
 
@@ -87,7 +84,7 @@ class GenreDaoImplTest {
     void getById() {
         Genre genre = new Genre();
         genre.setName("NameQ");
-        long id = genreDao.insert(genre);
+        long id = genreDao.insert(genre).getId();
         Genre genre1 = genreDao.getById(id);
         assertEquals("NameQ", genre1.getName());
     }

@@ -33,9 +33,9 @@ public class BookCommentDaoImpl implements BookCommentDao {
     }
 
     @Override
-    public long insert(BookComment object) {
+    public BookComment insert(BookComment object) {
         em.persist(object);
-        return object.getId();
+        return object;
     }
 
     @Override

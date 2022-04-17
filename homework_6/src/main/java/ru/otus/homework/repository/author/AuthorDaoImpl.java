@@ -41,9 +41,9 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public long insert(Author object) {
+    public Author insert(Author object) {
         em.persist(object);
-        return object.getId();
+        return object;
     }
 
     @Override
