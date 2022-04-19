@@ -1,7 +1,7 @@
 package ru.otus.homework.shell.listener;
 
 import org.springframework.stereotype.Component;
-import ru.otus.homework.service.GenreService;
+import ru.otus.homework.service.genre.GenreService;
 import ru.otus.homework.shell.event.genre.AddGenreEvent;
 import ru.otus.homework.shell.event.genre.DeleteGenreByIdEvent;
 import ru.otus.homework.shell.event.genre.OutputAllGenresEvent;

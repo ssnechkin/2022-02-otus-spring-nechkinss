@@ -1,7 +1,7 @@
 package ru.otus.homework.shell.listener;
 
 import org.springframework.stereotype.Component;
-import ru.otus.homework.service.AuthorService;
+import ru.otus.homework.service.author.AuthorService;
 import ru.otus.homework.shell.event.author.AddAuthorEvent;
 import ru.otus.homework.shell.event.author.DeleteAuthorByIdEvent;
 import ru.otus.homework.shell.event.author.OutputAllAuthorsEvent;

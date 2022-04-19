@@ -1,6 +1,7 @@
-package ru.otus.homework.service.performance;
+package ru.otus.homework.service.performance.book;
 
 import ru.otus.homework.entity.Book;
+import ru.otus.homework.service.performance.Performance;
 
 public interface BookPerformance extends Performance<Book> {
     void outputBookComment(long bookId, String comment);

@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import ru.otus.homework.entity.Genre;
-import ru.otus.homework.repository.genre.GenreDaoImpl;
+import ru.otus.homework.repository.genre.GenreRepository;
+import ru.otus.homework.service.genre.GenreServiceImpl;
 
 import java.util.UUID;
 
@@ -19,13 +20,13 @@ class GenreServiceImplTest {
     private GenreServiceImpl genreService;
 
     @Autowired
-    private GenreDaoImpl genreDao;
+    private GenreRepository genreRepository;
 
     @Test
     void delete() {
         Genre genre = new Genre();
         genre.setName(UUID.randomUUID().toString());
-        genre = genreDao.insert(genre);
+        genre = genreRepository.save(genre);
         genreService.delete(genre.getId());
     }
 
@@ -43,7 +44,7 @@ class GenreServiceImplTest {
     void setDescription() {
         Genre genre = new Genre();
         genre.setName(UUID.randomUUID().toString());
-        genre = genreDao.insert(genre);
+        genre = genreRepository.save(genre);
         genreService.setDescription(genre.getId(), "description");
     }
 }

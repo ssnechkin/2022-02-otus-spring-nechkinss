@@ -1,4 +1,4 @@
-package ru.otus.homework.service.performance;
+package ru.otus.homework.service.performance.genre;
 
 import org.springframework.stereotype.Service;
 import ru.otus.homework.entity.Genre;

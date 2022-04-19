@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import ru.otus.homework.entity.Author;
-import ru.otus.homework.repository.author.AuthorDaoImpl;
+import ru.otus.homework.repository.author.AuthorRepository;
+import ru.otus.homework.service.author.AuthorServiceImpl;
 
 @DisplayName("Класс AuthorServiceImpl")
 @DataJpaTest
@@ -17,7 +18,7 @@ class AuthorServiceImplTest {
     private AuthorServiceImpl authorService;
 
     @Autowired
-    private AuthorDaoImpl authorDao;
+    private AuthorRepository authorRepository;
 
     @DisplayName("Удаление")
     @Test
@@ -26,7 +27,7 @@ class AuthorServiceImplTest {
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        author = authorDao.insert(author);
+        author = authorRepository.save(author);
         authorService.delete(author.getId());
     }
 

@@ -8,8 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 import ru.otus.homework.entity.Author;
 import ru.otus.homework.entity.Book;
 import ru.otus.homework.entity.BookComment;
-import ru.otus.homework.repository.author.AuthorDaoImpl;
-import ru.otus.homework.repository.book.comment.BookCommentDaoImpl;
+import ru.otus.homework.repository.author.AuthorRepository;
+import ru.otus.homework.repository.book.comment.BookCommentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +23,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookDaoImplTest {
 
     @Autowired
-    private BookDaoImpl bookDao;
+    private BookRepository bookRepository;
 
     @Autowired
-    private AuthorDaoImpl authorDao;
+    private AuthorRepository authorRepository;
 
     @Autowired
-    private BookCommentDaoImpl bookCommentDao;
+    private BookCommentRepository bookCommentRepository;
 
     @DisplayName("Добавление")
     @Test
     void insert() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
-        Book book1 = bookDao.getById(book.getId());
+        book = bookRepository.save(book);
+        Book book1 = bookRepository.getById(book.getId());
         assertEquals(book1.getName(), "NameY");
     }
 
@@ -46,10 +46,10 @@ class BookDaoImplTest {
     void update() {
         Book book = new Book();
         book.setName("NameV");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
         book.setName("NameF");
-        bookDao.update(book);
-        Book book1 = bookDao.getById(book.getId());
+        bookRepository.save(book);
+        Book book1 = bookRepository.getById(book.getId());
         assertEquals("NameF", book1.getName());
     }
 
@@ -58,18 +58,18 @@ class BookDaoImplTest {
     void addComment() {
         Book book = new Book();
         book.setName("NameV");
-        long id = bookDao.insert(book).getId();
+        book = bookRepository.save(book);
 
         ArrayList<BookComment> bookComments = new ArrayList<>();
         BookComment bookComment = new BookComment();
         String uuid = UUID.randomUUID().toString();
         bookComment.setComment(uuid);
-        bookCommentDao.insert(bookComment);
+        bookCommentRepository.save(bookComment);
         bookComments.add(bookComment);
         book.setComments(bookComments);
-        bookDao.update(book);
+        bookRepository.save(book);
 
-        Book book1 = bookDao.getById(id);
+        Book book1 = bookRepository.getById(book.getId());
         BookComment resultBookComment = null;
         for (BookComment bookComment1 : book1.getComments()) {
             if (bookComment1.getComment() != null && bookComment1.getComment().equals(uuid)) {
@@ -88,23 +88,23 @@ class BookDaoImplTest {
         String comment2 = UUID.randomUUID().toString();
         Book book = new Book();
         book.setName("NameV");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
         ArrayList<BookComment> bookComments = new ArrayList<>();
         BookComment bookComment = new BookComment();
         bookComment.setComment(comment1);
-        bookCommentDao.insert(bookComment);
+        bookCommentRepository.save(bookComment);
         bookComments.add(bookComment);
         book.setComments(bookComments);
-        bookDao.update(book);
-        Book book1 = bookDao.getById(book.getId());
+        bookRepository.save(book);
+        Book book1 = bookRepository.getById(book.getId());
         for (BookComment bookComment2 : book1.getComments()) {
             if (bookComment2.getComment() != null && bookComment2.getComment().equals(comment1)) {
                 bookComment2.setComment(comment2);
-                bookCommentDao.update(bookComment2);
+                bookCommentRepository.save(bookComment2);
                 break;
             }
         }
-        Book book2 = bookDao.getById(book.getId());
+        Book book2 = bookRepository.getById(book.getId());
         BookComment bookCommentResult = null;
         for (BookComment bookComment2 : book2.getComments()) {
             if (bookComment2.getComment() != null && bookComment2.getComment().equals(comment2)) {
@@ -123,10 +123,10 @@ class BookDaoImplTest {
         String name2 = UUID.randomUUID().toString();
         Book book = new Book();
         book.setName(name1);
-        long id = bookDao.insert(book).getId();
+        book = bookRepository.save(book);
         book.setName(name2);
-        bookDao.update(book);
-        Book book2 = bookDao.getById(id);
+        bookRepository.save(book);
+        Book book2 = bookRepository.getById(book.getId());
         assertEquals(book2.getName(), name2);
     }
 
@@ -135,7 +135,7 @@ class BookDaoImplTest {
     void deleteComment() {
         Book book = new Book();
         book.setName("NameV");
-        bookDao.insert(book);
+        bookRepository.save(book);
 
         ArrayList<BookComment> bookComments = new ArrayList<>();
         BookComment bookComment = new BookComment();
@@ -143,10 +143,10 @@ class BookDaoImplTest {
         bookComment.setComment(uuid);
         bookComments.add(bookComment);
         book.setComments(bookComments);
-        bookDao.update(book);
+        bookRepository.save(book);
 
         book.getComments().remove(bookComment);
-        bookDao.update(book);
+        bookRepository.save(book);
     }
 
     @DisplayName("Удаление")
@@ -154,15 +154,15 @@ class BookDaoImplTest {
     void delete() {
         Book book1 = new Book();
         book1.setName("Name_delete1");
-        bookDao.insert(book1);
+        bookRepository.save(book1);
         Book book2 = new Book();
         book2.setName("Name_delete2");
-        book2 = bookDao.insert(book2);
-        bookDao.delete(book2.getId());
+        book2 = bookRepository.save(book2);
+        bookRepository.delete(book2);
 
         boolean name1Del = true;
         boolean name2Del = true;
-        for (Book book : bookDao.getAll()) {
+        for (Book book : bookRepository.findAll()) {
             if (book.getName().equals("Name_delete1")) {
                 name1Del = false;
             }
@@ -179,8 +179,8 @@ class BookDaoImplTest {
     void getAll() {
         Book book = new Book();
         book.setName("NameZ");
-        bookDao.insert(book);
-        List<Book> books = bookDao.getAll();
+        bookRepository.save(book);
+        List<Book> books = bookRepository.findAll();
         assertTrue(books.size() >= 1);
     }
 
@@ -189,8 +189,8 @@ class BookDaoImplTest {
     void getById() {
         Book book = new Book();
         book.setName("NameM");
-        book = bookDao.insert(book);
-        Book book1 = bookDao.getById(book.getId());
+        book = bookRepository.save(book);
+        Book book1 = bookRepository.getById(book.getId());
         assertEquals("NameM", book1.getName());
     }
 
@@ -200,25 +200,25 @@ class BookDaoImplTest {
         Book book = new Book();
         book.setName("NameVVD");
         book.setAuthors(new ArrayList<>());
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
 
         Author author = new Author();
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        author = authorDao.insert(author);
+        author = authorRepository.save(author);
 
-        Author author1 = authorDao.getById(author.getId());
+        Author author1 = authorRepository.getById(author.getId());
 
-        Book book1 = bookDao.getById(book.getId());
+        Book book1 = bookRepository.getById(book.getId());
         book1.getAuthors().add(author1);
-        bookDao.update(book1);
+        bookRepository.save(book1);
 
-        Book book2 = bookDao.getById(book.getId());
+        Book book2 = bookRepository.getById(book.getId());
         assertEquals(1, book2.getAuthors().size());
         book.getAuthors().remove(author);
 
-        Book book3 = bookDao.getById(book.getId());
+        Book book3 = bookRepository.getById(book.getId());
         assertEquals(0, book3.getAuthors().size());
     }
 }

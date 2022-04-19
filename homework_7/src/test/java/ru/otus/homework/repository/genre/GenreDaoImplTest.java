@@ -17,15 +17,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class GenreDaoImplTest {
 
     @Autowired
-    private GenreDaoImpl genreDao;
+    private GenreRepository genreRepository;
 
     @DisplayName("Добавление")
     @Test
     void insert() {
         Genre genre = new Genre();
         genre.setName("NameS");
-        genre = genreDao.insert(genre);
-        Genre genre1 = genreDao.getById(genre.getId());
+        genre = genreRepository.save(genre);
+        Genre genre1 = genreRepository.getById(genre.getId());
         assertEquals(genre1.getName(), "NameS");
     }
 
@@ -35,11 +35,11 @@ class GenreDaoImplTest {
         Genre genre = new Genre();
         genre.setName("NameW");
         genre.setDescription("DS");
-        genre = genreDao.insert(genre);
+        genre = genreRepository.save(genre);
         genre.setName("NameR");
         genre.setDescription("DS2");
-        genreDao.update(genre);
-        Genre genre1 = genreDao.getById(genre.getId());
+        genreRepository.save(genre);
+        Genre genre1 = genreRepository.getById(genre.getId());
         assertEquals("NameR", genre1.getName());
         assertEquals(genre1.getDescription(), "DS2");
     }
@@ -49,16 +49,16 @@ class GenreDaoImplTest {
     void delete() {
         Genre genre1 = new Genre();
         genre1.setName("Name_delete1");
-        genreDao.insert(genre1);
+        genreRepository.save(genre1);
         Genre genre2 = new Genre();
         genre2.setName("Name_delete2");
-        genre2 = genreDao.insert(genre2);
+        genre2 = genreRepository.save(genre2);
 
-        genreDao.delete(genre2.getId());
+        genreRepository.delete(genre2);
 
         boolean name1Del = true;
         boolean name2Del = true;
-        for (Genre genre : genreDao.getAll()) {
+        for (Genre genre : genreRepository.findAll()) {
             if (genre.getName().equals("Name_delete1")) {
                 name1Del = false;
             }
@@ -75,8 +75,8 @@ class GenreDaoImplTest {
     void getAll() {
         Genre genre = new Genre();
         genre.setName("Name");
-        genreDao.insert(genre);
-        List<Genre> genres = genreDao.getAll();
+        genreRepository.save(genre);
+        List<Genre> genres = genreRepository.findAll();
         assertTrue(genres.size() >= 1);
     }
 
@@ -85,8 +85,8 @@ class GenreDaoImplTest {
     void getById() {
         Genre genre = new Genre();
         genre.setName("NameQ");
-        genre = genreDao.insert(genre);
-        Genre genre1 = genreDao.getById(genre.getId());
+        genre = genreRepository.save(genre);
+        Genre genre1 = genreRepository.getById(genre.getId());
         assertEquals("NameQ", genre1.getName());
     }
 }

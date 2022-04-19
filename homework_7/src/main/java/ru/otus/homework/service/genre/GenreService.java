@@ -1,4 +1,4 @@
-package ru.otus.homework.service;
+package ru.otus.homework.service.genre;
 
 public interface GenreService {
     void delete(long genreId);

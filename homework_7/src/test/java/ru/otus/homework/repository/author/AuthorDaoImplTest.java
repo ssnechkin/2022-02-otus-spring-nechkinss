@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthorDaoImplTest {
 
     @Autowired
-    private AuthorDaoImpl authorDao;
+    private AuthorRepository authorRepository;
 
     @DisplayName("Добавление")
     @Test
@@ -26,8 +26,8 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        long id = authorDao.insert(author).getId();
-        Author author1 = authorDao.getById(id);
+        long id = authorRepository.save(author).getId();
+        Author author1 = authorRepository.getById(id);
         assertEquals(author1.getName(), "NameY");
     }
 
@@ -38,10 +38,10 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameV");
         author.setPatronymic("Patronymic");
-        author = authorDao.insert(author);
+        author = authorRepository.save(author);
         author.setName("NameF");
-        authorDao.update(author);
-        Author author1 = authorDao.getById(author.getId());
+        authorRepository.save(author);
+        Author author1 = authorRepository.getById(author.getId());
         assertEquals("NameF", author1.getName());
     }
 
@@ -52,18 +52,18 @@ class AuthorDaoImplTest {
         author1.setSurname("Surname");
         author1.setName("Name_delete1");
         author1.setPatronymic("Patronymic");
-        authorDao.insert(author1);
+        authorRepository.save(author1);
         Author author2 = new Author();
         author2.setSurname("Surname");
         author2.setName("Name_delete2");
         author2.setPatronymic("Patronymic");
-        long id = authorDao.insert(author2).getId();
+        author2 = authorRepository.save(author2);
 
-        authorDao.delete(id);
+        authorRepository.delete(author2);
 
         boolean name1Del = true;
         boolean name2Del = true;
-        for (Author author : authorDao.getAll()) {
+        for (Author author : authorRepository.findAll()) {
             if (author.getName().equals("Name_delete1")) {
                 name1Del = false;
             }
@@ -82,8 +82,8 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameZ");
         author.setPatronymic("Patronymic");
-        authorDao.insert(author);
-        List<Author> authors = authorDao.getAll();
+        authorRepository.save(author);
+        List<Author> authors = authorRepository.findAll();
         assertTrue(authors.size() >= 1);
     }
 
@@ -94,8 +94,8 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameM");
         author.setPatronymic("Patronymic");
-        author = authorDao.insert(author);
-        Author author1 = authorDao.getById(author.getId());
+        author = authorRepository.save(author);
+        Author author1 = authorRepository.getById(author.getId());
         assertEquals("NameM", author1.getName());
     }
 }

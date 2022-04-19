@@ -1,7 +1,7 @@
 package ru.otus.homework.shell.listener;
 
 import org.springframework.stereotype.Component;
-import ru.otus.homework.service.BookService;
+import ru.otus.homework.service.book.BookService;
 import ru.otus.homework.shell.event.book.*;
 
 @Component

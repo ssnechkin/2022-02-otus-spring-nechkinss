@@ -9,10 +9,13 @@ import ru.otus.homework.entity.Author;
 import ru.otus.homework.entity.Book;
 import ru.otus.homework.entity.BookComment;
 import ru.otus.homework.entity.Genre;
-import ru.otus.homework.repository.author.AuthorDaoImpl;
-import ru.otus.homework.repository.book.BookDaoImpl;
-import ru.otus.homework.repository.book.comment.BookCommentDaoImpl;
-import ru.otus.homework.repository.genre.GenreDaoImpl;
+import ru.otus.homework.repository.author.AuthorRepository;
+import ru.otus.homework.repository.book.BookRepository;
+import ru.otus.homework.repository.book.comment.BookCommentRepository;
+import ru.otus.homework.repository.genre.GenreRepository;
+import ru.otus.homework.service.author.AuthorServiceImpl;
+import ru.otus.homework.service.book.BookServiceImpl;
+import ru.otus.homework.service.genre.GenreServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,10 +27,10 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
 
     @Autowired
-    private BookDaoImpl bookDao;
+    private BookRepository bookRepository;
 
     @Autowired
-    private AuthorDaoImpl authorDao;
+    private AuthorRepository authorRepository;
 
     @Autowired
     private AuthorServiceImpl authorService;
@@ -36,10 +39,10 @@ class BookServiceImplTest {
     private GenreServiceImpl genreService;
 
     @Autowired
-    private GenreDaoImpl genreDao;
+    private GenreRepository genreRepository;
 
     @Autowired
-    private BookCommentDaoImpl bookCommentDao;
+    private BookCommentRepository bookCommentRepository;
 
     @Test
     void add() {
@@ -50,13 +53,13 @@ class BookServiceImplTest {
     void addAuthor() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
 
         Author author = new Author();
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        author = authorDao.insert(author);
+        author = authorRepository.save(author);
 
         bookService.addAuthor(book.getId(), author.getId());
     }
@@ -65,11 +68,11 @@ class BookServiceImplTest {
     void addGenre() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
 
         Genre genre = new Genre();
         genre.setName("NameS");
-        genre = genreDao.insert(genre);
+        genre = genreRepository.save(genre);
 
         bookService.addGenre(book.getId(), genre.getId());
     }
@@ -78,7 +81,7 @@ class BookServiceImplTest {
     void addComment() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
         bookService.addComment(book.getId(), "comment");
     }
 
@@ -86,7 +89,7 @@ class BookServiceImplTest {
     void delete() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
         bookService.delete(book.getId());
     }
 
@@ -99,7 +102,7 @@ class BookServiceImplTest {
     void output() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
         bookService.output(book.getId());
     }
 
@@ -107,13 +110,13 @@ class BookServiceImplTest {
     void removeAuthor() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
 
         Author author = new Author();
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        author = authorDao.insert(author);
+        author = authorRepository.save(author);
 
         bookService.addAuthor(book.getId(), author.getId());
         bookService.removeAuthor(book.getId(), author.getId());
@@ -123,11 +126,11 @@ class BookServiceImplTest {
     void removeGenre() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
 
         Genre genre = new Genre();
         genre.setName("NameS");
-        genre = genreDao.insert(genre);
+        genre = genreRepository.save(genre);
 
         bookService.addGenre(book.getId(), genre.getId());
         bookService.removeGenre(book.getId(), genre.getId());
@@ -137,12 +140,12 @@ class BookServiceImplTest {
     void updateComment() {
         BookComment bookComment = new BookComment();
         bookComment.setComment("comment1");
-        bookComment = bookCommentDao.insert(bookComment);
+        bookComment = bookCommentRepository.save(bookComment);
 
         Book book = new Book();
         book.setName("NameY");
         book.getComments().add(bookComment);
-        bookDao.insert(book);
+        bookRepository.save(book);
 
         bookService.updateBookComment(bookComment.getId(), "comment2");
     }
@@ -151,7 +154,7 @@ class BookServiceImplTest {
     void updateName() {
         Book book = new Book();
         book.setName("NameY");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
         bookService.updateBookName(book.getId(), "Name2");
     }
 
@@ -159,12 +162,12 @@ class BookServiceImplTest {
     void removeComment() {
         BookComment bookComment = new BookComment();
         bookComment.setComment("comment1");
-        bookComment = bookCommentDao.insert(bookComment);
+        bookComment = bookCommentRepository.save(bookComment);
 
         Book book = new Book();
         book.setName("NameY");
         book.getComments().add(bookComment);
-        bookDao.insert(book);
+        bookRepository.save(book);
 
         bookService.removeBookComment(bookComment.getId());
     }
@@ -174,21 +177,21 @@ class BookServiceImplTest {
     void removeAuthorAndAuthorFormAllBooks() {
         Book book = new Book();
         book.setName("NameVVD");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
 
         Author author = new Author();
         author.setName("name1");
-        author = authorDao.insert(author);
+        author = authorRepository.save(author);
 
         book.getAuthors().add(author);
-        bookDao.update(book);
+        bookRepository.save(book);
 
-        Book book2 = bookDao.getById(book.getId());
+        Book book2 = bookRepository.getById(book.getId());
         assertEquals(1, book2.getAuthors().size());
 
         authorService.delete(author.getId());
 
-        Book book3 = bookDao.getById(book.getId());
+        Book book3 = bookRepository.getById(book.getId());
         assertEquals(0, book3.getAuthors().size());
     }
 
@@ -197,21 +200,21 @@ class BookServiceImplTest {
     void removeGenreAndGenreFormAllBooks() {
         Book book = new Book();
         book.setName("NameVVD");
-        book = bookDao.insert(book);
+        book = bookRepository.save(book);
 
         Genre genre = new Genre();
         genre.setName("name1");
-        genre = genreDao.insert(genre);
+        genre = genreRepository.save(genre);
 
         book.getGenres().add(genre);
-        bookDao.update(book);
+        bookRepository.save(book);
 
-        Book book2 = bookDao.getById(book.getId());
+        Book book2 = bookRepository.getById(book.getId());
         assertEquals(1, book2.getGenres().size());
 
         genreService.delete(genre.getId());
 
-        Book book3 = bookDao.getById(book.getId());
+        Book book3 = bookRepository.getById(book.getId());
         assertEquals(0, book3.getGenres().size());
     }
 }

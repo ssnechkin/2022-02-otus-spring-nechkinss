@@ -1,8 +1,9 @@
-package ru.otus.homework.service.performance;
+package ru.otus.homework.service.performance.author;
 
 import org.springframework.stereotype.Service;
 import ru.otus.homework.entity.Author;
 import ru.otus.homework.service.io.IOServiceStreams;
+import ru.otus.homework.service.performance.Performance;
 
 @Service
 public class AuthorPerformance implements Performance<Author> {
