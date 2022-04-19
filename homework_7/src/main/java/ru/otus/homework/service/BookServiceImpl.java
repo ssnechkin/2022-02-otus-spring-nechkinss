@@ -117,7 +117,6 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void outputAll() {
         List<Book> books = bookDao.getAll();
@@ -127,7 +126,6 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void outputBookComments(long bookId) {
         Book book = bookDao.getById(bookId);
@@ -142,7 +140,6 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void output(long bookId) {
         Book book = bookDao.getById(bookId);

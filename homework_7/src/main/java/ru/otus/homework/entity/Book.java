@@ -20,12 +20,12 @@ public class Book {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     private List<Genre> genres = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     private List<Author> authors = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(orphanRemoval = true)
     private List<BookComment> comments = new ArrayList<>();
 }

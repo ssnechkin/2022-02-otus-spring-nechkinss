@@ -24,8 +24,8 @@ class GenreDaoImplTest {
     void insert() {
         Genre genre = new Genre();
         genre.setName("NameS");
-        long id = genreDao.insert(genre).getId();
-        Genre genre1 = genreDao.getById(id);
+        genre = genreDao.insert(genre);
+        Genre genre1 = genreDao.getById(genre.getId());
         assertEquals(genre1.getName(), "NameS");
     }
 
@@ -35,11 +35,11 @@ class GenreDaoImplTest {
         Genre genre = new Genre();
         genre.setName("NameW");
         genre.setDescription("DS");
-        long id = genreDao.insert(genre).getId();
+        genre = genreDao.insert(genre);
         genre.setName("NameR");
         genre.setDescription("DS2");
         genreDao.update(genre);
-        Genre genre1 = genreDao.getById(id);
+        Genre genre1 = genreDao.getById(genre.getId());
         assertEquals("NameR", genre1.getName());
         assertEquals(genre1.getDescription(), "DS2");
     }
@@ -52,9 +52,9 @@ class GenreDaoImplTest {
         genreDao.insert(genre1);
         Genre genre2 = new Genre();
         genre2.setName("Name_delete2");
-        long id = genreDao.insert(genre2).getId();
+        genre2 = genreDao.insert(genre2);
 
-        genreDao.delete(id);
+        genreDao.delete(genre2.getId());
 
         boolean name1Del = true;
         boolean name2Del = true;
@@ -85,8 +85,8 @@ class GenreDaoImplTest {
     void getById() {
         Genre genre = new Genre();
         genre.setName("NameQ");
-        long id = genreDao.insert(genre).getId();
-        Genre genre1 = genreDao.getById(id);
+        genre = genreDao.insert(genre);
+        Genre genre1 = genreDao.getById(genre.getId());
         assertEquals("NameQ", genre1.getName());
     }
 }

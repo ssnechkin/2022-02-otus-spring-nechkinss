@@ -14,6 +14,8 @@ import ru.otus.homework.repository.book.BookDaoImpl;
 import ru.otus.homework.repository.book.comment.BookCommentDaoImpl;
 import ru.otus.homework.repository.genre.GenreDaoImpl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @DisplayName("Класс BookServiceImpl")
 @DataJpaTest
 @ComponentScan("ru.otus.homework")
@@ -26,6 +28,12 @@ class BookServiceImplTest {
 
     @Autowired
     private AuthorDaoImpl authorDao;
+
+    @Autowired
+    private AuthorServiceImpl authorService;
+
+    @Autowired
+    private GenreServiceImpl genreService;
 
     @Autowired
     private GenreDaoImpl genreDao;
@@ -42,44 +50,44 @@ class BookServiceImplTest {
     void addAuthor() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
+        book = bookDao.insert(book);
 
         Author author = new Author();
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        long authorId = authorDao.insert(author).getId();
+        author = authorDao.insert(author);
 
-        bookService.addAuthor(booId, authorId);
+        bookService.addAuthor(book.getId(), author.getId());
     }
 
     @Test
     void addGenre() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
+        book = bookDao.insert(book);
 
         Genre genre = new Genre();
         genre.setName("NameS");
-        long genreId = genreDao.insert(genre).getId();
+        genre = genreDao.insert(genre);
 
-        bookService.addGenre(booId, genreId);
+        bookService.addGenre(book.getId(), genre.getId());
     }
 
     @Test
     void addComment() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
-        bookService.addComment(booId, "comment");
+        book = bookDao.insert(book);
+        bookService.addComment(book.getId(), "comment");
     }
 
     @Test
     void delete() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
-        bookService.delete(booId);
+        book = bookDao.insert(book);
+        bookService.delete(book.getId());
     }
 
     @Test
@@ -91,38 +99,38 @@ class BookServiceImplTest {
     void output() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
-        bookService.output(booId);
+        book = bookDao.insert(book);
+        bookService.output(book.getId());
     }
 
     @Test
     void removeAuthor() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
+        book = bookDao.insert(book);
 
         Author author = new Author();
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        long authorId = authorDao.insert(author).getId();
+        author = authorDao.insert(author);
 
-        bookService.addAuthor(booId, authorId);
-        bookService.removeAuthor(booId, authorId);
+        bookService.addAuthor(book.getId(), author.getId());
+        bookService.removeAuthor(book.getId(), author.getId());
     }
 
     @Test
     void removeGenre() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
+        book = bookDao.insert(book);
 
         Genre genre = new Genre();
         genre.setName("NameS");
-        long genreId = genreDao.insert(genre).getId();
+        genre = genreDao.insert(genre);
 
-        bookService.addGenre(booId, genreId);
-        bookService.removeGenre(booId, genreId);
+        bookService.addGenre(book.getId(), genre.getId());
+        bookService.removeGenre(book.getId(), genre.getId());
     }
 
     @Test
@@ -143,8 +151,8 @@ class BookServiceImplTest {
     void updateName() {
         Book book = new Book();
         book.setName("NameY");
-        long booId = bookDao.insert(book).getId();
-        bookService.updateBookName(booId, "Name2");
+        book = bookDao.insert(book);
+        bookService.updateBookName(book.getId(), "Name2");
     }
 
     @Test
@@ -159,5 +167,51 @@ class BookServiceImplTest {
         bookDao.insert(book);
 
         bookService.removeBookComment(bookComment.getId());
+    }
+
+    @DisplayName("Удалить автора и автора из всех книг")
+    @Test
+    void removeAuthorAndAuthorFormAllBooks() {
+        Book book = new Book();
+        book.setName("NameVVD");
+        book = bookDao.insert(book);
+
+        Author author = new Author();
+        author.setName("name1");
+        author = authorDao.insert(author);
+
+        book.getAuthors().add(author);
+        bookDao.update(book);
+
+        Book book2 = bookDao.getById(book.getId());
+        assertEquals(1, book2.getAuthors().size());
+
+        authorService.delete(author.getId());
+
+        Book book3 = bookDao.getById(book.getId());
+        assertEquals(0, book3.getAuthors().size());
+    }
+
+    @DisplayName("Удалить жанра и жанра из всех книг")
+    @Test
+    void removeGenreAndGenreFormAllBooks() {
+        Book book = new Book();
+        book.setName("NameVVD");
+        book = bookDao.insert(book);
+
+        Genre genre = new Genre();
+        genre.setName("name1");
+        genre = genreDao.insert(genre);
+
+        book.getGenres().add(genre);
+        bookDao.update(book);
+
+        Book book2 = bookDao.getById(book.getId());
+        assertEquals(1, book2.getGenres().size());
+
+        genreService.delete(genre.getId());
+
+        Book book3 = bookDao.getById(book.getId());
+        assertEquals(0, book3.getGenres().size());
     }
 }

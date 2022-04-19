@@ -29,9 +29,11 @@ public class GenreServiceImpl implements GenreService {
         Genre genre = genreDao.getById(authorId);
         if (genre != null) {
             if (genre.getBooks() != null) {
-                for (Book book : genre.getBooks()) {
-                    book.getGenres().remove(genre);
-                    bookDao.update(book);
+                for (Book book : bookDao.getAll()) {
+                    if (book.getGenres().contains(genre)) {
+                        book.getGenres().remove(genre);
+                        bookDao.update(book);
+                    }
                 }
             }
             genreDao.delete(authorId);
@@ -50,7 +52,6 @@ public class GenreServiceImpl implements GenreService {
         genrePerformance.add(id);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void outputAll() {
         List<Genre> genres = genreDao.getAll();

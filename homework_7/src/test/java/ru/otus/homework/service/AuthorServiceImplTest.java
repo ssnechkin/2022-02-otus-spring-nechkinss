@@ -26,8 +26,8 @@ class AuthorServiceImplTest {
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        long id = authorDao.insert(author).getId();
-        authorService.delete(id);
+        author = authorDao.insert(author);
+        authorService.delete(author.getId());
     }
 
     @DisplayName("Добавление")

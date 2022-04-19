@@ -24,6 +24,6 @@ public class Author {
 
     private String patronymic;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+    @ManyToMany(mappedBy = "authors")
     private List<Book> books = new ArrayList<>();
 }

@@ -38,10 +38,10 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameV");
         author.setPatronymic("Patronymic");
-        long id = authorDao.insert(author).getId();
+        author = authorDao.insert(author);
         author.setName("NameF");
         authorDao.update(author);
-        Author author1 = authorDao.getById(id);
+        Author author1 = authorDao.getById(author.getId());
         assertEquals("NameF", author1.getName());
     }
 
@@ -94,8 +94,8 @@ class AuthorDaoImplTest {
         author.setSurname("Surname");
         author.setName("NameM");
         author.setPatronymic("Patronymic");
-        long id = authorDao.insert(author).getId();
-        Author author1 = authorDao.getById(id);
+        author = authorDao.insert(author);
+        Author author1 = authorDao.getById(author.getId());
         assertEquals("NameM", author1.getName());
     }
 }

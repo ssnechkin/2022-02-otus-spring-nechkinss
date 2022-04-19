@@ -22,6 +22,6 @@ public class Genre {
 
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres")
+    @ManyToMany(mappedBy = "genres")
     private List<Book> books = new ArrayList<>();
 }

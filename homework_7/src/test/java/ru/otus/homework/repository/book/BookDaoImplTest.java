@@ -36,8 +36,8 @@ class BookDaoImplTest {
     void insert() {
         Book book = new Book();
         book.setName("NameY");
-        long id = bookDao.insert(book).getId();
-        Book book1 = bookDao.getById(id);
+        book = bookDao.insert(book);
+        Book book1 = bookDao.getById(book.getId());
         assertEquals(book1.getName(), "NameY");
     }
 
@@ -46,10 +46,10 @@ class BookDaoImplTest {
     void update() {
         Book book = new Book();
         book.setName("NameV");
-        long id = bookDao.insert(book).getId();
+        book = bookDao.insert(book);
         book.setName("NameF");
         bookDao.update(book);
-        Book book1 = bookDao.getById(id);
+        Book book1 = bookDao.getById(book.getId());
         assertEquals("NameF", book1.getName());
     }
 
@@ -88,7 +88,7 @@ class BookDaoImplTest {
         String comment2 = UUID.randomUUID().toString();
         Book book = new Book();
         book.setName("NameV");
-        long id = bookDao.insert(book).getId();
+        book = bookDao.insert(book);
         ArrayList<BookComment> bookComments = new ArrayList<>();
         BookComment bookComment = new BookComment();
         bookComment.setComment(comment1);
@@ -96,7 +96,7 @@ class BookDaoImplTest {
         bookComments.add(bookComment);
         book.setComments(bookComments);
         bookDao.update(book);
-        Book book1 = bookDao.getById(id);
+        Book book1 = bookDao.getById(book.getId());
         for (BookComment bookComment2 : book1.getComments()) {
             if (bookComment2.getComment() != null && bookComment2.getComment().equals(comment1)) {
                 bookComment2.setComment(comment2);
@@ -104,7 +104,7 @@ class BookDaoImplTest {
                 break;
             }
         }
-        Book book2 = bookDao.getById(id);
+        Book book2 = bookDao.getById(book.getId());
         BookComment bookCommentResult = null;
         for (BookComment bookComment2 : book2.getComments()) {
             if (bookComment2.getComment() != null && bookComment2.getComment().equals(comment2)) {
@@ -157,8 +157,8 @@ class BookDaoImplTest {
         bookDao.insert(book1);
         Book book2 = new Book();
         book2.setName("Name_delete2");
-        long id = bookDao.insert(book2).getId();
-        bookDao.delete(id);
+        book2 = bookDao.insert(book2);
+        bookDao.delete(book2.getId());
 
         boolean name1Del = true;
         boolean name2Del = true;
@@ -189,8 +189,8 @@ class BookDaoImplTest {
     void getById() {
         Book book = new Book();
         book.setName("NameM");
-        long id = bookDao.insert(book).getId();
-        Book book1 = bookDao.getById(id);
+        book = bookDao.insert(book);
+        Book book1 = bookDao.getById(book.getId());
         assertEquals("NameM", book1.getName());
     }
 
@@ -200,25 +200,25 @@ class BookDaoImplTest {
         Book book = new Book();
         book.setName("NameVVD");
         book.setAuthors(new ArrayList<>());
-        long id = bookDao.insert(book).getId();
+        book = bookDao.insert(book);
 
         Author author = new Author();
         author.setSurname("Surname");
         author.setName("NameY");
         author.setPatronymic("Patronymic");
-        long aId = authorDao.insert(author).getId();
+        author = authorDao.insert(author);
 
-        Author author1 = authorDao.getById(aId);
+        Author author1 = authorDao.getById(author.getId());
 
-        Book book1 = bookDao.getById(id);
+        Book book1 = bookDao.getById(book.getId());
         book1.getAuthors().add(author1);
         bookDao.update(book1);
 
-        Book book2 = bookDao.getById(id);
+        Book book2 = bookDao.getById(book.getId());
         assertEquals(1, book2.getAuthors().size());
         book.getAuthors().remove(author);
 
-        Book book3 = bookDao.getById(id);
+        Book book3 = bookDao.getById(book.getId());
         assertEquals(0, book3.getAuthors().size());
     }
 }

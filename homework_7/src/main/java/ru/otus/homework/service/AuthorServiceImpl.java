@@ -29,9 +29,11 @@ public class AuthorServiceImpl implements AuthorService {
         Author author = authorDao.getById(authorId);
         if (author != null) {
             if (author.getBooks() != null) {
-                for (Book book : author.getBooks()) {
-                    book.getAuthors().remove(author);
-                    bookDao.update(book);
+                for (Book book : bookDao.getAll()) {
+                    if (book.getAuthors().contains(author)) {
+                        book.getAuthors().remove(author);
+                        bookDao.update(book);
+                    }
                 }
             }
             authorDao.delete(authorId);
@@ -51,7 +53,6 @@ public class AuthorServiceImpl implements AuthorService {
         performance.add(authorDao.insert(author).getId());
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void outputAll() {
         List<Author> authors = authorDao.getAll();
