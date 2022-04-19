@@ -45,6 +45,16 @@ public class BookPerformanceImpl implements BookPerformance {
     }
 
     @Override
+    public void edit(long id, Book book) {
+        ioService.outputString("Edit Book"
+                + " ID: " + book.getId()
+                + " Name: " + book.getName()
+                + " Authors: " + getAuthors(book)
+                + " Genres: " + getGenres(book)
+        );
+    }
+
+    @Override
     public void outputBookComment(long bookId, String comment) {
         ioService.outputString("BookComment ID: " + bookId + " Comment: " + comment);
     }
@@ -121,15 +131,6 @@ public class BookPerformanceImpl implements BookPerformance {
         ioService.outputString("The comment has been update in the book."
                 + " commentId: " + bookCommentId
                 + " comment: " + comment);
-    }
-
-    @Override
-    public void updateName(long bookId, String oldName, String newName) {
-        ioService.outputString("The book name has been update in the book."
-                + " bookId: " + bookId
-                + " oldName: " + oldName
-                + " newName: " + newName
-        );
     }
 
     private String getAuthors(Book book) {

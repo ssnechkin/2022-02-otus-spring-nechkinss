@@ -59,4 +59,19 @@ public class AuthorServiceImpl implements AuthorService {
             performance.output(author);
         }
     }
+
+    @Override
+    public void edit(long authorId, String surname, String name, String patronymic) {
+        Optional<Author> author = authorRepository.findById(authorId);
+        if (author.isPresent()) {
+            Author newAuthor = author.get();
+            newAuthor.setSurname(surname);
+            newAuthor.setName(name);
+            newAuthor.setPatronymic(patronymic);
+            authorRepository.save(newAuthor);
+            performance.edit(authorId, newAuthor);
+        } else {
+            performance.notFound(authorId);
+        }
+    }
 }

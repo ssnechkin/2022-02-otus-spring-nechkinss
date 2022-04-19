@@ -6,4 +6,6 @@ public interface AuthorService {
     void delete(long authorId);
 
     void outputAll();
+
+    void edit(long authorId, String surname, String name, String patronymic);
 }

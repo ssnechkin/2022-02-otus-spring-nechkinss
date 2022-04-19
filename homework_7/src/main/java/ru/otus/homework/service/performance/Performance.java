@@ -10,4 +10,6 @@ public interface Performance<T> {
     void notFound(long id);
 
     void output(T object);
+
+    void edit(long id, T object);
 }

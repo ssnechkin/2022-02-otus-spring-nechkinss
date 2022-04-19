@@ -42,6 +42,15 @@ public class GenrePerformanceImpl implements GenrePerformance {
     }
 
     @Override
+    public void edit(long id, Genre genre) {
+        ioService.outputString("Edit Genre"
+                + " ID: " + genre.getId()
+                + " Name: " + genre.getName()
+                + " Description: " + genre.getDescription()
+        );
+    }
+
+    @Override
     public void outputSetDescription(long id, String description) {
         ioService.outputString("Genre description is set. ID: " + id
                 + " Description: " + (description != null ? description : ""));

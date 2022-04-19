@@ -31,6 +31,4 @@ public interface BookPerformance extends Performance<Book> {
     void removeComment(long commentId, String comment);
 
     void updateComment(long bookCommentId, String comment);
-
-    void updateName(long bookId, String oldName, String newName);
 }

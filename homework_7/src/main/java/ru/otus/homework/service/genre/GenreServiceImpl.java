@@ -70,4 +70,16 @@ public class GenreServiceImpl implements GenreService {
             genrePerformance.notFound(genreId);
         }
     }
+
+    @Override
+    public void edit(long genreId, String genreName) {
+        Optional<Genre> genre = genreRepository.findById(genreId);
+        if (genre.isPresent()) {
+            genre.get().setName(genreName);
+            genreRepository.save(genre.get());
+            genrePerformance.edit(genreId, genre.get());
+        } else {
+            genrePerformance.notFound(genreId);
+        }
+    }
 }

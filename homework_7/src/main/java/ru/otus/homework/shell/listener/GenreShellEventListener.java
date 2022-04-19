@@ -2,10 +2,7 @@ package ru.otus.homework.shell.listener;
 
 import org.springframework.stereotype.Component;
 import ru.otus.homework.service.genre.GenreService;
-import ru.otus.homework.shell.event.genre.AddGenreEvent;
-import ru.otus.homework.shell.event.genre.DeleteGenreByIdEvent;
-import ru.otus.homework.shell.event.genre.OutputAllGenresEvent;
-import ru.otus.homework.shell.event.genre.SetGenreDescriptionEvent;
+import ru.otus.homework.shell.event.genre.*;
 
 @Component
 public class GenreShellEventListener {
@@ -19,6 +16,11 @@ public class GenreShellEventListener {
     @org.springframework.context.event.EventListener
     public void addGenreEvent(AddGenreEvent event) {
         genreService.add(event.getGenreName());
+    }
+
+    @org.springframework.context.event.EventListener
+    public void editGenreEvent(EditGenreEvent event) {
+        genreService.edit(event.getGenreId(), event.getGenreName());
     }
 
     @org.springframework.context.event.EventListener

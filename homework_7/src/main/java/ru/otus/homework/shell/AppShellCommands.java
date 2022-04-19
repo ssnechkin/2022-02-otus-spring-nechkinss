@@ -56,6 +56,12 @@ public class AppShellCommands {
         eventsPublisher.addAuthor(surname, name, patronymic);
     }
 
+    @ShellMethod(value = "Edit an author. Accepts authorId, surname, name, patronymic", key = {"ea", "edit-author"})
+    public void editAuthor(@ShellOption long authorId, @ShellOption String surname, @ShellOption String name, @ShellOption String patronymic) {
+        eventsPublisher.editAuthor(authorId, surname, name, patronymic);
+    }
+
+
     @ShellMethod(value = "Delete a author by ID", key = {"dai", "delete-author-id"})
     public void deleteAuthorById(@ShellOption long authorId) {
         eventsPublisher.deleteAuthorById(authorId);
@@ -69,6 +75,11 @@ public class AppShellCommands {
     @ShellMethod(value = "Add an genre. Accepts genreName", key = {"ag", "add-genre"})
     public void addGenre(@ShellOption String genreName) {
         eventsPublisher.addGenre(genreName);
+    }
+
+    @ShellMethod(value = "Edit an genre. Accepts genreId, genreName", key = {"eg", "edit-genre"})
+    public void editGenre(@ShellOption long genreId, @ShellOption String genreName) {
+        eventsPublisher.editGenre(genreId, genreName);
     }
 
     @ShellMethod(value = "Delete a genre by ID", key = {"dgi", "delete-genre-id"})

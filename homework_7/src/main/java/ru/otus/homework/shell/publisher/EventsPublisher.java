@@ -40,4 +40,8 @@ public interface EventsPublisher {
     void updateBookName(long bookId, String name);
 
     void outputBookComments(long bookId);
+
+    void editAuthor(long authorId, String surname, String name, String patronymic);
+
+    void editGenre(long genreId, String genreName);
 }

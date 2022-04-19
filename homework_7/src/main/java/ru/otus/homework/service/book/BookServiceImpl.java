@@ -10,9 +10,9 @@ import ru.otus.homework.repository.author.AuthorRepository;
 import ru.otus.homework.repository.book.BookRepository;
 import ru.otus.homework.repository.book.comment.BookCommentRepository;
 import ru.otus.homework.repository.genre.GenreRepository;
+import ru.otus.homework.service.performance.Performance;
 import ru.otus.homework.service.performance.book.BookPerformance;
 import ru.otus.homework.service.performance.genre.GenrePerformance;
-import ru.otus.homework.service.performance.Performance;
 
 import java.util.List;
 import java.util.Optional;
@@ -218,10 +218,9 @@ public class BookServiceImpl implements BookService {
     public void updateBookName(long bookId, String newName) {
         Optional<Book> book = bookRepository.findById(bookId);
         if (book.isPresent()) {
-            String oldName = book.get().getName();
             book.get().setName(newName);
             bookRepository.save(book.get());
-            bookPerformance.updateName(bookId, oldName, newName);
+            bookPerformance.edit(bookId, book.get());
         } else {
             bookPerformance.notFound(bookId);
         }

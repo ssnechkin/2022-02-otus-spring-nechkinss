@@ -7,6 +7,7 @@ import ru.otus.homework.service.performance.Performance;
 
 @Service
 public class AuthorPerformance implements Performance<Author> {
+
     private final IOServiceStreams ioService;
 
     public AuthorPerformance(IOServiceStreams ioService) {
@@ -34,6 +35,16 @@ public class AuthorPerformance implements Performance<Author> {
     }
 
     @Override
+    public void edit(long id, Author author) {
+        ioService.outputString("Edit Author"
+                + " ID: " + author.getId()
+                + " Surname: " + author.getSurname()
+                + " Name: " + author.getName()
+                + " Patronymic: " + author.getPatronymic()
+        );
+    }
+
+    @Override
     public void output(Author author) {
         ioService.outputString("Author"
                 + " ID: " + author.getId()
@@ -42,5 +53,4 @@ public class AuthorPerformance implements Performance<Author> {
                 + " Patronymic: " + author.getPatronymic()
         );
     }
-
 }

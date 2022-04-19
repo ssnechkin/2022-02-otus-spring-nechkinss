@@ -8,4 +8,6 @@ public interface GenreService {
     void outputAll();
 
     void setDescription(long genreId, String description);
+
+    void edit(long genreId, String genreName);
 }
