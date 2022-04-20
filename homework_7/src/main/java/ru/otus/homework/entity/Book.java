@@ -26,6 +26,6 @@ public class Book {
     @ManyToMany
     private List<Author> authors = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(mappedBy = "book", orphanRemoval = true)
     private List<BookComment> comments = new ArrayList<>();
 }

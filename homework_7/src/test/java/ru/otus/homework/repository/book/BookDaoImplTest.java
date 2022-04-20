@@ -137,16 +137,48 @@ class BookDaoImplTest {
         book.setName("NameV");
         bookRepository.save(book);
 
-        ArrayList<BookComment> bookComments = new ArrayList<>();
         BookComment bookComment = new BookComment();
-        String uuid = UUID.randomUUID().toString();
-        bookComment.setComment(uuid);
-        bookComments.add(bookComment);
-        book.setComments(bookComments);
+        bookComment.setComment(UUID.randomUUID().toString());
+        bookComment.setBook(book);
+        bookCommentRepository.save(bookComment);
+
+        book.getComments().add(bookComment);
         bookRepository.save(book);
+
+        assertNotNull(bookComment.getBook());
+        assertEquals(1, book.getComments().size());
+        long id = bookComment.getId();
 
         book.getComments().remove(bookComment);
         bookRepository.save(book);
+        bookCommentRepository.delete(bookComment);
+
+        book = bookRepository.getById(book.getId());
+        assertEquals(0, book.getComments().size());
+        assertFalse(bookCommentRepository.findById(id).isPresent());
+    }
+
+    @DisplayName("Удаление комментария после удаления книги")
+    @Test
+    void deleteCommentByRemoveBook() {
+        Book book = new Book();
+        book.setName("NameV");
+        bookRepository.save(book);
+
+        BookComment bookComment = new BookComment();
+        bookComment.setComment(UUID.randomUUID().toString());
+        bookComment.setBook(book);
+        bookCommentRepository.save(bookComment);
+
+        book.getComments().add(bookComment);
+        bookRepository.save(book);
+
+        assertNotNull(bookComment.getBook());
+        assertEquals(1, book.getComments().size());
+        long id = bookComment.getId();
+
+        bookRepository.delete(book);
+        assertFalse(bookCommentRepository.findById(id).isPresent());
     }
 
     @DisplayName("Удаление")

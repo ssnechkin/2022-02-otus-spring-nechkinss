@@ -97,6 +97,7 @@ public class BookServiceImpl implements BookService {
         if (book.isPresent()) {
             BookComment bookComment = new BookComment();
             bookComment.setComment(comment);
+            bookComment.setBook(book.get());
             bookCommentRepository.save(bookComment);
             book.get().getComments().add(bookComment);
             bookRepository.save(book.get());
@@ -189,13 +190,10 @@ public class BookServiceImpl implements BookService {
         Optional<BookComment> bookComment = bookCommentRepository.findById(bookCommentId);
         if (bookComment.isPresent()) {
             String comment = bookComment.get().getComment();
-            for (Book book : bookRepository.findAll()) {
-                if (book.getComments().contains(bookComment.get())) {
-                    book.getComments().remove(bookComment.get());
-                    bookRepository.save(book);
-                    break;
-                }
-            }
+            Book book = bookComment.get().getBook();
+            book.getComments().remove(bookComment.get());
+            bookRepository.save(book);
+            bookCommentRepository.delete(bookComment.get());
             bookPerformance.removeComment(bookCommentId, comment);
         } else {
             bookPerformance.commentNotFound(bookCommentId);

@@ -17,7 +17,7 @@ import ru.otus.homework.service.author.AuthorServiceImpl;
 import ru.otus.homework.service.book.BookServiceImpl;
 import ru.otus.homework.service.genre.GenreServiceImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Класс BookServiceImpl")
 @DataJpaTest
@@ -160,16 +160,24 @@ class BookServiceImplTest {
 
     @Test
     void removeComment() {
-        BookComment bookComment = new BookComment();
-        bookComment.setComment("comment1");
-        bookComment = bookCommentRepository.save(bookComment);
-
         Book book = new Book();
         book.setName("NameY");
+        bookRepository.save(book);
+
+        BookComment bookComment = new BookComment();
+        bookComment.setComment("comment1");
+        bookComment.setBook(book);
+        bookComment = bookCommentRepository.save(bookComment);
+
         book.getComments().add(bookComment);
         bookRepository.save(book);
 
+        long commentId = bookComment.getId();
+
         bookService.removeBookComment(bookComment.getId());
+        assertFalse(bookCommentRepository.findById(commentId).isPresent());
+        book = bookRepository.getById(book.getId());
+        assertEquals(0, book.getComments().size());
     }
 
     @DisplayName("Удалить автора и автора из всех книг")

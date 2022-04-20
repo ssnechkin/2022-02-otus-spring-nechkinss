@@ -122,7 +122,7 @@ public class BookPerformanceImpl implements BookPerformance {
     @Override
     public void removeComment(long commentId, String comment) {
         ioService.outputString("The comment has been removed from the book."
-                + " commentId: " + comment
+                + " commentId: " + commentId
                 + " comment: " + comment);
     }
 
