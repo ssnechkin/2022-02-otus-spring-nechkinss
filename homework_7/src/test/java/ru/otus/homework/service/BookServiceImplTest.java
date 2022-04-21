@@ -62,6 +62,7 @@ class BookServiceImplTest {
         author = authorRepository.save(author);
 
         bookService.addAuthor(book.getId(), author.getId());
+        assertTrue(authorRepository.getById(author.getId()).getBooks().contains(book));
     }
 
     @Test
@@ -75,6 +76,7 @@ class BookServiceImplTest {
         genre = genreRepository.save(genre);
 
         bookService.addGenre(book.getId(), genre.getId());
+        assertTrue(genreRepository.getById(genre.getId()).getBooks().contains(book));
     }
 
     @Test
@@ -83,6 +85,7 @@ class BookServiceImplTest {
         book.setName("NameY");
         book = bookRepository.save(book);
         bookService.addComment(book.getId(), "comment");
+        assertEquals(1, bookRepository.findById(book.getId()).get().getComments().size());
     }
 
     @Test
@@ -90,7 +93,9 @@ class BookServiceImplTest {
         Book book = new Book();
         book.setName("NameY");
         book = bookRepository.save(book);
+        long id = book.getId();
         bookService.delete(book.getId());
+        assertFalse(bookRepository.findById(id).isPresent());
     }
 
     @Test
@@ -119,7 +124,12 @@ class BookServiceImplTest {
         author = authorRepository.save(author);
 
         bookService.addAuthor(book.getId(), author.getId());
+        assertTrue(book.getAuthors().contains(author));
+        assertTrue(author.getBooks().contains(book));
+
         bookService.removeAuthor(book.getId(), author.getId());
+        assertFalse(book.getAuthors().contains(author));
+        assertFalse(author.getBooks().contains(book));
     }
 
     @Test
@@ -133,7 +143,12 @@ class BookServiceImplTest {
         genre = genreRepository.save(genre);
 
         bookService.addGenre(book.getId(), genre.getId());
+        assertTrue(book.getGenres().contains(genre));
+        assertTrue(genre.getBooks().contains(book));
+
         bookService.removeGenre(book.getId(), genre.getId());
+        assertFalse(book.getGenres().contains(genre));
+        assertFalse(genre.getBooks().contains(book));
     }
 
     @Test
@@ -148,6 +163,7 @@ class BookServiceImplTest {
         bookRepository.save(book);
 
         bookService.updateBookComment(bookComment.getId(), "comment2");
+        assertEquals("comment2", bookRepository.getById(book.getId()).getComments().get(0).getComment());
     }
 
     @Test
@@ -156,6 +172,7 @@ class BookServiceImplTest {
         book.setName("NameY");
         book = bookRepository.save(book);
         bookService.updateBookName(book.getId(), "Name2");
+        assertEquals("Name2", bookRepository.getById(book.getId()).getName());
     }
 
     @Test
@@ -189,6 +206,7 @@ class BookServiceImplTest {
 
         Author author = new Author();
         author.setName("name1");
+        author.getBooks().add(book);
         author = authorRepository.save(author);
 
         book.getAuthors().add(author);
@@ -196,6 +214,9 @@ class BookServiceImplTest {
 
         Book book2 = bookRepository.getById(book.getId());
         assertEquals(1, book2.getAuthors().size());
+
+        Author author1 = authorRepository.getById(author.getId());
+        assertEquals(1, author1.getBooks().size());
 
         authorService.delete(author.getId());
 
@@ -212,6 +233,7 @@ class BookServiceImplTest {
 
         Genre genre = new Genre();
         genre.setName("name1");
+        genre.getBooks().add(book);
         genre = genreRepository.save(genre);
 
         book.getGenres().add(genre);
@@ -219,6 +241,9 @@ class BookServiceImplTest {
 
         Book book2 = bookRepository.getById(book.getId());
         assertEquals(1, book2.getGenres().size());
+
+        Genre genre1 = genreRepository.getById(genre.getId());
+        assertEquals(1, genre1.getBooks().size());
 
         genreService.delete(genre.getId());
 

@@ -8,8 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
 import ru.otus.homework.entity.Author;
 import ru.otus.homework.entity.Book;
 import ru.otus.homework.entity.BookComment;
+import ru.otus.homework.entity.Genre;
 import ru.otus.homework.repository.author.AuthorRepository;
 import ru.otus.homework.repository.book.comment.BookCommentRepository;
+import ru.otus.homework.repository.genre.GenreRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,9 @@ class BookDaoImplTest {
 
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Autowired
     private BookCommentRepository bookCommentRepository;
@@ -252,5 +257,31 @@ class BookDaoImplTest {
 
         Book book3 = bookRepository.getById(book.getId());
         assertEquals(0, book3.getAuthors().size());
+    }
+
+    @DisplayName("Удалить жанра из книги")
+    @Test
+    void removeGenreFormBook() {
+        Book book = new Book();
+        book.setName("NameVVD");
+        book.setAuthors(new ArrayList<>());
+        book = bookRepository.save(book);
+
+        Genre genre = new Genre();
+        genre.setName("NameY");
+        genre = genreRepository.save(genre);
+
+        Genre genre1 = genreRepository.getById(genre.getId());
+
+        Book book1 = bookRepository.getById(book.getId());
+        book1.getGenres().add(genre1);
+        bookRepository.save(book1);
+
+        Book book2 = bookRepository.getById(book.getId());
+        assertEquals(1, book2.getGenres().size());
+        book.getGenres().remove(genre);
+
+        Book book3 = bookRepository.getById(book.getId());
+        assertEquals(0, book3.getGenres().size());
     }
 }

@@ -59,6 +59,8 @@ public class BookServiceImpl implements BookService {
                 if (author.isPresent()) {
                     book.get().getAuthors().add(author.get());
                     bookRepository.save(book.get());
+                    author.get().getBooks().add(book.get());
+                    authorRepository.save(author.get());
                     bookPerformance.authorAdded(bookId, authorId);
                 } else {
                     authorPerformance.notFound(authorId);
@@ -80,6 +82,8 @@ public class BookServiceImpl implements BookService {
                 if (genre.isPresent()) {
                     book.get().getGenres().add(genre.get());
                     bookRepository.save(book.get());
+                    genre.get().getBooks().add(book.get());
+                    genreRepository.save(genre.get());
                     bookPerformance.genreAdded(bookId, genreId);
                 } else {
                     genrePerformance.notFound(genreId);
@@ -159,6 +163,8 @@ public class BookServiceImpl implements BookService {
             if (author != null) {
                 book.get().getAuthors().remove(author);
                 bookRepository.save(book.get());
+                author.getBooks().remove(book.get());
+                authorRepository.save(author);
                 bookPerformance.authorRemoved(bookId, authorId);
             } else {
                 bookPerformance.authorMissing(bookId, authorId);
@@ -176,6 +182,8 @@ public class BookServiceImpl implements BookService {
             if (genre != null) {
                 book.get().getGenres().remove(genre);
                 bookRepository.save(book.get());
+                genre.getBooks().remove(book.get());
+                genreRepository.save(genre);
                 bookPerformance.genreRemoved(bookId, genreId);
             } else {
                 bookPerformance.genreMissing(bookId, genreId);
