@@ -1,33 +1,37 @@
 package ru.otus.homework.service.book;
 
-import org.springframework.transaction.annotation.Transactional;
+import ru.otus.homework.domain.Author;
+import ru.otus.homework.domain.book.Book;
+import ru.otus.homework.domain.book.BookComment;
+import ru.otus.homework.domain.Genre;
+
+import java.util.List;
 
 public interface BookService {
 
-    void add(String bookName);
+    Book add(String name);
 
-    void addAuthor(String bookId, String authorId);
+    Book getById(String id);
 
-    void addGenre(String bookId, String genreId);
+    BookComment getBookCommentById(String id);
 
-    void addComment(String bookId, String comment);
+    List<Book> getAll();
 
-    void delete(String bookId);
+    Book editName(Book book, String name);
 
-    void outputAll();
+    boolean addAuthor(Book book, Author author);
 
-    void outputBookComments(String bookId);
+    boolean deleteAuthor(Book book, Author author);
 
-    void output(String bookId);
+    boolean addGenre(Book book, Genre genre);
 
-    void removeAuthor(String bookId, String authorId);
+    boolean deleteGenre(Book book, Genre genre);
 
-    void removeGenre(String bookId, String genreId);
+    BookComment addComment(Book book, String comment);
 
-    void removeBookComment(String bookCommentId);
+    BookComment editComment(BookComment bookComment, String comment);
 
-    void updateBookComment(String bookCommentId, String comment);
+    void deleteComment(BookComment bookComment);
 
-    @Transactional
-    void updateBookName(String bookId, String newName);
+    void delete(Book book);
 }

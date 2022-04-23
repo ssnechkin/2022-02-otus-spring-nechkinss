@@ -1,9 +1,18 @@
 package ru.otus.homework.service.author;
 
+import ru.otus.homework.domain.Author;
+
+import java.util.List;
+
 public interface AuthorService {
-    void add(String surname, String name, String patronymic);
 
-    void delete(String authorId);
+    Author add(String surname, String name, String patronymic);
 
-    void outputAll();
+    Author getById(String id);
+
+    List<Author> getAll();
+
+    Author edit(Author author, String surname, String name, String patronymic);
+
+    void delete(Author author);
 }

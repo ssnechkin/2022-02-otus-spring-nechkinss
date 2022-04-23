@@ -4,12 +4,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.shell.event.author.AddAuthorEvent;
 import ru.otus.homework.shell.event.author.DeleteAuthorByIdEvent;
+import ru.otus.homework.shell.event.author.EditAuthorEvent;
 import ru.otus.homework.shell.event.author.OutputAllAuthorsEvent;
 import ru.otus.homework.shell.event.book.*;
-import ru.otus.homework.shell.event.genre.AddGenreEvent;
-import ru.otus.homework.shell.event.genre.DeleteGenreByIdEvent;
-import ru.otus.homework.shell.event.genre.OutputAllGenresEvent;
-import ru.otus.homework.shell.event.genre.SetGenreDescriptionEvent;
+import ru.otus.homework.shell.event.genre.*;
 
 @Service
 public class EventsPublisherImpl implements EventsPublisher {
@@ -117,5 +115,15 @@ public class EventsPublisherImpl implements EventsPublisher {
     @Override
     public void outputBookComments(String bookId) {
         applicationEventPublisher.publishEvent(new OutputBookCommentsEvent(bookId));
+    }
+
+    @Override
+    public void editAuthor(String authorId, String surname, String name, String patronymic) {
+        applicationEventPublisher.publishEvent(new EditAuthorEvent(authorId, surname, name, patronymic));
+    }
+
+    @Override
+    public void editGenre(String genreId, String genreName) {
+        applicationEventPublisher.publishEvent(new EditGenreEvent(genreId, genreName));
     }
 }

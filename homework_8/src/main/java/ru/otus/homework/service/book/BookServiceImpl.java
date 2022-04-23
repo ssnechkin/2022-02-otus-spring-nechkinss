@@ -2,253 +2,190 @@ package ru.otus.homework.service.book;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.homework.entity.Author;
-import ru.otus.homework.entity.Book;
-import ru.otus.homework.entity.BookComment;
-import ru.otus.homework.entity.Genre;
-import ru.otus.homework.repository.author.AuthorDao;
-import ru.otus.homework.repository.book.comment.BookCommentDao;
-import ru.otus.homework.repository.book.BookDao;
-import ru.otus.homework.repository.genre.GenreDao;
-import ru.otus.homework.service.genre.GenrePerformance;
-import ru.otus.homework.service.ext.Performance;
+import ru.otus.homework.domain.Author;
+import ru.otus.homework.domain.Genre;
+import ru.otus.homework.domain.book.Book;
+import ru.otus.homework.domain.book.BookComment;
+import ru.otus.homework.repository.author.AuthorRepository;
+import ru.otus.homework.repository.book.BookRepository;
+import ru.otus.homework.repository.book.comment.BookCommentRepository;
+import ru.otus.homework.repository.genre.GenreRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final BookDao bookDao;
-    private final AuthorDao authorDao;
-    private final GenreDao genreDao;
-    private final BookCommentDao bookCommentDao;
-    private final BookPerformance bookPerformance;
-    private final GenrePerformance genrePerformance;
-    private final Performance<Author> authorPerformance;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final GenreRepository genreRepository;
+    private final BookCommentRepository bookCommentRepository;
 
-    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, GenreDao genreDao, BookCommentDao bookCommentDao, BookPerformance bookPerformance, GenrePerformance genrePerformance, Performance<Author> authorPerformance) {
-        this.bookDao = bookDao;
-        this.authorDao = authorDao;
-        this.genreDao = genreDao;
-        this.bookCommentDao = bookCommentDao;
-        this.bookPerformance = bookPerformance;
-        this.genrePerformance = genrePerformance;
-        this.authorPerformance = authorPerformance;
+    public BookServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository,
+                           BookCommentRepository bookCommentRepository) {
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+        this.genreRepository = genreRepository;
+        this.bookCommentRepository = bookCommentRepository;
     }
 
-    @Transactional
     @Override
-    public void add(String bookName) {
+    public Book add(String name) {
         Book book = new Book();
-        book.setName(bookName);
-        bookPerformance.add(bookDao.insert(book).getId());
+        book.setName(name);
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Book getById(String id) {
+        Optional<Book> book = bookRepository.findById(id);
+        return book.orElse(null);
+    }
+
+    @Override
+    public BookComment getBookCommentById(String id) {
+        Optional<BookComment> bookComment = bookCommentRepository.findById(id);
+        return bookComment.orElse(null);
+    }
+
+    @Override
+    public List<Book> getAll() {
+        return bookRepository.findAll();
+    }
+
+    @Override
+    public Book editName(Book book, String name) {
+        book.setName(name);
+        return bookRepository.save(book);
     }
 
     @Transactional
     @Override
-    public void addAuthor(String bookId, String authorId) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            if (getAuthorFromBook(book, authorId) != null) {
-                bookPerformance.authorAlreadyAdded(bookId, authorId);
-            } else {
-                Author author = authorDao.getById(authorId);
-                if (author != null) {
-                    book.getAuthors().add(author);
-                    bookDao.update(book);
-                    bookPerformance.authorAdded(bookId, authorId);
-                } else {
-                    authorPerformance.notFound(authorId);
+    public boolean addAuthor(Book book, Author author) {
+        if (author.getId() == null
+                || book.getAuthorIdList().contains(author.getId())
+                || authorRepository.findById(author.getId()).isEmpty()) {
+            return false;
+        } else {
+            book.getAuthorIdList().add(author.getId());
+            bookRepository.save(book);
+            author.getBookIdList().add(book.getId());
+            authorRepository.save(author);
+            return true;
+        }
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteAuthor(Book book, Author author) {
+        if (book.getAuthorIdList().contains(author.getId())) {
+            book.getAuthorIdList().remove(author.getId());
+            bookRepository.save(book);
+            author.getBookIdList().remove(book.getId());
+            authorRepository.save(author);
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    @Override
+    public boolean addGenre(Book book, Genre genre) {
+        if (genre.getId() == null
+                || book.getGenreIdList().contains(genre.getId())
+                || genreRepository.findById(genre.getId()).isEmpty()) {
+            return false;
+        } else {
+            book.getGenreIdList().add(genre.getId());
+            bookRepository.save(book);
+            genre.getBookIdList().add(book.getId());
+            genreRepository.save(genre);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean deleteGenre(Book book, Genre genre) {
+        if (book.getGenreIdList().contains(genre.getId())) {
+            book.getGenreIdList().remove(genre.getId());
+            bookRepository.save(book);
+            genre.getBookIdList().remove(book.getId());
+            genreRepository.save(genre);
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    @Override
+    public BookComment addComment(Book book, String comment) {
+        BookComment bookComment = new BookComment();
+        bookComment.setComment(comment);
+        bookComment.setBookId(book.getId());
+        bookComment = bookCommentRepository.save(bookComment);
+        book.getCommentIdList().add(bookComment.getId());
+        bookRepository.save(book);
+        return bookComment;
+    }
+
+    @Override
+    public BookComment editComment(BookComment bookComment, String comment) {
+        bookComment.setComment(comment);
+        return bookCommentRepository.save(bookComment);
+    }
+
+    @Transactional
+    @Override
+    public void deleteComment(BookComment bookComment) {
+        String bookId = bookComment.getBookId();
+        if (bookId != null) {
+            Book book = bookRepository.findById(bookId).get();
+            book.getCommentIdList().remove(bookComment.getId());
+            bookRepository.save(book);
+        }
+        bookCommentRepository.delete(bookComment);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Book book) {
+        deleteComments(book);
+        deleteLinkAuthors(book);
+        deleteLinkGenres(book);
+        bookRepository.delete(book);
+    }
+
+    private void deleteComments(Book book) {
+        for (String id : book.getCommentIdList()) {
+            if (id != null) {
+                Optional<BookComment> optional = bookCommentRepository.findById(id);
+                optional.ifPresent(bookCommentRepository::delete);
+            }
+        }
+    }
+
+    private void deleteLinkAuthors(Book book) {
+        for (String id : book.getAuthorIdList()) {
+            if (id != null) {
+                Optional<Author> optional = authorRepository.findById(id);
+                if (optional.isPresent()) {
+                    optional.get().getBookIdList().remove(book.getId());
+                    authorRepository.save(optional.get());
                 }
             }
-        } else {
-            bookPerformance.notFound(bookId);
         }
     }
 
-    @Transactional
-    @Override
-    public void addGenre(String bookId, String genreId) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            if (getGenreFromBook(book, genreId) != null) {
-                bookPerformance.genreAlreadyAdded(bookId, genreId);
-            } else {
-                Genre genre = genreDao.getById(genreId);
-                if (genre != null) {
-                    book.getGenres().add(genre);
-                    bookDao.update(book);
-                    bookPerformance.genreAdded(bookId, genreId);
-                } else {
-                    genrePerformance.notFound(genreId);
+    private void deleteLinkGenres(Book book) {
+        for (String id : book.getGenreIdList()) {
+            if (id != null) {
+                Optional<Genre> optional = genreRepository.findById(id);
+                if (optional.isPresent()) {
+                    optional.get().getBookIdList().remove(book.getId());
+                    genreRepository.save(optional.get());
                 }
             }
-        } else {
-            bookPerformance.notFound(bookId);
         }
-    }
-
-    @Transactional
-    @Override
-    public void addComment(String bookId, String comment) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            BookComment bookComment = new BookComment();
-            bookComment.setComment(comment);
-            bookCommentDao.insert(bookComment);
-            book.getComments().add(bookComment);
-            bookDao.update(book);
-            bookPerformance.commentAdded(bookId, bookComment.getId(), comment);
-        } else {
-            bookPerformance.notFound(bookId);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void delete(String bookId) {
-        if (bookDao.getById(bookId) != null) {
-            bookDao.delete(bookId);
-            bookPerformance.delete(bookId);
-        } else {
-            bookPerformance.notFound(bookId);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public void outputAll() {
-        List<Book> books = bookDao.getAll();
-        bookPerformance.total(books.size());
-        for (Book book : books) {
-            bookPerformance.output(book);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public void outputBookComments(String bookId) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            List<BookComment> bookComments = bookCommentDao.getAll(bookId);
-            bookPerformance.totalComments(bookComments.size());
-            for (BookComment bookComment : bookComments) {
-                bookPerformance.outputBookComment(bookComment.getId(), bookComment.getComment());
-            }
-        } else {
-            bookPerformance.notFound(bookId);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public void output(String bookId) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            bookPerformance.output(book);
-        } else {
-            bookPerformance.notFound(bookId);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void removeAuthor(String bookId, String authorId) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            Author author = getAuthorFromBook(book, authorId);
-            if (author != null) {
-                book.getAuthors().remove(author);
-                bookDao.update(book);
-                bookPerformance.authorRemoved(bookId, authorId);
-            } else {
-                bookPerformance.authorMissing(bookId, authorId);
-            }
-        } else {
-            bookPerformance.notFound(bookId);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void removeGenre(String bookId, String genreId) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            Genre genre = getGenreFromBook(book, genreId);
-            if (genre != null) {
-                book.getGenres().remove(genre);
-                bookDao.update(book);
-                bookPerformance.genreRemoved(bookId, genreId);
-            } else {
-                bookPerformance.genreMissing(bookId, genreId);
-            }
-        } else {
-            bookPerformance.notFound(bookId);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void removeBookComment(String bookCommentId) {
-        BookComment bookComment = bookCommentDao.getById(bookCommentId);
-        if (bookComment == null) {
-            bookPerformance.commentNotFound(bookCommentId);
-        } else {
-            String comment = bookComment.getComment();
-            for (Book book : bookDao.getAll()) {
-                if (book.getComments().contains(bookComment)) {
-                    book.getComments().remove(bookComment);
-                    bookDao.update(book);
-                    break;
-                }
-            }
-            bookPerformance.removeComment(bookCommentId, comment);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void updateBookComment(String bookCommentId, String comment) {
-        BookComment bookComment = bookCommentDao.getById(bookCommentId);
-        if (bookComment == null) {
-            bookPerformance.commentNotFound(bookCommentId);
-        } else {
-            bookComment.setComment(comment);
-            bookCommentDao.update(bookComment);
-            bookPerformance.updateComment(bookCommentId, comment);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void updateBookName(String bookId, String newName) {
-        Book book = bookDao.getById(bookId);
-        if (book != null) {
-            String oldName = book.getName();
-            book.setName(newName);
-            bookPerformance.updateName(bookId, oldName, newName);
-        } else {
-            bookPerformance.notFound(bookId);
-        }
-    }
-
-    private Author getAuthorFromBook(Book book, String authorId) {
-        List<Author> authors = book.getAuthors();
-        for (Author author : authors) {
-            if (author.getId().equals(authorId)) {
-                return author;
-            }
-        }
-        return null;
-    }
-
-    private Genre getGenreFromBook(Book book, String genreId) {
-        List<Genre> genres = book.getGenres();
-        for (Genre genre : genres) {
-            if (genre.getId().equals(genreId)) {
-                return genre;
-            }
-        }
-        return null;
     }
 }

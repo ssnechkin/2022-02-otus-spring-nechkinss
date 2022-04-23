@@ -2,60 +2,62 @@ package ru.otus.homework.service.author;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.homework.entity.Author;
-import ru.otus.homework.entity.Book;
-import ru.otus.homework.repository.author.AuthorDao;
-import ru.otus.homework.repository.book.BookDao;
-import ru.otus.homework.service.ext.Performance;
+import ru.otus.homework.domain.Author;
+import ru.otus.homework.domain.book.Book;
+import ru.otus.homework.repository.author.AuthorRepository;
+import ru.otus.homework.repository.book.BookRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
 
-    private final AuthorDao authorDao;
-    private final BookDao bookDao;
-    private final Performance<Author> performance;
+    private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
 
-    public AuthorServiceImpl(AuthorDao authorDao, BookDao bookDao, Performance<Author> performance) {
-        this.authorDao = authorDao;
-        this.bookDao = bookDao;
-        this.performance = performance;
+    public AuthorServiceImpl(AuthorRepository authorRepository, BookRepository bookRepository) {
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
     }
 
-    @Transactional
     @Override
-    public void delete(String authorId) {
-        Author author = authorDao.getById(authorId);
-        if (author != null) {
-            for (Book book : bookDao.getAll()) {
-                book.getAuthors().remove(author);
-                bookDao.update(book);
-            }
-            authorDao.delete(authorId);
-            performance.delete(authorId);
-        } else {
-            performance.notFound(authorId);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void add(String surname, String name, String patronymic) {
+    public Author add(String surname, String name, String patronymic) {
         Author author = new Author();
         author.setSurname(surname);
         author.setName(name);
         author.setPatronymic(patronymic);
-        performance.add(authorDao.insert(author).getId());
+        return authorRepository.save(author);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public void outputAll() {
-        List<Author> authors = authorDao.getAll();
-        performance.total(authors.size());
-        for (Author author : authors) {
-            performance.output(author);
+    public Author getById(String id) {
+        Optional<Author> author = authorRepository.findById(id);
+        return author.orElse(null);
+    }
+
+    @Override
+    public List<Author> getAll() {
+        return authorRepository.findAll();
+    }
+
+    @Override
+    public Author edit(Author author, String surname, String name, String patronymic) {
+        author.setSurname(surname);
+        author.setName(name);
+        author.setPatronymic(patronymic);
+        return authorRepository.save(author);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Author author) {
+        for (Book book : bookRepository.findAll()) {
+            if (book.getAuthorIdList().contains(author.getId())) {
+                book.getAuthorIdList().remove(author.getId());
+                bookRepository.save(book);
+            }
         }
+        authorRepository.delete(author);
     }
 }

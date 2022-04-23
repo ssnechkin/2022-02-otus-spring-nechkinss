@@ -1,11 +1,20 @@
 package ru.otus.homework.service.genre;
 
+import ru.otus.homework.domain.Genre;
+
+import java.util.List;
+
 public interface GenreService {
-    void delete(String genreId);
 
-    void add(String genreName);
+    Genre add(String name);
 
-    void outputAll();
+    Genre getById(String id);
 
-    void setDescription(String genreId, String description);
+    List<Genre> getAll();
+
+    Genre editDescription(Genre genre, String description);
+
+    Genre editName(Genre genre, String name);
+
+    void delete(Genre genre);
 }
