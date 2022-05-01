@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Library of books</title>
+    <style>
+        .item {
+            margin: auto;
+            display: flex;
+            padding: 10px;
+            margin-top: 10px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+<div style=" margin-top: 20px;" th:each="menu : ${menu_list}">
+    <button class="item" th:onclick="window.location.href = [[${menu.value.link}]]"
+            th:text="${menu.value.name}"></button>
+</div>
+</body>
+</html>
