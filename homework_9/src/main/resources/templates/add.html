@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Library of books</title>
+    <style>
+        .item {
+            margin: auto;
+            display: flex;
+            padding: 10px;
+            margin-top: 10px;
+            width: 100px;
+        }
+        .name {
+            font-weight: bold;
+            padding: 10px;
+            background: radial-gradient(#000000, transparent);
+            text-align: center;
+            color: white;
+        }
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="name" th:text="${add_name}"></div>
+<button th:onclick="window.location.href = '/';" >Menu</button>
+<form id="add-form" th:action="${create_link}" th:method="post" th:object="${object}">
+    <div th:each="field : ${fields}">
+        <div class="row" th:if="${field.type.equals('input')}">
+            <label th:for="${field.name}" th:text="${field.label}"></label>
+            <input th:id="${field.name}" th:name="${field.name}" type="text" th:value="${field.value}"/>
+        </div>
+        <div class="row" th:if="${field.type.equals('select')}">
+            <label th:for="${field.name}" th:text="${field.label}"></label>
+            <select th:id="${field.name}" th:name="${field.name}">
+                <option th:each="option : ${field.value}"
+                        th:value="${option.id}"
+                        th:text="${option.value}">dip
+                </option>
+            </select>
+        </div>
+    </div>
+    <button type="submit">Add</button>
+</form>
+</body>
+</html>

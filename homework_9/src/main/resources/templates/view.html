@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Library of books</title>
+    <style>
+        .name {
+            font-weight: bold;
+            padding: 10px;
+            background: radial-gradient(#000000, transparent);
+            text-align: center;
+            color: white;
+        }
+        .row {
+            margin-top: 10px;
+        }
+        label {
+        font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="name" th:text="${view_name}"></div>
+<button th:onclick="window.location.href = '/';" >Menu</button>
+<button th:each="link : ${links}" th:onclick="window.location.href = [[${link.path}]];" th:text="${link.name}"></button>
+<div th:each="field : ${fields}">
+    <label for="[[${field.name}]]" th:text="${field.label}"></label>
+    <span id="[[${field.name}]]" th:text="${field.value}"/>
+</div>
+</body>
+</html>
