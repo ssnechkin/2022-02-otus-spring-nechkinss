@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: none
+      database: user_db
+      host: localhost
+      port: 27017
+  main:
+    allow-circular-references: true
+logging:
+  level:
+    ROOT: ERROR
