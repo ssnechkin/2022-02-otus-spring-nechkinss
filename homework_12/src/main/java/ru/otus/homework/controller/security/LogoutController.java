@@ -37,7 +37,7 @@ public class LogoutController {
 
         rememberMe.setType(FieldType.CHECKBOX);
         rememberMe.setName("remember-me");
-        rememberMe.setLabel("Запомнить меня на этом компьютере.");
+        rememberMe.setLabel("Запомнить меня.");
 
         form.setDataType(FormDataType.FORM_DATA);
         form.setFields(List.of(username, password, rememberMe));

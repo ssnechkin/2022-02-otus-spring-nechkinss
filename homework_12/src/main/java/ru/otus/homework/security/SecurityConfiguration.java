@@ -31,8 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/menu").authenticated()
                 .and().authorizeRequests().antMatchers("/page/login", "/css/**", "/js/**").permitAll()
                 .and().formLogin().loginPage("/page/login").defaultSuccessUrl("/menu").failureUrl("/error/login")
-                .and().rememberMe()
-                .and().logout().logoutUrl("/logout");
+                .and().rememberMe();
     }
 
     @Bean
