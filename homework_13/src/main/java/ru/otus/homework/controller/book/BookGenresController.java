@@ -30,7 +30,6 @@ public class BookGenresController {
     }
 
     @GetMapping("/book/{book_id}/genres")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content list(@PathVariable("book_id") long bookId) {
         Content content = new Content();
         Button add = new Button();
@@ -43,14 +42,12 @@ public class BookGenresController {
     }
 
     @GetMapping("/book/{book_id}/genres/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content view(@PathVariable("id") long id,
                         @PathVariable("book_id") long bookId) {
         return getContentView(bookId, id);
     }
 
     @GetMapping("/book/{book_id}/genres/add")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content add(@PathVariable("book_id") long bookId) {
         Content content = new Content();
         Form form = new Form();
@@ -74,7 +71,6 @@ public class BookGenresController {
     }
 
     @PostMapping("/book/{book_id}/genres")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content create(@RequestBody BookGenreDto bookGenreDto,
                           @PathVariable("book_id") long bookId) {
         Notification notification = new Notification();
@@ -90,7 +86,6 @@ public class BookGenresController {
     }
 
     @DeleteMapping("/book/{book_id}/genres/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content delete(@PathVariable("book_id") long bookId,
                           @PathVariable("id") long id) {
         Notification notification = new Notification();

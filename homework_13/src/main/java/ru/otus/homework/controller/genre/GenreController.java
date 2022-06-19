@@ -1,7 +1,8 @@
 package ru.otus.homework.controller.genre;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.genre.Genre;
@@ -30,7 +31,7 @@ public class GenreController implements MenuItems {
     }
 
     @Override
-    @PostAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
+    @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public List<Button> getMenu() {
         return List.of(new Button(2, "Жанры", new Link(HttpMethod.GET, "/genre"), true));
     }

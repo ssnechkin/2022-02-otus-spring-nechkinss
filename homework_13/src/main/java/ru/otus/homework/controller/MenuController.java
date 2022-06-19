@@ -1,7 +1,6 @@
 package ru.otus.homework.controller;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +12,7 @@ import ru.otus.homework.dto.out.content.TopRight;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -34,19 +34,18 @@ public class MenuController {
         topRight.setButtons(List.of(logout));
         topRight.setText(userDetail != null ? userDetail.getPublicName() : "");
         content.setTopRight(topRight);
-        content.setButtons(addMenuInModel(menuItems));
+        content.setButtons(getAllMenu(menuItems));
         content.setManagement(List.of());
         content.setPageName("Добро пожаловать в библиотеку книг");
         content.setFields(List.of());
         return content;
     }
 
-    private List<Button> addMenuInModel(List<MenuItems> menuItems) {
-        List<Button> buttons = new ArrayList<>();
+    private List<Button> getAllMenu(List<MenuItems> menuItems) {
+        List<Button> buttons = new LinkedList<>();
         for (MenuItems items : menuItems) {
-            try {
+            if (items != null && items.getMenu() != null) {
                 buttons.addAll(items.getMenu());
-            } catch (AccessDeniedException ignore) {
             }
         }
         Comparator<Button> comparator = (o1, o2) -> o1.getPosition() >= o2.getPosition() ? -1 : 0;

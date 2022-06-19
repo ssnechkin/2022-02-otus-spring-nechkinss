@@ -1,8 +1,8 @@
 package ru.otus.homework.controller.author;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.author.Author;
@@ -31,13 +31,12 @@ public class AuthorController implements MenuItems {
     }
 
     @Override
-    @PostAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
+    @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public List<Button> getMenu() {
         return List.of(new Button(3, "Авторы", new Link(HttpMethod.GET, "/author"), true));
     }
 
     @GetMapping("/author")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content list() {
         return new Content().setPageName("Авторы")
                 .setManagement(uiService.getManagementFormAdd())
@@ -45,13 +44,11 @@ public class AuthorController implements MenuItems {
     }
 
     @GetMapping("/author/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content view(@PathVariable("id") long id) {
         return getContentView(id);
     }
 
     @GetMapping("/author/edit/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content edit(@PathVariable("id") long id) {
         Author author = service.getById(id);
         return new Content()
@@ -79,7 +76,6 @@ public class AuthorController implements MenuItems {
     }
 
     @PutMapping("/author/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content save(@PathVariable("id") long id,
                         @RequestBody AuthorDto authorDto) {
         if (authorDto.getSurname() == null || authorDto.getSurname().isEmpty()
@@ -98,7 +94,6 @@ public class AuthorController implements MenuItems {
     }
 
     @GetMapping("/author/add")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content add() {
         return new Content()
                 .setPageName("Автор - добавление")

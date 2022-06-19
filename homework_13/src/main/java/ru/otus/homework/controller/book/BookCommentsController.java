@@ -27,7 +27,6 @@ public class BookCommentsController {
     }
 
     @GetMapping("/book/{book_id}/comments")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VISITOR')")
     public Content list(@PathVariable("book_id") long bookId) {
         Content content = new Content();
         Button add = new Button();
@@ -40,14 +39,12 @@ public class BookCommentsController {
     }
 
     @GetMapping("/book/{book_id}/comments/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VISITOR')")
     public Content view(@PathVariable("id") long id,
                         @PathVariable("book_id") long bookId) {
         return getContentView(bookId, id);
     }
 
     @GetMapping("/book/{book_id}/comments/add")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VISITOR')")
     public Content add(@PathVariable("book_id") long bookId) {
         Content content = new Content();
         Form form = new Form();
@@ -66,7 +63,6 @@ public class BookCommentsController {
     }
 
     @PostMapping("/book/{book_id}/comments")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VISITOR')")
     public Content create(@RequestBody BookCommentDto bookCommentDto,
                           @PathVariable("book_id") long bookId) {
         Notification notification = new Notification();
@@ -81,7 +77,6 @@ public class BookCommentsController {
     }
 
     @DeleteMapping("/book/{book_id}/comments/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VISITOR')")
     public Content delete(@PathVariable("book_id") long bookId,
                           @PathVariable("id") long id) {
         Notification notification = new Notification();

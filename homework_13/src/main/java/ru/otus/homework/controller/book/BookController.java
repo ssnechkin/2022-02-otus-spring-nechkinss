@@ -2,8 +2,8 @@ package ru.otus.homework.controller.book;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.author.Author;
@@ -34,13 +34,12 @@ public class BookController implements MenuItems {
     }
 
     @Override
-    @PostAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR') or hasRole('ROLE_VISITOR')")
+    @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR') or hasRole('ROLE_VISITOR')")
     public List<Button> getMenu() {
         return List.of(new Button(1, "Книги", new Link(HttpMethod.GET, "/book"), true));
     }
 
     @GetMapping("/book")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR') or hasRole('ROLE_VISITOR')")
     public Content list() {
         return new Content().setPageName("Книги")
                 .setManagement(getManagementFormBookAdd())
@@ -48,13 +47,11 @@ public class BookController implements MenuItems {
     }
 
     @GetMapping("/book/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR') or hasRole('ROLE_VISITOR')")
     public Content view(@PathVariable("id") long id) {
         return getContentView(id);
     }
 
     @GetMapping("/book/edit/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content edit(@PathVariable("id") long id) {
         Book book = service.getById(id);
         return new Content()
@@ -72,7 +69,6 @@ public class BookController implements MenuItems {
     }
 
     @PutMapping("/book/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content save(@PathVariable("id") long id,
                         @RequestBody BookDto bookDto) {
         Book book = service.getById(id);
@@ -92,7 +88,6 @@ public class BookController implements MenuItems {
     }
 
     @GetMapping("/book/add")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content add() {
         Content content = new Content();
         Form form = new Form();
@@ -111,7 +106,6 @@ public class BookController implements MenuItems {
     }
 
     @PostMapping("/book")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content create(@RequestBody BookDto bookDto) {
         Notification notification = new Notification();
         Content content = new Content();
@@ -129,7 +123,6 @@ public class BookController implements MenuItems {
     }
 
     @DeleteMapping("/book/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public Content delete(@PathVariable("id") long id) {
         Notification notification = new Notification();
         Content content = new Content();
