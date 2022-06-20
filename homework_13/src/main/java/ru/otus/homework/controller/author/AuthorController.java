@@ -2,7 +2,6 @@ package ru.otus.homework.controller.author;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.author.Author;
@@ -33,7 +32,13 @@ public class AuthorController implements MenuItems {
     @Override
     @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public List<Button> getMenu() {
-        return List.of(new Button(3, "Авторы", new Link(HttpMethod.GET, "/author"), true));
+        List<Button> menu = new ArrayList<>();
+        menu.add(new Button().setTitle("Авторы")
+                .setPosition(3)
+                .setLink(new Link().setMethod(HttpMethod.GET).setValue("/author"))
+                .setAlt(true)
+        );
+        return menu;
     }
 
     @GetMapping("/author")

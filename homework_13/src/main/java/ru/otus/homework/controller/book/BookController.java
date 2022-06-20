@@ -3,7 +3,6 @@ package ru.otus.homework.controller.book;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.author.Author;
@@ -36,7 +35,13 @@ public class BookController implements MenuItems {
     @Override
     @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR') or hasRole('ROLE_VISITOR')")
     public List<Button> getMenu() {
-        return List.of(new Button(1, "Книги", new Link(HttpMethod.GET, "/book"), true));
+        List<Button> menu = new ArrayList<>();
+        menu.add(new Button().setTitle("Книги")
+                .setPosition(1)
+                .setLink(new Link().setMethod(HttpMethod.GET).setValue("/book"))
+                .setAlt(true)
+        );
+        return menu;
     }
 
     @GetMapping("/book")
