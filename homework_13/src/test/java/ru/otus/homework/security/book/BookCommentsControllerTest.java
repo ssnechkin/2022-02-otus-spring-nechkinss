@@ -46,6 +46,8 @@ class BookCommentsControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
 
     @BeforeEach
     public void before() {
@@ -59,7 +61,7 @@ class BookCommentsControllerTest {
         Book book = bookService.add("name" + id);
         BookComment bookComment = bookService.addComment(book, "name1" + id);
         BookComment bookComment2 = bookService.addComment(book, "name2" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -71,7 +73,7 @@ class BookCommentsControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         BookComment bookComment = bookService.addComment(book, "name1" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/" + bookComment.getId());
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/" + bookComment.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -82,7 +84,7 @@ class BookCommentsControllerTest {
     void add() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/add");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/add", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -95,7 +97,7 @@ class BookCommentsControllerTest {
         Book book = bookService.add("name" + id);
         BookCommentDto bookCommentDto = new BookCommentDto();
         bookCommentDto.setComment("name1" + id);
-        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/comments", bookCommentDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/comments", ADMIN_LOGIN, ADMIN_PASSWORD, bookCommentDto);
         assertNull(content);
         bookService.delete(book);
     }
@@ -106,7 +108,7 @@ class BookCommentsControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         BookComment bookComment = bookService.addComment(book, "name1" + id);
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/comments/" + bookComment.getId(), null);
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/comments/" + bookComment.getId(), ADMIN_LOGIN, ADMIN_PASSWORD, null);
         assertNull(content);
         bookService.delete(book);
     }

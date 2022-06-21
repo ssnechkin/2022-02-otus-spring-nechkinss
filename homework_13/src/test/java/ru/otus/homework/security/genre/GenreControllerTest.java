@@ -41,18 +41,34 @@ class GenreControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private ContentGetter contentGetterAuth;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
+    private static final String VISITOR_LOGIN = "visitor";
+    private static final String VISITOR_PASSWORD = "123";
 
     @BeforeEach
     public void before() {
         this.contentGetter = new ContentGetter(port, restTemplate, false);
+        this.contentGetterAuth = new ContentGetter(port, restTemplate);
+    }
+    @Test
+    @DisplayName("Доступность меню")
+    void getMenu() {
+        Content content = contentGetter.getContent("/menu", ADMIN_LOGIN, ADMIN_PASSWORD);
+        assertEquals(content.getPageName(), "Вход");
+        assertEquals(0, content.getButtons().size());
     }
 
     @Test
-    @DisplayName("Наличие меню")
-    void getMenu() {
-        Content content = contentGetter.getContent("/menu");
-        assertEquals(content.getPageName(), "Вход");
-        assertEquals(0, content.getButtons().size());
+    @DisplayName("Ограниченное меню")
+    void getLimitedMenu() {
+        Content content = contentGetterAuth.getContent("/menu", VISITOR_LOGIN, VISITOR_PASSWORD);
+        assertEquals(content.getPageName(), "Добро пожаловать в библиотеку книг");
+        for (Button button: content.getButtons()){
+            assertNotEquals("/genre", button.getLink().getValue());
+        }
+        assertEquals(1, content.getButtons().size());
     }
 
     @Test
@@ -60,7 +76,7 @@ class GenreControllerTest {
     void list() {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
-        Content content = contentGetter.getContent("/genre");
+        Content content = contentGetter.getContent("/genre", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         genreService.delete(genre);
@@ -71,7 +87,7 @@ class GenreControllerTest {
     void view() {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
-        Content content = contentGetter.getContent("/genre/" + genre.getId());
+        Content content = contentGetter.getContent("/genre/" + genre.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         genreService.delete(genre);
@@ -82,7 +98,7 @@ class GenreControllerTest {
     void edit() {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
-        Content content = contentGetter.getContent("/genre/edit/" + genre.getId());
+        Content content = contentGetter.getContent("/genre/edit/" + genre.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         genreService.delete(genre);
@@ -95,7 +111,7 @@ class GenreControllerTest {
         Genre genre = genreService.add("name" + id);
         GenreDto genreDto = new GenreDto();
         genreDto.setName("1" + genre.getName());
-        Content content = contentGetter.getContent(HttpMethod.PUT, "/genre/" + genre.getId(), genreDto);
+        Content content = contentGetter.getContent(HttpMethod.PUT, "/genre/" + genre.getId(), ADMIN_LOGIN, ADMIN_PASSWORD, genreDto);
         assertNull(content);
         genreService.delete(genre);
     }
@@ -103,7 +119,7 @@ class GenreControllerTest {
     @Test
     @DisplayName("Получить форму для добавления")
     void add() {
-        Content content = contentGetter.getContent("/genre/add");
+        Content content = contentGetter.getContent("/genre/add", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
     }
@@ -114,7 +130,7 @@ class GenreControllerTest {
         String id = UUID.randomUUID().toString();
         GenreDto genreDto = new GenreDto();
         genreDto.setName("1name" + id);
-        Content content = contentGetter.getContent(HttpMethod.POST, "/genre", genreDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/genre", ADMIN_LOGIN, ADMIN_PASSWORD, genreDto);
         assertNull(content);
     }
 
@@ -124,7 +140,7 @@ class GenreControllerTest {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
         long dId = genre.getId();
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/genre/" + dId, null);
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/genre/" + dId, ADMIN_LOGIN, ADMIN_PASSWORD, null);
         assertNull(content);
     }
 }

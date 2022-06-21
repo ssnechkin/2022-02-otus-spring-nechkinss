@@ -28,30 +28,30 @@ public class ContentGetter {
         this.isSecure = isSecure;
     }
 
-    public Content getContent(String url) {
-        return getContent(HttpMethod.GET, url, null);
+    public Content getContent(String url, String login, String password) {
+        return getContent(HttpMethod.GET, url, login, password, null);
     }
 
-    public <T> Content getContent(HttpMethod method, String url, T object) {
-        RequestEntity<Content> requestEntity = (RequestEntity<Content>) new RequestEntity<T>(object, getHttpHeaders(), method, URI.create(baseUrl + url));
+    public <T> Content getContent(HttpMethod method, String url, String login, String password, T object) {
+        RequestEntity<Content> requestEntity = (RequestEntity<Content>) new RequestEntity<T>(object, getHttpHeaders(login, password), method, URI.create(baseUrl + url));
         ResponseEntity<Content> responseEntity = this.restTemplate.exchange(requestEntity, Content.class);
         return responseEntity.getBody();
     }
 
-    private HttpHeaders getHttpHeaders() {
+    private HttpHeaders getHttpHeaders(String login, String password) {
         if (!isSecure) {
             return new HttpHeaders();
         }
-        String cookie = getCookieForUser(baseUrl + "/page/login");
+        String cookie = getCookieForUser(baseUrl + "/page/login", login, password);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", cookie);
         return headers;
     }
 
-    private String getCookieForUser(String loginUrl) {
+    private String getCookieForUser(String loginUrl, String login, String password) {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.set("username", "admin");
-        form.set("password", "password");
+        form.set("username", login);
+        form.set("password", password);
         ResponseEntity<String> loginResponse = this.restTemplate.postForEntity(
                 loginUrl,
                 new HttpEntity<>(form, new HttpHeaders()),

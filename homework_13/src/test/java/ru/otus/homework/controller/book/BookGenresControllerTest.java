@@ -44,6 +44,8 @@ class BookGenresControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
 
     @BeforeEach
     public void before() {
@@ -59,7 +61,7 @@ class BookGenresControllerTest {
         Genre genre2 = genreService.add("name2" + id);
         bookService.addGenre(book, genre1);
         bookService.addGenre(book, genre2);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/genres");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/genres",ADMIN_LOGIN,ADMIN_PASSWORD);
         String name1 = null;
         String name2 = null;
         for (Row row : content.getTable().getRows()) {
@@ -85,7 +87,7 @@ class BookGenresControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         Genre genre = genreService.add("name1" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/genres/" + genre.getId());
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/genres/" + genre.getId(),ADMIN_LOGIN,ADMIN_PASSWORD);
         String name = null;
         for (Field field : content.getFields()) {
             if (field.getValue().equals("name1" + id)) {
@@ -103,7 +105,7 @@ class BookGenresControllerTest {
     void add() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/genres/add");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/genres/add",ADMIN_LOGIN,ADMIN_PASSWORD);
         assertNotNull(content.getForm());
         assertTrue(content.getForm().getFields().size() > 0);
         bookService.delete(book);
@@ -117,7 +119,7 @@ class BookGenresControllerTest {
         Genre genre = genreService.add("name1" + id);
         BookGenreDto bookGenreDto = new BookGenreDto();
         bookGenreDto.setGenre(genre.getId());
-        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/genres", bookGenreDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/genres",ADMIN_LOGIN,ADMIN_PASSWORD, bookGenreDto);
         assert content != null;
         String name = null;
         for (Field field : content.getFields()) {
@@ -149,7 +151,7 @@ class BookGenresControllerTest {
         Book book = bookService.add("name" + id);
         Genre genre = genreService.add("name1" + id);
         bookService.addGenre(book, genre);
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/genres/" + genre.getId(), null);
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/genres/" + genre.getId(),ADMIN_LOGIN,ADMIN_PASSWORD, null);
         assert content != null;
         book = bookService.getById(book.getId());
         genre = genreService.getById(genre.getId());

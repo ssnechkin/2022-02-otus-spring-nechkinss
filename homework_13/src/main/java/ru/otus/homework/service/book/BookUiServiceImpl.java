@@ -2,14 +2,28 @@ package ru.otus.homework.service.book;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.dto.out.content.Button;
 import ru.otus.homework.dto.out.content.Link;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BookUiServiceImpl implements BookUiService {
+
+    @Override
+    @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR') or hasRole('ROLE_VISITOR')")
+    public List<Button> getMenu() {
+        List<Button> menu = new ArrayList<>();
+        menu.add(new Button().setTitle("Книги")
+                .setPosition(1)
+                .setLink(new Link().setMethod(HttpMethod.GET).setValue("/book"))
+                .setAlt(true)
+        );
+        return menu;
+    }
 
     @Override
     @PostAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")

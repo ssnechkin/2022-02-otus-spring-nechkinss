@@ -14,12 +14,12 @@ import ru.otus.homework.controller.author.AuthorController;
 import ru.otus.homework.domain.entity.author.Author;
 import ru.otus.homework.dto.in.AuthorDto;
 import ru.otus.homework.dto.out.Content;
+import ru.otus.homework.dto.out.content.Button;
 import ru.otus.homework.service.author.AuthorServiceImpl;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @DisplayName("Security AuthorController")
@@ -39,18 +39,35 @@ class AuthorControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private ContentGetter contentGetterAuth;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
+    private static final String VISITOR_LOGIN = "visitor";
+    private static final String VISITOR_PASSWORD = "123";
 
     @BeforeEach
     public void before() {
         this.contentGetter = new ContentGetter(port, restTemplate, false);
+        this.contentGetterAuth = new ContentGetter(port, restTemplate);
     }
 
     @Test
-    @DisplayName("Наличие меню")
+    @DisplayName("Доступность меню")
     void getMenu() {
-        Content content = contentGetter.getContent("/menu");
+        Content content = contentGetter.getContent("/menu", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
+    }
+
+    @Test
+    @DisplayName("Ограниченное меню")
+    void getLimitedMenu() {
+        Content content = contentGetterAuth.getContent("/menu", VISITOR_LOGIN, VISITOR_PASSWORD);
+        assertEquals(content.getPageName(), "Добро пожаловать в библиотеку книг");
+        for (Button button: content.getButtons()){
+            assertNotEquals("/author", button.getLink().getValue());
+        }
+        assertEquals(1, content.getButtons().size());
     }
 
     @Test
@@ -58,7 +75,7 @@ class AuthorControllerTest {
     void list() {
         String id = UUID.randomUUID().toString();
         Author author = authorService.add("surname" + id, "name" + id, "patronymic" + id);
-        Content content = contentGetter.getContent("/author");
+        Content content = contentGetter.getContent("/author", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         authorService.delete(author);
@@ -69,7 +86,7 @@ class AuthorControllerTest {
     void view() {
         String id = UUID.randomUUID().toString();
         Author author = authorService.add("surname" + id, "name" + id, "patronymic" + id);
-        Content content = contentGetter.getContent("/author/" + author.getId());
+        Content content = contentGetter.getContent("/author/" + author.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         authorService.delete(author);
@@ -80,7 +97,7 @@ class AuthorControllerTest {
     void edit() {
         String id = UUID.randomUUID().toString();
         Author author = authorService.add("surname" + id, "name" + id, "patronymic" + id);
-        Content content = contentGetter.getContent("/author/edit/" + author.getId());
+        Content content = contentGetter.getContent("/author/edit/" + author.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         authorService.delete(author);
@@ -95,7 +112,7 @@ class AuthorControllerTest {
         authorDto.setSurname("1" + author.getSurname());
         authorDto.setName("1" + author.getName());
         authorDto.setPatronymic("1" + author.getPatronymic());
-        Content content = contentGetter.getContent(HttpMethod.PUT, "/author/" + author.getId(), authorDto);
+        Content content = contentGetter.getContent(HttpMethod.PUT, "/author/" + author.getId(), ADMIN_LOGIN, ADMIN_PASSWORD, authorDto);
         assertNull(content);
         authorService.delete(author);
     }
@@ -103,7 +120,7 @@ class AuthorControllerTest {
     @Test
     @DisplayName("Получить форму для добавления")
     void add() {
-        Content content = contentGetter.getContent("/author/add");
+        Content content = contentGetter.getContent("/author/add", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
     }
@@ -116,7 +133,7 @@ class AuthorControllerTest {
         authorDto.setSurname("1s" + id);
         authorDto.setName("1name" + id);
         authorDto.setPatronymic("1p" + id);
-        Content content = contentGetter.getContent(HttpMethod.POST, "/author", authorDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/author", ADMIN_LOGIN, ADMIN_PASSWORD, authorDto);
         assertNull(content);
     }
 
@@ -126,7 +143,7 @@ class AuthorControllerTest {
         String id = UUID.randomUUID().toString();
         Author author = authorService.add("surname" + id, "name" + id, "patronymic" + id);
         long dId = author.getId();
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/author/" + dId, null);
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/author/" + dId, ADMIN_LOGIN, ADMIN_PASSWORD, null);
         assertNull(content);
         authorService.delete(author);
     }

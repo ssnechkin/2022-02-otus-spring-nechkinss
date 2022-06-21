@@ -45,6 +45,8 @@ class BookCommentsControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
 
     @BeforeEach
     public void before() {
@@ -58,7 +60,7 @@ class BookCommentsControllerTest {
         Book book = bookService.add("name" + id);
         BookComment bookComment = bookService.addComment(book, "name1" + id);
         BookComment bookComment2 = bookService.addComment(book, "name2" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments",ADMIN_LOGIN,ADMIN_PASSWORD);
         String name1 = null;
         String name2 = null;
         for (Row row : content.getTable().getRows()) {
@@ -82,7 +84,7 @@ class BookCommentsControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         BookComment bookComment = bookService.addComment(book, "name1" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/" + bookComment.getId());
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/" + bookComment.getId(),ADMIN_LOGIN,ADMIN_PASSWORD);
         String name = null;
         for (Field field : content.getFields()) {
             if (field.getValue().equals("name1" + id)) {
@@ -99,7 +101,7 @@ class BookCommentsControllerTest {
     void add() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/add");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/comments/add",ADMIN_LOGIN,ADMIN_PASSWORD);
         assertNotNull(content.getForm());
         assertTrue(content.getForm().getFields().size() > 0);
         bookService.delete(book);
@@ -112,7 +114,7 @@ class BookCommentsControllerTest {
         Book book = bookService.add("name" + id);
         BookCommentDto bookCommentDto = new BookCommentDto();
         bookCommentDto.setComment("name1" + id);
-        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/comments", bookCommentDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/comments",ADMIN_LOGIN,ADMIN_PASSWORD, bookCommentDto);
         assert content != null;
         String name = null;
         for (Field field : content.getFields()) {
@@ -141,7 +143,7 @@ class BookCommentsControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         BookComment bookComment = bookService.addComment(book, "name1" + id);
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/comments/" + bookComment.getId(), null);
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/comments/" + bookComment.getId(),ADMIN_LOGIN,ADMIN_PASSWORD, null);
         assert content != null;
         book = bookService.getById(book.getId());
         BookComment bookComment2 = bookService.getBookCommentById(bookComment.getId());

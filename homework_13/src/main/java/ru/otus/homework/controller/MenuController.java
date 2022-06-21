@@ -10,7 +10,6 @@ import ru.otus.homework.dto.out.content.Button;
 import ru.otus.homework.dto.out.content.Link;
 import ru.otus.homework.dto.out.content.TopRight;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,9 +43,7 @@ public class MenuController {
     private List<Button> getAllMenu(List<MenuItems> menuItems) {
         List<Button> buttons = new LinkedList<>();
         for (MenuItems items : menuItems) {
-            if (items != null && items.getMenu() != null) {
-                buttons.addAll(items.getMenu());
-            }
+            buttons.addAll(items.getMenu());
         }
         Comparator<Button> comparator = (o1, o2) -> o1.getPosition() >= o2.getPosition() ? -1 : 0;
         buttons.sort(comparator);

@@ -41,6 +41,8 @@ class BookControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
 
     @BeforeEach
     public void before() {
@@ -52,7 +54,7 @@ class BookControllerTest {
     void list() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book");
+        Content content = contentGetter.getContent("/book",ADMIN_LOGIN,ADMIN_PASSWORD);
         String name = null;
         for (Row row : content.getTable().getRows()) {
             for (String column : row.getColumns()) {
@@ -71,7 +73,7 @@ class BookControllerTest {
     void view() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId());
+        Content content = contentGetter.getContent("/book/" + book.getId(),ADMIN_LOGIN,ADMIN_PASSWORD);
         String name = null;
         for (Field field : content.getFields()) {
             if (field.getValue().equals("name" + id)) {
@@ -88,7 +90,7 @@ class BookControllerTest {
     void edit() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/edit/" + book.getId());
+        Content content = contentGetter.getContent("/book/edit/" + book.getId(),ADMIN_LOGIN,ADMIN_PASSWORD);
         assertNotNull(content.getForm());
         assertTrue(content.getForm().getFields().size() > 0);
         bookService.delete(book);
@@ -101,7 +103,7 @@ class BookControllerTest {
         Book book = bookService.add("name" + id);
         BookDto bookDto = new BookDto();
         bookDto.setName("1" + book.getName());
-        Content content = contentGetter.getContent(HttpMethod.PUT, "/book/" + book.getId(), bookDto);
+        Content content = contentGetter.getContent(HttpMethod.PUT, "/book/" + book.getId(),ADMIN_LOGIN,ADMIN_PASSWORD, bookDto);
         assert content != null;
         String name = null;
         for (Field field : content.getFields()) {
@@ -117,7 +119,7 @@ class BookControllerTest {
     @Test
     @DisplayName("Получить форму для добавления")
     void add() {
-        Content content = contentGetter.getContent("/book/add");
+        Content content = contentGetter.getContent("/book/add",ADMIN_LOGIN,ADMIN_PASSWORD);
         assertNotNull(content.getForm());
         assertTrue(content.getForm().getFields().size() > 0);
     }
@@ -129,7 +131,7 @@ class BookControllerTest {
         BookDto bookDto = new BookDto();
         bookDto.setName("1name" + id);
 
-        Content content = contentGetter.getContent(HttpMethod.POST, "/book", bookDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/book",ADMIN_LOGIN,ADMIN_PASSWORD, bookDto);
         assert content != null;
         String name = null;
         for (Field field : content.getFields()) {
@@ -155,7 +157,7 @@ class BookControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         long dId = book.getId();
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + dId, new BookDto());
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + dId,ADMIN_LOGIN,ADMIN_PASSWORD, new BookDto());
         assert content != null;
         assertNull(bookService.getById(dId));
     }

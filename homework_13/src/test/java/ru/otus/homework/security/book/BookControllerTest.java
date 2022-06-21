@@ -42,18 +42,34 @@ class BookControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private ContentGetter contentGetterAuth;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
+    private static final String VISITOR_LOGIN = "visitor";
+    private static final String VISITOR_PASSWORD = "123";
 
     @BeforeEach
     public void before() {
         this.contentGetter = new ContentGetter(port, restTemplate, false);
+        this.contentGetterAuth = new ContentGetter(port, restTemplate);
+    }
+    @Test
+    @DisplayName("Доступность меню")
+    void getButton() {
+        Content content = contentGetter.getContent("/menu", ADMIN_LOGIN, ADMIN_PASSWORD);
+        assertEquals(content.getPageName(), "Вход");
+        assertEquals(0, content.getButtons().size());
     }
 
     @Test
-    @DisplayName("Наличие меню")
-    void getButton() {
-        Content content = contentGetter.getContent("/menu");
-        assertEquals(content.getPageName(), "Вход");
-        assertEquals(0, content.getButtons().size());
+    @DisplayName("Ограниченное меню")
+    void getLimitedMenu() {
+        Content content = contentGetterAuth.getContent("/menu", VISITOR_LOGIN, VISITOR_PASSWORD);
+        assertEquals(content.getPageName(), "Добро пожаловать в библиотеку книг");
+        for (Button button: content.getButtons()){
+            assertEquals("/book", button.getLink().getValue());
+        }
+        assertEquals(1, content.getButtons().size());
     }
 
     @Test
@@ -61,7 +77,7 @@ class BookControllerTest {
     void list() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book");
+        Content content = contentGetter.getContent("/book", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -72,7 +88,7 @@ class BookControllerTest {
     void view() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId());
+        Content content = contentGetter.getContent("/book/" + book.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -83,7 +99,7 @@ class BookControllerTest {
     void edit() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/edit/" + book.getId());
+        Content content = contentGetter.getContent("/book/edit/" + book.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -96,7 +112,7 @@ class BookControllerTest {
         Book book = bookService.add("name" + id);
         BookDto bookDto = new BookDto();
         bookDto.setName("1" + book.getName());
-        Content content = contentGetter.getContent(HttpMethod.PUT, "/book/" + book.getId(), bookDto);
+        Content content = contentGetter.getContent(HttpMethod.PUT, "/book/" + book.getId(), ADMIN_LOGIN, ADMIN_PASSWORD, bookDto);
         assertNull(content);
         bookService.delete(book);
     }
@@ -104,7 +120,7 @@ class BookControllerTest {
     @Test
     @DisplayName("Получить форму для добавления")
     void add() {
-        Content content = contentGetter.getContent("/book/add");
+        Content content = contentGetter.getContent("/book/add", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
     }
@@ -116,7 +132,7 @@ class BookControllerTest {
         BookDto bookDto = new BookDto();
         bookDto.setName("1name" + id);
 
-        Content content = contentGetter.getContent(HttpMethod.POST, "/book", bookDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/book", ADMIN_LOGIN, ADMIN_PASSWORD, bookDto);
         assertNull(content);
     }
 
@@ -126,7 +142,7 @@ class BookControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         long dId = book.getId();
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + dId, new BookDto());
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + dId, ADMIN_LOGIN, ADMIN_PASSWORD, new BookDto());
         assertNull(content);
     }
 }

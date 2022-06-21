@@ -18,7 +18,6 @@ import ru.otus.homework.dto.out.content.Field;
 import ru.otus.homework.dto.out.content.table.Row;
 import ru.otus.homework.service.genre.GenreServiceImpl;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +39,8 @@ class GenreControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
 
     @BeforeEach
     public void before() {
@@ -51,7 +52,7 @@ class GenreControllerTest {
     void list() {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
-        Content content = contentGetter.getContent("/genre");
+        Content content = contentGetter.getContent("/genre", ADMIN_LOGIN, ADMIN_PASSWORD);
         String name = null;
         for (Row row : content.getTable().getRows()) {
             for (String column : row.getColumns()) {
@@ -70,7 +71,7 @@ class GenreControllerTest {
     void view() {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
-        Content content = contentGetter.getContent("/genre/" + genre.getId());
+        Content content = contentGetter.getContent("/genre/" + genre.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         String name = null;
         for (Field field : content.getFields()) {
             if (field.getValue().equals("name" + id)) {
@@ -87,7 +88,7 @@ class GenreControllerTest {
     void edit() {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
-        Content content = contentGetter.getContent("/genre/edit/" + genre.getId());
+        Content content = contentGetter.getContent("/genre/edit/" + genre.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertNotNull(content.getForm());
         assertTrue(content.getForm().getFields().size() > 0);
         genreService.delete(genre);
@@ -100,7 +101,7 @@ class GenreControllerTest {
         Genre genre = genreService.add("name" + id);
         GenreDto genreDto = new GenreDto();
         genreDto.setName("1" + genre.getName());
-        Content content = contentGetter.getContent(HttpMethod.PUT, "/genre/" + genre.getId(), genreDto);
+        Content content = contentGetter.getContent(HttpMethod.PUT, "/genre/" + genre.getId(), ADMIN_LOGIN, ADMIN_PASSWORD, genreDto);
         assert content != null;
         String name = null;
         for (Field field : content.getFields()) {
@@ -116,7 +117,7 @@ class GenreControllerTest {
     @Test
     @DisplayName("Получить форму для добавления")
     void add() {
-        Content content = contentGetter.getContent("/genre/add");
+        Content content = contentGetter.getContent("/genre/add", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertNotNull(content.getForm());
         assertTrue(content.getForm().getFields().size() > 0);
     }
@@ -127,7 +128,7 @@ class GenreControllerTest {
         String id = UUID.randomUUID().toString();
         GenreDto genreDto = new GenreDto();
         genreDto.setName("1name" + id);
-        Content content = contentGetter.getContent(HttpMethod.POST, "/genre", genreDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/genre", ADMIN_LOGIN, ADMIN_PASSWORD, genreDto);
         assert content != null;
         String name = null;
         for (Field field : content.getFields()) {
@@ -153,7 +154,7 @@ class GenreControllerTest {
         String id = UUID.randomUUID().toString();
         Genre genre = genreService.add("name" + id);
         long dId = genre.getId();
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/genre/" + dId, null);
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/genre/" + dId, ADMIN_LOGIN, ADMIN_PASSWORD, null);
         assert content != null;
         assertNull(genreService.getById(dId));
     }

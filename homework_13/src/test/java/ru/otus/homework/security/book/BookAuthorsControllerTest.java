@@ -45,6 +45,8 @@ class BookAuthorsControllerTest {
     private TestRestTemplate restTemplate;
 
     private ContentGetter contentGetter;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "password";
 
     @BeforeEach
     public void before() {
@@ -60,7 +62,7 @@ class BookAuthorsControllerTest {
         Author author2 = authorService.add("surname" + id, "name2" + id, "patronymic" + id);
         bookService.addAuthor(book, author1);
         bookService.addAuthor(book, author2);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/authors");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/authors", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -72,7 +74,7 @@ class BookAuthorsControllerTest {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
         Author author = authorService.add("surname" + id, "name1" + id, "patronymic" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/authors/" + author.getId());
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/authors/" + author.getId(), ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -84,7 +86,7 @@ class BookAuthorsControllerTest {
     void add() {
         String id = UUID.randomUUID().toString();
         Book book = bookService.add("name" + id);
-        Content content = contentGetter.getContent("/book/" + book.getId() + "/authors/add");
+        Content content = contentGetter.getContent("/book/" + book.getId() + "/authors/add", ADMIN_LOGIN, ADMIN_PASSWORD);
         assertEquals(content.getPageName(), "Вход");
         assertEquals(0, content.getButtons().size());
         bookService.delete(book);
@@ -98,7 +100,7 @@ class BookAuthorsControllerTest {
         Author author = authorService.add("surname" + id, "name1" + id, "patronymic" + id);
         BookAuthorDto bookAuthorDto = new BookAuthorDto();
         bookAuthorDto.setAuthor(author.getId());
-        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/authors", bookAuthorDto);
+        Content content = contentGetter.getContent(HttpMethod.POST, "/book/" + book.getId() + "/authors", ADMIN_LOGIN, ADMIN_PASSWORD, bookAuthorDto);
         assertNull(content);
         bookService.delete(book);
         authorService.delete(author);
@@ -111,7 +113,7 @@ class BookAuthorsControllerTest {
         Book book = bookService.add("name" + id);
         Author author = authorService.add("surname" + id, "name1" + id, "patronymic" + id);
         bookService.addAuthor(book, author);
-        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/authors/" + author.getId(), null);
+        Content content = contentGetter.getContent(HttpMethod.DELETE, "/book/" + book.getId() + "/authors/" + author.getId(), ADMIN_LOGIN, ADMIN_PASSWORD, null);
         assertNull(content);
         bookService.delete(book);
         authorService.delete(author);

@@ -30,15 +30,8 @@ public class AuthorController implements MenuItems {
     }
 
     @Override
-    @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public List<Button> getMenu() {
-        List<Button> menu = new ArrayList<>();
-        menu.add(new Button().setTitle("Авторы")
-                .setPosition(3)
-                .setLink(new Link().setMethod(HttpMethod.GET).setValue("/author"))
-                .setAlt(true)
-        );
-        return menu;
+        return uiService.getMenu();
     }
 
     @GetMapping("/author")
