@@ -1,7 +1,6 @@
 package ru.otus.homework.controller.book;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.author.Author;
@@ -193,35 +192,16 @@ public class BookController implements MenuItems {
     }
 
     private List<Button> getManagementFormBookAdd() {
-        try {
-            return bookUiService.getManagementFormBookAdd();
-        } catch (AccessDeniedException ignore) {
-        }
-        return List.of();
+        return bookUiService.getManagementFormBookAdd();
     }
 
     private List<Button> getContentViewManagement(long bookId) {
         List<Button> result = new ArrayList<>();
-        try {
-            result.add(bookUiService.getButtonEdit(bookId));
-        } catch (AccessDeniedException ignore) {
-        }
-        try {
-            result.add(bookUiService.getButtonDelete(bookId));
-        } catch (AccessDeniedException ignore) {
-        }
-        try {
-            result.add(bookUiService.getButtonComments(bookId));
-        } catch (AccessDeniedException ignore) {
-        }
-        try {
-            result.add(bookUiService.getButtonAuthors(bookId));
-        } catch (AccessDeniedException ignore) {
-        }
-        try {
-            result.add(bookUiService.getButtonGenres(bookId));
-        } catch (AccessDeniedException ignore) {
-        }
+        result.addAll(bookUiService.getButtonEdit(bookId));
+        result.addAll(bookUiService.getButtonDelete(bookId));
+        result.addAll(bookUiService.getButtonComments(bookId));
+        result.addAll(bookUiService.getButtonAuthors(bookId));
+        result.addAll(bookUiService.getButtonGenres(bookId));
         return result;
     }
 

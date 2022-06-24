@@ -1,8 +1,6 @@
 package ru.otus.homework.controller.genre;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.genre.Genre;

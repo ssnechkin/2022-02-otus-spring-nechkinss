@@ -1,15 +1,11 @@
 package ru.otus.homework.service.book;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.domain.entity.author.Author;
 import ru.otus.homework.domain.entity.book.Book;
 import ru.otus.homework.domain.entity.book.BookComment;
 import ru.otus.homework.domain.entity.genre.Genre;
-import ru.otus.homework.dto.out.content.Button;
-import ru.otus.homework.dto.out.content.Link;
 import ru.otus.homework.repository.author.AuthorRepository;
 import ru.otus.homework.repository.book.BookRepository;
 import ru.otus.homework.repository.book.comment.BookCommentRepository;

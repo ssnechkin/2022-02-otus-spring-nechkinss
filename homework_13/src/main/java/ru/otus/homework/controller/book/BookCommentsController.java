@@ -1,7 +1,6 @@
 package ru.otus.homework.controller.book;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.domain.entity.book.Book;
 import ru.otus.homework.domain.entity.book.BookComment;

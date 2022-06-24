@@ -1,7 +1,6 @@
 package ru.otus.homework.service.author;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.dto.out.content.Button;
@@ -26,12 +25,13 @@ public class AuthorUiServiceImpl implements AuthorUiService {
     }
 
     @Override
-    @PostAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
+    @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public List<Button> getManagementFormAdd() {
-        return List.of(new Button().setTitle("Добавить")
+        List<Button> buttons = new ArrayList<>();
+        buttons.add(new Button().setTitle("Добавить")
                 .setLink(new Link().setMethod(HttpMethod.GET)
                         .setValue("/author/add")
-                )
-        );
+                ));
+        return buttons;
     }
 }

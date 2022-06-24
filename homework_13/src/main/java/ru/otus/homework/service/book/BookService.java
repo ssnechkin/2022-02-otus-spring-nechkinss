@@ -4,7 +4,6 @@ import ru.otus.homework.domain.entity.author.Author;
 import ru.otus.homework.domain.entity.book.Book;
 import ru.otus.homework.domain.entity.book.BookComment;
 import ru.otus.homework.domain.entity.genre.Genre;
-import ru.otus.homework.dto.out.content.Button;
 
 import java.util.List;
 

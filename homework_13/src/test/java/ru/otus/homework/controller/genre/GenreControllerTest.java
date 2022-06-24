@@ -54,11 +54,13 @@ class GenreControllerTest {
         Genre genre = genreService.add("name" + id);
         Content content = contentGetter.getContent("/genre", ADMIN_LOGIN, ADMIN_PASSWORD);
         String name = null;
-        for (Row row : content.getTable().getRows()) {
-            for (String column : row.getColumns()) {
-                if (column.equals("name" + id)) {
-                    name = column;
-                    break;
+        if (content.getTable() != null) {
+            for (Row row : content.getTable().getRows()) {
+                for (String column : row.getColumns()) {
+                    if (column.equals("name" + id)) {
+                        name = column;
+                        break;
+                    }
                 }
             }
         }

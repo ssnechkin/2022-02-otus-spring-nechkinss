@@ -1,7 +1,6 @@
 package ru.otus.homework.controller.author;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework.controller.MenuItems;
 import ru.otus.homework.domain.entity.author.Author;

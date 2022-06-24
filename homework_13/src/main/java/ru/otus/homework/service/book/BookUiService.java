@@ -10,13 +10,13 @@ public interface BookUiService {
 
     List<Button> getManagementFormBookAdd();
 
-    Button getButtonEdit(long bookId);
+    List<Button> getButtonEdit(long bookId);
 
-    Button getButtonDelete(long bookId);
+    List<Button> getButtonDelete(long bookId);
 
-    Button getButtonComments(long bookId);
+    List<Button> getButtonComments(long bookId);
 
-    Button getButtonAuthors(long bookId);
+    List<Button> getButtonAuthors(long bookId);
 
-    Button getButtonGenres(long bookId);
+    List<Button> getButtonGenres(long bookId);
 }
