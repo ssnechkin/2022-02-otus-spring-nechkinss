@@ -1,4 +1,4 @@
-package ru.otus.homework.service.security;
+package ru.otus.homework.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,10 +43,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (userDetail == null) {
             Set<RoleGrantedAuthority> rolesSet = new HashSet<>();
             for (String role : roles) {
-                RoleGrantedAuthority roleGrantedAuthority = roleRepository.findByName(role);
+                RoleGrantedAuthority roleGrantedAuthority = roleRepository.findByRole(role);
                 if (roleGrantedAuthority == null) {
                     roleGrantedAuthority = new RoleGrantedAuthority();
-                    roleGrantedAuthority.setName(role);
+                    roleGrantedAuthority.setRole(role);
                     roleRepository.save(roleGrantedAuthority);
                 }
                 rolesSet.add(roleGrantedAuthority);

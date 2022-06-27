@@ -2,7 +2,7 @@ package ru.otus.homework.controller.book;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.homework.controller.MenuItems;
+import ru.otus.homework.domain.entity.Menu;
 import ru.otus.homework.domain.entity.author.Author;
 import ru.otus.homework.domain.entity.book.Book;
 import ru.otus.homework.domain.entity.genre.Genre;
@@ -13,6 +13,7 @@ import ru.otus.homework.dto.out.content.table.Row;
 import ru.otus.homework.dto.out.content.table.Table;
 import ru.otus.homework.dto.out.enums.FieldType;
 import ru.otus.homework.dto.out.enums.NotificationType;
+import ru.otus.homework.repository.MenuRepository;
 import ru.otus.homework.service.book.BookService;
 import ru.otus.homework.service.book.BookUiService;
 
@@ -20,19 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class BookController implements MenuItems {
+public class BookController {
 
     private final BookService service;
     private final BookUiService bookUiService;
 
-    public BookController(BookService service, BookUiService bookUiService) {
+    public BookController(BookService service, BookUiService bookUiService, MenuRepository menuRepository) {
         this.service = service;
         this.bookUiService = bookUiService;
-    }
-
-    @Override
-    public List<Button> getMenu() {
-        return bookUiService.getMenu();
+        addMenu(menuRepository);
     }
 
     @GetMapping("/book")
@@ -134,6 +131,17 @@ public class BookController implements MenuItems {
         notification.setMessage("Книга удалена");
         content.setNotifications(List.of(notification));
         return content;
+    }
+
+    private void addMenu(MenuRepository menuRepository) {
+        if (menuRepository.findByLink("/book").size() == 0) {
+            Menu menu = new Menu().setTitle("Книги")
+                    .setPosition(3)
+                    .setMethod(HttpMethod.GET.name())
+                    .setLink("/book")
+                    .setAlt(true);
+            menuRepository.save(menu);
+        }
     }
 
     private Table getTableAll() {

@@ -1,28 +1,38 @@
+CREATE TABLE IF NOT EXISTS menu (
+  id BIGSERIAL NOT NULL PRIMARY KEY,
+  position int NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  alt BOOLEAN NOT NULL,
+  method VARCHAR(255) NOT NULL,
+  link VARCHAR(255) NOT NULL,
+  CONSTRAINT UNIQUE_UK_0 UNIQUE(title, link, method)
+);
+
 CREATE TABLE IF NOT EXISTS acl_sid (
-  id SERIAL NOT NULL PRIMARY KEY,
+  id BIGSERIAL NOT NULL PRIMARY KEY,
   principal BOOLEAN NOT NULL,
-  sid VARCHAR(100) NOT NULL,
+  sid varchar(255) NOT NULL,
   CONSTRAINT UNIQUE_UK_1 UNIQUE(sid,principal)
 );
 
 CREATE TABLE IF NOT EXISTS acl_class (
-  id SERIAL NOT NULL PRIMARY KEY,
+  id BIGSERIAL NOT NULL PRIMARY KEY,
   class varchar(255) NOT NULL,
   CONSTRAINT unique_uk_2 UNIQUE(class)
 );
 
 CREATE TABLE IF NOT EXISTS acl_object_identity (
-  id SERIAL NOT NULL PRIMARY KEY,
+  id BIGSERIAL NOT NULL PRIMARY KEY,
   object_id_class bigint NOT NULL,
-  object_id_identity bigint NOT NULL,
-  parent_object bigint DEFAULT NULL,
-  owner_sid bigint DEFAULT NULL,
+  object_id_identity varchar NOT NULL,
+  parent_object bigint,
+  owner_sid bigint,
   entries_inheriting BOOLEAN NOT NULL,
   CONSTRAINT unique_uk_3 UNIQUE(object_id_class,object_id_identity)
 );
 
 CREATE TABLE IF NOT EXISTS acl_entry (
-  id SERIAL NOT NULL PRIMARY KEY,
+  id BIGSERIAL NOT NULL PRIMARY KEY,
   acl_object_identity bigint NOT NULL,
   ace_order int NOT NULL,
   sid bigint NOT NULL,

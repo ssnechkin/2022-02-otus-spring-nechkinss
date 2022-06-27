@@ -2,7 +2,7 @@ package ru.otus.homework.controller.genre;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.homework.controller.MenuItems;
+import ru.otus.homework.domain.entity.Menu;
 import ru.otus.homework.domain.entity.genre.Genre;
 import ru.otus.homework.dto.in.GenreDto;
 import ru.otus.homework.dto.out.Content;
@@ -11,6 +11,7 @@ import ru.otus.homework.dto.out.content.table.Row;
 import ru.otus.homework.dto.out.content.table.Table;
 import ru.otus.homework.dto.out.enums.FieldType;
 import ru.otus.homework.dto.out.enums.NotificationType;
+import ru.otus.homework.repository.MenuRepository;
 import ru.otus.homework.service.genre.GenreService;
 import ru.otus.homework.service.genre.GenreUiService;
 
@@ -18,19 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class GenreController implements MenuItems {
+public class GenreController {
 
     private final GenreService service;
     private final GenreUiService uiService;
 
-    public GenreController(GenreService service, GenreUiService uiService) {
+    public GenreController(GenreService service, GenreUiService uiService, MenuRepository menuRepository) {
         this.service = service;
         this.uiService = uiService;
-    }
-
-    @Override
-    public List<Button> getMenu() {
-        return uiService.getMenu();
+        addMenu(menuRepository);
     }
 
     @GetMapping("/genre")
@@ -149,6 +146,17 @@ public class GenreController implements MenuItems {
         }
         content.setNotifications(List.of(notification));
         return content;
+    }
+
+    private void addMenu(MenuRepository menuRepository) {
+        if (menuRepository.findByLink("/genre").size() == 0) {
+            Menu menu = new Menu().setTitle("Жанры")
+                    .setPosition(2)
+                    .setMethod(HttpMethod.GET.name())
+                    .setLink("/genre")
+                    .setAlt(true);
+            menuRepository.save(menu);
+        }
     }
 
     private Table getTableAll() {

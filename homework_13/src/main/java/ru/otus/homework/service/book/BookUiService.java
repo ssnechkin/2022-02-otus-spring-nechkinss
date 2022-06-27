@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface BookUiService {
 
-    List<Button> getMenu();
-
     List<Button> getManagementFormBookAdd();
 
     List<Button> getButtonEdit(long bookId);

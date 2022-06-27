@@ -5,5 +5,5 @@ import ru.otus.homework.domain.entity.security.RoleGrantedAuthority;
 
 public interface RoleRepository extends JpaRepository<RoleGrantedAuthority, Long> {
 
-    RoleGrantedAuthority findByName(String name);
+    RoleGrantedAuthority findByRole(String role);
 }

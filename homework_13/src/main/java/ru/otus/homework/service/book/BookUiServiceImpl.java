@@ -13,18 +13,6 @@ import java.util.List;
 public class BookUiServiceImpl implements BookUiService {
 
     @Override
-    @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR') or hasRole('ROLE_VISITOR')")
-    public List<Button> getMenu() {
-        List<Button> menu = new ArrayList<>();
-        menu.add(new Button().setTitle("Книги")
-                .setPosition(1)
-                .setLink(new Link().setMethod(HttpMethod.GET).setValue("/book"))
-                .setAlt(true)
-        );
-        return menu;
-    }
-
-    @Override
     @PostFilter("hasRole('ROLE_ADMIN') or hasRole('ROLE_EDITOR')")
     public List<Button> getManagementFormBookAdd() {
         List<Button> buttons = new ArrayList<>();

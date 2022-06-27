@@ -3,6 +3,7 @@ package ru.otus.homework.service.author;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import ru.otus.homework.domain.entity.author.Author;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Класс AuthorServiceImpl")
 @DataJpaTest
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan("ru.otus.homework")
 class AuthorServiceImplTest {
 

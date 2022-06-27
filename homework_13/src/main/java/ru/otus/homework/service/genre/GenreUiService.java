@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface GenreUiService {
 
-    List<Button> getMenu();
-
     List<Button> getManagementFormAdd();
 }

@@ -1,8 +1,11 @@
 package ru.otus.homework.service.author;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.homework.domain.entity.Menu;
 import ru.otus.homework.domain.entity.author.Author;
+import ru.otus.homework.repository.MenuRepository;
 import ru.otus.homework.repository.author.AuthorRepository;
 
 import java.util.List;

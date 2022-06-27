@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface AuthorUiService {
 
-    List<Button> getMenu();
-
     List<Button> getManagementFormAdd();
 }
