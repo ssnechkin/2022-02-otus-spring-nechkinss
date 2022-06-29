@@ -1,21 +1,18 @@
 package ru.otus.homework.security;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.acls.domain.*;
-import org.springframework.security.acls.jdbc.BasicLookupStrategy;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
-import java.util.List;
 
 @Service
 @Configuration
@@ -23,9 +20,10 @@ public class SecurityAclService {
     private final DataSource dataSource;
     private final JdbcMutableAclService jdbcMutableAclService;
 
-    public SecurityAclService(DataSource dataSource) {
+    public SecurityAclService(DataSource dataSource, JdbcMutableAclService jdbcMutableAclService) {
         this.dataSource = dataSource;
-        this.jdbcMutableAclService = getJdbcMutableAclService();
+        //this.jdbcMutableAclService = getJdbcMutableAclService();
+        this.jdbcMutableAclService = jdbcMutableAclService;
     }
 
     public AclService getAclService() {
@@ -45,6 +43,7 @@ public class SecurityAclService {
     public void addSecurityUserRight(Class<?> clas, Serializable objectId, Permission permission, String user, boolean granting) {
         addSecurityRight(clas, objectId, permission, new PrincipalSid(user), granting);
     }
+
     @Transactional
     public void addSecurityRoleRight(Class<?> clas, Serializable objectId, Permission permission, String role, boolean granting) {
         addSecurityRight(clas, objectId, permission, new GrantedAuthoritySid(role), granting);
@@ -57,7 +56,7 @@ public class SecurityAclService {
         this.jdbcMutableAclService.updateAcl(acl);
     }
 
-    private JdbcMutableAclService getJdbcMutableAclService() {
+    /*private JdbcMutableAclService getJdbcMutableAclService() {
         ConcurrentMapCacheManager concurrentMapCacheManager = new ConcurrentMapCacheManager();
         concurrentMapCacheManager.setCacheNames(List.of("aclCache"));
         Cache cache = concurrentMapCacheManager.getCache("aclCache");
@@ -69,10 +68,8 @@ public class SecurityAclService {
                 = new SpringCacheBasedAclCache(cache, defaultPermissionGrantingStrategy, aclAuthorizationStrategy);
         BasicLookupStrategy lookupStrategy
                 = new BasicLookupStrategy(dataSource, aclCache, aclAuthorizationStrategy, new ConsoleAuditLogger());
-        new MutableA
         return new JdbcMutableAclService(dataSource, lookupStrategy, aclCache);
-
-    }
+    }*/
 
     private Sid getOwnerSid() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -84,7 +81,7 @@ public class SecurityAclService {
     }
 
     private MutableAcl getMutableAcl(Sid owner, Sid sid, ObjectIdentity oid, Permission permission, boolean granting) {
-        MutableAcl acl = this.getJdbcMutableAclService().createAcl(oid);
+        MutableAcl acl = this.jdbcMutableAclService.createAcl(oid);
         acl.setOwner(owner);
         acl.insertAce(acl.getEntries().size(), permission, sid, granting);
         return acl;
