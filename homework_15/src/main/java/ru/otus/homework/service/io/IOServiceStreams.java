@@ -1,0 +1,31 @@
+package ru.otus.homework.service.io;
+
+import org.springframework.context.annotation.Configuration;
+
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+@Configuration
+public class IOServiceStreams implements IOService {
+    private final PrintStream output;
+    private final Scanner input;
+
+    public IOServiceStreams() {
+        output = System.out;
+        input = new Scanner(System.in, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public void outputString(String s) {
+        output.println(s);
+    }
+
+    @Override
+    public String readStringWithPrompt(String prompt) {
+        if (prompt != null) {
+            output.print(prompt);
+        }
+        return input.nextLine();
+    }
+}
