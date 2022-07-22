@@ -118,8 +118,6 @@ public class MenuController {
     }
 
     private List<Button> getAssembledMenu(UserDetail userDetail) {
-        System.out.println(getAllMenu().size());
-        System.out.println(getAllMenuw().size());
         List<Button> buttons = new LinkedList<>();
         for (Menu menu : getAllMenu()) {
             try {
@@ -156,11 +154,6 @@ public class MenuController {
 
     @PostFilter("hasPermission(filterObject, 'READ')")
     private List<Menu> getAllMenu() {
-        return menuRepository.findAll();
-    }
-
-    @PostFilter("hasPermission(filterObject, 'WRITE')")
-    private List<Menu> getAllMenuw() {
         return menuRepository.findAll();
     }
 }
