@@ -87,13 +87,13 @@ public class MenuController {
             aclObjectIdentityRepository.save(new AclObjectIdentity(2, 1, "2", null, 2, true));
             aclObjectIdentityRepository.save(new AclObjectIdentity(3, 1, "3", null, 2, true));
 
-            aclEntryRepository.save(new AclEntry(1, 1, 1, 1, 1, true, false, false));
-            aclEntryRepository.save(new AclEntry(2, 2, 2, 1, 1, true, false, false));
-            aclEntryRepository.save(new AclEntry(3, 3, 3, 1, 1, true, false, false));
-            aclEntryRepository.save(new AclEntry(4, 1, 4, 3, 1, true, false, false));
-            aclEntryRepository.save(new AclEntry(5, 1, 5, 2, 1, true, false, false));
-            aclEntryRepository.save(new AclEntry(6, 2, 6, 2, 1, true, false, false));
-            aclEntryRepository.save(new AclEntry(7, 3, 7, 2, 1, true, false, false));
+            aclEntryRepository.save(new AclEntry(1, 1, 1, 1, 4, false, false, false));
+            aclEntryRepository.save(new AclEntry(2, 2, 2, 1, 3, false, false, false));
+            aclEntryRepository.save(new AclEntry(3, 3, 3, 1, 4, false, false, false));
+            aclEntryRepository.save(new AclEntry(4, 1, 4, 3, 1, false, false, false));
+            aclEntryRepository.save(new AclEntry(5, 1, 5, 2, 5, false, false, false));
+            aclEntryRepository.save(new AclEntry(6, 2, 6, 2, 6, false, false, false));
+            aclEntryRepository.save(new AclEntry(7, 3, 7, 2, 7, false, false, false));
         }
     }
 
