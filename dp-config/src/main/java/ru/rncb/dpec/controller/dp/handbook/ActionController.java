@@ -11,7 +11,6 @@ import ru.rncb.dpec.dto.out.content.table.Row;
 import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
-import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.service.dp.handbook.ActionsService;
 
 import java.util.ArrayList;
@@ -23,20 +22,24 @@ public class ActionController {
     private final ActionsService service;
     private final static String PAGE_NAME = "Действия запроса согласия";
 
-    public ActionController(ActionsService service, MenuRepository menuRepository) {
+    public ActionController(ActionsService service) {
         this.service = service;
     }
 
     @GetMapping("/handbook/actions")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
-        List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button().setTitle("Добавить")
-                .setLink(new Link().setMethod(HttpMethod.GET)
-                        .setValue("/handbook/actions/add")
-                ));
         return new Content().setPageName(PAGE_NAME)
-                .setManagement(buttons)
+                .setManagement(List.of(
+                        new Button().setTitle("Назад")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/")
+                                ),
+                        new Button().setTitle("Добавить запись")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/actions/add")
+                                )
+                ))
                 .setTable(getTableAll());
     }
 
@@ -55,6 +58,10 @@ public class ActionController {
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
+                                        .setValue("/handbook/actions/" + actions.getId())
+                                ),
+                        new Button().setTitle("Отмена")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/handbook/actions/" + actions.getId())
                                 )
                 ))
@@ -96,6 +103,10 @@ public class ActionController {
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setLink(new Link().setMethod(HttpMethod.POST)
+                                        .setValue("/handbook/actions")
+                                ),
+                        new Button().setTitle("Отмена")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/handbook/actions")
                                 )
                 ))
@@ -142,7 +153,12 @@ public class ActionController {
         }
         return new Content()
                 .setPageName(PAGE_NAME)
-                .setManagement(List.of(new Button().setTitle("Добавить")
+                .setManagement(List.of(
+                        new Button().setTitle("Назад")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/actions")
+                                ),
+                        new Button().setTitle("Добавить запись")
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/handbook/actions/add")
                         )
@@ -193,13 +209,18 @@ public class ActionController {
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
-                        new Button().setTitle("Редактировать")
+                        new Button().setTitle("Назад")
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/actions/edit/" + actions.getId())
-                                )
-                        , new Button().setTitle("Удалить")
+                                        .setValue("/handbook/actions")
+                                ),
+                        new Button().setTitle("Редактировать")
                                 .setPosition(2)
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/actions/edit/" + actions.getId())
+                                ),
+                        new Button().setTitle("Удалить")
+                                .setPosition(3)
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/handbook/actions/" + actions.getId())
                                 )

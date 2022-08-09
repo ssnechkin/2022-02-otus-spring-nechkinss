@@ -1,120 +1,113 @@
-package ru.rncb.dpec.controller.dp.handbook;
+package ru.rncb.dpec.controller.dp.permissions;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
-import ru.rncb.dpec.domain.entity.dp.handbook.DocumentType;
+import ru.rncb.dpec.domain.entity.Menu;
+import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
-import ru.rncb.dpec.dto.in.dp.handbook.DocumentTypeDto;
+import ru.rncb.dpec.dto.in.dp.PermissionsDto;
 import ru.rncb.dpec.dto.out.Content;
 import ru.rncb.dpec.dto.out.content.*;
 import ru.rncb.dpec.dto.out.content.table.Row;
 import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
-import ru.rncb.dpec.service.dp.handbook.DocumentTypeService;
-import ru.rncb.dpec.service.dp.handbook.ScopeService;
+import ru.rncb.dpec.repository.MenuRepository;
+import ru.rncb.dpec.service.dp.PermissionsService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class DocumentTypeController {
+public class PermissionsController {
 
-    private final DocumentTypeService service;
-    private final ScopeService scopeService;
-    private final static String PAGE_NAME = "Типы документов";
+    private final PermissionsService service;
+    private final static String PAGE_NAME = "Согласия";
 
-    public DocumentTypeController(DocumentTypeService service, ScopeService scopeService) {
+    public PermissionsController(PermissionsService service, MenuRepository menuRepository) {
         this.service = service;
-        this.scopeService = scopeService;
+        addMenu(menuRepository);
     }
 
-    @GetMapping("/handbook/document_type")
+    @GetMapping("/permissions")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
         return new Content().setPageName(PAGE_NAME)
                 .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/")
-                                ),
                         new Button().setTitle("Добавить запись")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type/add")
+                                        .setValue("/permissions/add")
                                 )
                 ))
                 .setTable(getTableAll());
     }
 
-    @GetMapping("/handbook/document_type/{id}")
+    @GetMapping("/permissions/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content view(@PathVariable("id") long id) {
         return getContentView(id);
     }
 
-    @GetMapping("/handbook/document_type/edit/{id}")
+    @GetMapping("/permissions/{id}/edit")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content edit(@PathVariable("id") long id) {
-        DocumentType documentType = service.getById(id);
+        Permissions permissions = service.getById(id);
         return new Content()
                 .setPageName(PAGE_NAME + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
-                                        .setValue("/handbook/document_type/" + documentType.getId())
+                                        .setValue("/permissions/" + permissions.getId())
                                 ),
                         new Button().setTitle("Отмена")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type/" + documentType.getId())
+                                        .setValue("/permissions/" + permissions.getId())
                                 )
                 ))
                 .setForm(new Form().setFields(List.of(
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Мнемоника")
                                 .setName("mnemonic")
-                                .setValue(documentType.getMnemonic()),
+                                .setValue(permissions.getMnemonic()),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Наименование")
                                 .setName("name")
-                                .setValue(documentType.getName()),
+                                .setValue(permissions.getName()),
                         new Field().setType(FieldType.INPUT)
-                                .setLabel("Тип файла XML/PDF")
-                                .setName("file_type")
-                                .setValue(documentType.getFileType()),
+                                .setLabel("Описание")
+                                .setName("description")
+                                .setValue(permissions.getDescription()),
                         new Field().setType(FieldType.INPUT)
-                                .setLabel("Источник данных (ведомство)")
-                                .setName("source")
-                                .setValue(documentType.getSource()),
-                        new Field().setType(FieldType.SELECT)
-                                .setLabel("Область доступа")
-                                .setName("scope")
-                                .setValues(scopeService.getAll()
-                                        .stream()
-                                        .map(this::toValueItem)
-                                        .toList())
+                                .setLabel("Время жизни согласия (мин)")
+                                .setName("expire")
+                                .setValue(String.valueOf(permissions.getExpire())),
+                        new Field().setType(FieldType.INPUT)
+                                .setLabel("Наименование организации или ФИО ответственного")
+                                .setName("responsibleobject")
+                                .setValue(permissions.getResponsibleobject())
                 )));
     }
 
-    @PutMapping("/handbook/document_type/{id}")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackIdDocumentTypeDto")
+    @PutMapping("/permissions/{id}")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackIdPermissionsDto")
     public Content save(@PathVariable("id") long id,
-                        @RequestBody DocumentTypeDto documentTypeDto) {
-        if (documentTypeDto.getMnemonic() == null || documentTypeDto.getMnemonic().isEmpty()) {
+                        @RequestBody PermissionsDto permissionsDto) {
+        if (permissionsDto.getMnemonic() == null || permissionsDto.getMnemonic().isEmpty()) {
             return new Content().setNotifications(List.of(new Notification()
                     .setType(NotificationType.WARNING)
                     .setMessage("Мнемоника должна быть заполнена")
             ));
         } else {
-            service.edit(service.getById(id), documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getFileType(), documentTypeDto.getSource());
+            service.edit(service.getById(id), permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription(), permissionsDto.getExpire(), permissionsDto.getResponsibleobject());
             return getContentView(id).setNotifications(List.of(new Notification()
                     .setType(NotificationType.INFO)
-                    .setMessage("Тип документа успешно сохранен")
+                    .setMessage("Согласие успешно сохранено")
             ));
         }
     }
 
-    @GetMapping("/handbook/document_type/add")
+    @GetMapping("/permissions/add")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content add() {
         return new Content()
@@ -122,12 +115,13 @@ public class DocumentTypeController {
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setLink(new Link().setMethod(HttpMethod.POST)
-                                        .setValue("/handbook/document_type")
+                                        .setValue("/permissions")
                                 ),
                         new Button().setTitle("Отмена")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type")
+                                        .setValue("/permissions")
                                 )
+
                 ))
                 .setForm(new Form().setFields(List.of(
                                 new Field().setType(FieldType.INPUT)
@@ -137,63 +131,59 @@ public class DocumentTypeController {
                                         .setLabel("Наименование")
                                         .setName("name"),
                                 new Field().setType(FieldType.INPUT)
-                                        .setLabel("Тип файла XML/PDF")
-                                        .setName("file_type"),
+                                        .setLabel("Описание")
+                                        .setName("description"),
                                 new Field().setType(FieldType.INPUT)
-                                        .setLabel("Источник документа (ведомство)")
-                                        .setName("source"),
-                                new Field().setType(FieldType.SELECT)
-                                        .setLabel("Область действия (scope)")
-                                        .setName("scope")
-                                        .setValues(scopeService.getAll()
-                                                .stream()
-                                                .map(this::toValueItem)
-                                                .toList())
+                                        .setLabel("Время жизни согласия")
+                                        .setName("expire"),
+                                new Field().setType(FieldType.INPUT)
+                                        .setLabel("Наименование организации или ФИО ответственного")
+                                        .setName("responsibleobject")
                         ))
                 );
     }
 
-    @PostMapping("/handbook/document_type")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackDocumentTypeDto")
-    public Content create(@RequestBody DocumentTypeDto documentTypeDto) {
-        if (documentTypeDto.getMnemonic() == null || documentTypeDto.getMnemonic().isEmpty()) {
+    @PostMapping("/permissions")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackPermissionsDto")
+    public Content create(@RequestBody PermissionsDto permissionsDto) {
+        if (permissionsDto.getMnemonic() == null || permissionsDto.getMnemonic().isEmpty()) {
             return new Content()
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.WARNING)
                                     .setMessage("Мнемоника должна быть заполнена")
                     ));
         } else {
-            DocumentType documentType = service.add(documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getFileType(), documentTypeDto.getSource());
-            return getContentView(documentType.getId())
+            Permissions permissions = service.add(permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription(), permissionsDto.getExpire(), permissionsDto.getResponsibleobject());
+            return getContentView(permissions.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
-                                    .setMessage("Тип документа успешно добавлен")
+                                    .setMessage("Согласие успешно добавлено")
                     ));
         }
     }
 
-    @DeleteMapping("/handbook/document_type/{id}")
+    @DeleteMapping("/permissions/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content delete(@PathVariable("id") long id) {
         Notification notification = new Notification();
         if (service.delete(service.getById(id))) {
             notification.setType(NotificationType.INFO);
-            notification.setMessage("Тип документа успешно удален");
+            notification.setMessage("Согласие успешно удалено");
         } else {
             notification.setType(NotificationType.WARNING);
-            notification.setMessage("Ошибка удаления типа документа");
+            notification.setMessage("Ошибка удаления Согласия");
         }
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type")
+                                        .setValue("/permissions")
                                 ),
                         new Button().setTitle("Добавить запись")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/handbook/document_type/add")
-                        )
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/permissions/add")
+                                )
                 ))
                 .setTable(getTableAll())
                 .setNotifications(List.of(notification));
@@ -210,84 +200,97 @@ public class DocumentTypeController {
         return fallback();
     }
 
-    private Content fallbackIdDocumentTypeDto(long id, DocumentTypeDto documentTypeDto) {
+    private Content fallbackIdPermissionsDto(long id, PermissionsDto permissionsDto) {
         return fallback();
     }
 
-    private Content fallbackDocumentTypeDto(DocumentTypeDto documentTypeDto) {
+    private Content fallbackPermissionsDto(PermissionsDto permissionsDto) {
         return fallback();
     }
 
     private Table getTableAll() {
         List<Row> rows = new ArrayList<>();
-        for (DocumentType documentType : service.getAll()) {
+        for (Permissions permissions : service.getAll()) {
             rows.add(new Row()
                     .setLink(new Link().setMethod(HttpMethod.GET)
-                            .setValue("/handbook/document_type/" + documentType.getId())
+                            .setValue("/permissions/" + permissions.getId())
                     )
                     .setColumns(List.of(
-                            documentType.getMnemonic(),
-                            documentType.getName() == null ? "" : documentType.getName(),
-                            documentType.getFileType() == null ? "" : documentType.getFileType(),
-                            documentType.getScope() == null ? "" : documentType.getScope().getName() + " (" + documentType.getScope().getDescription() + ")",
-                            documentType.getSource() == null ? "" : documentType.getSource()
+                            permissions.getMnemonic(),
+                            permissions.getName() == null ? "" : permissions.getName(),
+                            permissions.getDescription() == null ? "" : permissions.getDescription(),
+                            String.valueOf(permissions.getExpire()),
+                            permissions.getResponsibleobject() == null ? "" : permissions.getResponsibleobject(),
+                            permissions.getScopeList() == null ? "" : String.join(", ", permissions.getScopeList().stream().map(Scope::getName).toList())
                     ))
             );
         }
         return new Table()
-                .setLabels(List.of("Мнемоника", "Наименование", "Тип файла", "Область доступа", "Источник данных"))
+                .setLabels(List.of("Мнемоника", "Нименование", "Описание", "Время жизни (минуты)", "Организация/ФИО ответственного", "Области доступа (Scope)"))
                 .setRows(rows);
     }
 
     private Content getContentView(long id) {
-        DocumentType documentType = service.getById(id);
+        Permissions permissions = service.getById(id);
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type")
+                                        .setValue("/permissions")
                                 ),
                         new Button().setTitle("Редактировать")
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type/edit/" + documentType.getId())
+                                        .setValue("/permissions/" + permissions.getId() + "/edit")
+                                ),
+                        new Button().setTitle("Области доступа (Scope)")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/permissions/" + permissions.getId() + "/scope")
                                 ),
                         new Button().setTitle("Удалить")
                                 .setPosition(3)
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
-                                        .setValue("/handbook/document_type/" + documentType.getId())
+                                        .setValue("/permissions/" + permissions.getId())
                                 )
                 ))
                 .setFields(List.of(
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Мнемоника")
                                 .setName("mnemonic")
-                                .setValue(documentType.getMnemonic()),
+                                .setValue(permissions.getMnemonic()),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Наименование")
                                 .setName("name")
-                                .setValue(documentType.getName()),
+                                .setValue(permissions.getName()),
                         new Field().setType(FieldType.INPUT)
-                                .setLabel("Тип файла XML/PDF")
-                                .setName("file_type")
-                                .setValue(documentType.getFileType()),
+                                .setLabel("Описание")
+                                .setName("description")
+                                .setValue(permissions.getDescription()),
                         new Field().setType(FieldType.INPUT)
-                                .setLabel("Источник данных (ведомство)")
-                                .setName("source")
-                                .setValue(documentType.getSource()),
+                                .setLabel("Время жизни (минуты)")
+                                .setName("expire")
+                                .setValue(String.valueOf(permissions.getExpire())),
                         new Field().setType(FieldType.INPUT)
-                                .setLabel("Область доступа")
+                                .setLabel("Организация/ФИО ответственного")
+                                .setName("responsibleobject")
+                                .setValue(permissions.getResponsibleobject()),
+                        new Field().setType(FieldType.INPUT)
+                                .setLabel("Области доступа (Scope)")
                                 .setName("scope")
-                                .setValue(documentType.getScope().getName() + "(" + documentType.getScope().getDescription() + ")")
+                                .setValue(permissions.getScopeList() == null ? "" : String.join(", ", permissions.getScopeList().stream().map(Scope::getName).toList()))
                 ));
     }
 
-    private ValueItem toValueItem(Scope scope) {
-        ValueItem valueItem = new ValueItem();
-        valueItem.setId(scope.getId());
-        valueItem.setValue(scope.getName() + " (" + scope.getDescription() + ")");
-        return valueItem;
+    private void addMenu(MenuRepository menuRepository) {
+        if (menuRepository.findByLink("/permissions").size() == 0) {
+            Menu menu = new Menu().setTitle(PAGE_NAME)
+                    .setPosition(2)
+                    .setMethod(HttpMethod.GET.name())
+                    .setLink("/permissions")
+                    .setAlt(true);
+            menuRepository.save(menu);
+        }
     }
 }

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.SysPermissions;
-import ru.rncb.dpec.domain.entity.dp.SysResponse;
 import ru.rncb.dpec.domain.entity.dp.Systems;
 import ru.rncb.dpec.repository.dp.SysPermissionsRepository;
 
@@ -22,16 +21,14 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
 
     @Override
     @Transactional
-    public SysPermissions add(Systems systems, Permissions permissions, List<SysResponse> sysResponseList, String comparing, String requestedDocumentsListName, String responsibleobject, long expire, long isDefault) {
+    public SysPermissions add(Systems systems, Permissions permissions, String comparing, String responsibleobject, long expire, boolean isDefault) {
         SysPermissions sysPermissions = new SysPermissions();
         sysPermissions.setSystems(systems);
         sysPermissions.setPermissions(permissions);
         sysPermissions.setComparing(comparing);
-        sysPermissions.setRequestedDocumentsListName(requestedDocumentsListName);
         sysPermissions.setResponsibleobject(responsibleobject);
         sysPermissions.setExpire(expire);
-        sysPermissions.setIsDefault(isDefault);
-        sysPermissions.setSysResponseList(sysResponseList);
+        sysPermissions.setIsDefault(isDefault ? 1 : 0);
         return repository.save(sysPermissions);
     }
 
@@ -47,15 +44,13 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
     }
 
     @Override
-    public SysPermissions edit(SysPermissions sysPermissions, Systems systems, Permissions permissions, List<SysResponse> sysResponseList, String comparing, String requestedDocumentsListName, String responsibleobject, long expire, long isDefault) {
+    public SysPermissions edit(SysPermissions sysPermissions, Systems systems, Permissions permissions, String comparing, String responsibleobject, long expire, boolean isDefault) {
         sysPermissions.setSystems(systems);
         sysPermissions.setPermissions(permissions);
         sysPermissions.setComparing(comparing);
-        sysPermissions.setRequestedDocumentsListName(requestedDocumentsListName);
         sysPermissions.setResponsibleobject(responsibleobject);
         sysPermissions.setExpire(expire);
-        sysPermissions.setIsDefault(isDefault);
-        sysPermissions.setSysResponseList(sysResponseList);
+        sysPermissions.setIsDefault(isDefault ? 1 : 0);
         return repository.save(sysPermissions);
     }
 

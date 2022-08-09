@@ -1,4 +1,4 @@
-package ru.rncb.dpec.controller;
+package ru.rncb.dpec.controller.dp.handbook;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
@@ -13,7 +13,6 @@ import ru.rncb.dpec.dto.out.content.Notification;
 import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.service.dp.handbook.ScopeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +20,9 @@ import java.util.List;
 @RestController
 public class HandbookController {
 
-    private final ScopeService service;
     private final static String PAGE_NAME = "Справочники";
 
-    public HandbookController(ScopeService service, MenuRepository menuRepository) {
-        this.service = service;
+    public HandbookController(MenuRepository menuRepository) {
         addMenu(menuRepository);
     }
 
@@ -64,8 +61,8 @@ public class HandbookController {
 
     private void addMenu(MenuRepository menuRepository) {
         if (menuRepository.findByLink("/handbook").size() == 0) {
-            Menu menu = new Menu().setTitle("Справочники")
-                    .setPosition(1)
+            Menu menu = new Menu().setTitle(PAGE_NAME)
+                    .setPosition(3)
                     .setMethod(HttpMethod.GET.name())
                     .setLink("/handbook")
                     .setAlt(true);

@@ -37,6 +37,10 @@ const contentReader = (response, isOk) => {
     if (response.fields) {
         content.innerHTML = genHtml.getFields(response.fields, true);
     }
+    if (response.fields && response.table) {
+        content.innerHTML = genHtml.getFields(response.fields, true)
+        + genHtml.getTable(response.table.labels, response.table.rows, followLink);
+    }
     if (response.notifications) {
         for (var prop in response.notifications) {
             alert(response.notifications[prop].message);

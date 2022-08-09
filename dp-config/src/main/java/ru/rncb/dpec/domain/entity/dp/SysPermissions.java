@@ -37,7 +37,7 @@ public class SysPermissions {
     @Comment("Время жизни согласия в минутах")
     private long expire;
 
-    @Comment("Наименование списка полей, возвращаемых сервисов")
+    @Comment("Наименование списка полей, запрашиваемых из ЕСИА")
     @Column(name = "requested_documents_list_name", length = 500)
     private String requestedDocumentsListName;
 

@@ -11,7 +11,6 @@ import ru.rncb.dpec.dto.out.content.table.Row;
 import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
-import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.service.dp.handbook.PurposesService;
 
 import java.util.ArrayList;
@@ -23,20 +22,24 @@ public class PurposesController {
     private final PurposesService service;
     private final static String PAGE_NAME = "Цели запроса согласия";
 
-    public PurposesController(PurposesService service, MenuRepository menuRepository) {
+    public PurposesController(PurposesService service) {
         this.service = service;
     }
 
     @GetMapping("/handbook/purposes")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
-        List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button().setTitle("Добавить")
-                .setLink(new Link().setMethod(HttpMethod.GET)
-                        .setValue("/handbook/purposes/add")
-                ));
         return new Content().setPageName(PAGE_NAME)
-                .setManagement(buttons)
+                .setManagement(List.of(
+                        new Button().setTitle("Назад")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/")
+                                ),
+                        new Button().setTitle("Добавить запись")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/purposes/add")
+                                )
+                ))
                 .setTable(getTableAll());
     }
 
@@ -55,6 +58,10 @@ public class PurposesController {
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
+                                        .setValue("/handbook/purposes/" + purposes.getId())
+                                ),
+                        new Button().setTitle("Отмена")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/handbook/purposes/" + purposes.getId())
                                 )
                 ))
@@ -97,7 +104,12 @@ public class PurposesController {
                         new Button().setTitle("Добавить")
                                 .setLink(new Link().setMethod(HttpMethod.POST)
                                         .setValue("/handbook/purposes")
+                                ),
+                        new Button().setTitle("Отмена")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/purposes")
                                 )
+
                 ))
                 .setForm(new Form().setFields(List.of(
                                 new Field().setType(FieldType.INPUT)
@@ -142,7 +154,12 @@ public class PurposesController {
         }
         return new Content()
                 .setPageName(PAGE_NAME)
-                .setManagement(List.of(new Button().setTitle("Добавить")
+                .setManagement(List.of(
+                        new Button().setTitle("Назад")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/purposes")
+                                ),
+                        new Button().setTitle("Добавить запись")
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/handbook/purposes/add")
                         )
@@ -193,13 +210,18 @@ public class PurposesController {
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
-                        new Button().setTitle("Редактировать")
+                        new Button().setTitle("Назад")
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/purposes/edit/" + purposes.getId())
-                                )
-                        , new Button().setTitle("Удалить")
+                                        .setValue("/handbook/purposes")
+                                ),
+                        new Button().setTitle("Редактировать")
                                 .setPosition(2)
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/handbook/purposes/edit/" + purposes.getId())
+                                ),
+                        new Button().setTitle("Удалить")
+                                .setPosition(3)
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/handbook/purposes/" + purposes.getId())
                                 )

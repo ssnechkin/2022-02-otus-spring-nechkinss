@@ -28,6 +28,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests().antMatchers("/handbook/scope/**").hasAnyRole("ADMIN", "EDITOR")
                 .and().authorizeRequests().antMatchers("/handbook").authenticated()
+                .and().authorizeRequests().antMatchers("/permissions").authenticated()
                 .and().authorizeRequests().antMatchers("/menu").authenticated()
                 .and().authorizeRequests().antMatchers("/page/login", "/css/**", "/js/**", "/actuator/*").permitAll()
                 .and().formLogin().loginPage("/page/login").defaultSuccessUrl("/menu").failureUrl("/error/login")
