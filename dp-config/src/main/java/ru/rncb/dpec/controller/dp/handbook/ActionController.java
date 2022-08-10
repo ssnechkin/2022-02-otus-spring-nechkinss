@@ -156,7 +156,7 @@ public class ActionController {
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/actions")
+                                        .setValue("/handbook")
                                 ),
                         new Button().setTitle("Добавить запись")
                         .setLink(new Link().setMethod(HttpMethod.GET)

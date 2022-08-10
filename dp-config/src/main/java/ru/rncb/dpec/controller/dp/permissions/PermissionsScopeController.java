@@ -5,8 +5,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
-import ru.rncb.dpec.dto.in.dp.PermissionsDto;
-import ru.rncb.dpec.dto.in.dp.PermissionsScopeDto;
+import ru.rncb.dpec.dto.in.dp.permissions.PermissionsDto;
+import ru.rncb.dpec.dto.in.dp.permissions.PermissionsScopeDto;
 import ru.rncb.dpec.dto.out.Content;
 import ru.rncb.dpec.dto.out.content.*;
 import ru.rncb.dpec.dto.out.content.table.Row;
@@ -14,8 +14,8 @@ import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.service.dp.PermissionsService;
 import ru.rncb.dpec.service.dp.handbook.ScopeService;
+import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,8 @@ public class PermissionsScopeController {
 
     private final PermissionsService service;
     private final ScopeService scopeService;
-    private final static String PAGE_NAME = "Согласия - Области доступа (Scope)";
+    private final static String PAGE_NAME = "Согласие ";
+    private final static String PAGE_NAME_SCOPE = " - Области доступа (Scope)";
 
     public PermissionsScopeController(PermissionsService service, MenuRepository menuRepository, ScopeService scopeService) {
         this.service = service;
@@ -35,7 +36,7 @@ public class PermissionsScopeController {
     @GetMapping("/permissions/{permissions_id}/scope")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list(@PathVariable("permissions_id") long permissionsId) {
-        return new Content().setPageName(PAGE_NAME + " " + service.getById(permissionsId).getMnemonic())
+        return new Content().setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
@@ -66,7 +67,7 @@ public class PermissionsScopeController {
         if (scopeList == null) scopeList = new ArrayList<>();
         List<Scope> finalScopeList = scopeList;
         return new Content()
-                .setPageName(PAGE_NAME + " " + service.getById(permissionsId).getMnemonic() + " - добавление Scope")
+                .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE + " - Добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setLink(new Link().setMethod(HttpMethod.POST)
@@ -133,7 +134,7 @@ public class PermissionsScopeController {
             notification.setMessage("Ошибка удаления scope из Согласия. Согласие не найдено");
         }
         return new Content()
-                .setPageName(PAGE_NAME)
+                .setPageName(PAGE_NAME + PAGE_NAME_SCOPE)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
@@ -195,7 +196,7 @@ public class PermissionsScopeController {
     private Content getContentView(long permissionsId, long id) {
         Scope scope = scopeService.getById(id);
         return new Content()
-                .setPageName(PAGE_NAME + " " + service.getById(permissionsId).getMnemonic())
+                .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setPosition(1)

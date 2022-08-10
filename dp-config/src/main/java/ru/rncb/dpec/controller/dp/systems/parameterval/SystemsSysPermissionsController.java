@@ -1,20 +1,21 @@
-package ru.rncb.dpec.controller.dp.systems;
+package ru.rncb.dpec.controller.dp.systems.parameterval;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.SysPermissions;
+import ru.rncb.dpec.domain.entity.dp.Systems;
 import ru.rncb.dpec.dto.in.dp.systems.SystemsDto;
-import ru.rncb.dpec.dto.in.dp.systems.SystemsUrlParameterValDto;
+import ru.rncb.dpec.dto.in.dp.systems.parameterval.SystemsUrlParameterValDto;
 import ru.rncb.dpec.dto.out.Content;
 import ru.rncb.dpec.dto.out.content.*;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.service.dp.PermissionsService;
-import ru.rncb.dpec.service.dp.SysPermissionsService;
-import ru.rncb.dpec.service.dp.SystemsService;
+import ru.rncb.dpec.service.dp.permissions.PermissionsService;
+import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
+import ru.rncb.dpec.service.dp.systems.SystemsService;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class SystemsSysPermissionsController {
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content addUrlParameterVal(@PathVariable("systems_id") long systemsId) {
         return new Content()
-                .setPageName(PAGE_NAME + " - добавление значения URL-параметра")
+                .setPageName(PAGE_NAME + " " + getSystemName(systemsId) + " - добавление значения URL-параметра")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setLink(new Link().setMethod(HttpMethod.POST)
@@ -123,7 +124,7 @@ public class SystemsSysPermissionsController {
                         @PathVariable("id") long id) {
         SysPermissions sysPermissions = sysPermissionsService.getById(id);
         return new Content()
-                .setPageName(PAGE_NAME + " - редактирование")
+                .setPageName(PAGE_NAME + " " + getSystemName(systemsId) + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
@@ -232,7 +233,7 @@ public class SystemsSysPermissionsController {
     private Content getContentView(long systemsId, long sysPermissionsId) {
         SysPermissions sysPermissions = sysPermissionsService.getById(sysPermissionsId);
         return new Content()
-                .setPageName(PAGE_NAME)
+                .setPageName(PAGE_NAME + " " + getSystemName(systemsId))
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setPosition(1)
@@ -243,6 +244,16 @@ public class SystemsSysPermissionsController {
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/edit")
+                                ),
+                        new Button().setTitle("Список запрашиваемых документов")
+                                .setPosition(2)
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/requested_documents")
+                                ),
+                        new Button().setTitle("Фильтр ответа")
+                                .setPosition(2)
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/response_filter")
                                 ),
                         new Button().setTitle("Удалить")
                                 .setPosition(4)
@@ -272,6 +283,14 @@ public class SystemsSysPermissionsController {
                                 .setName("permissions_id")
                                 .setValue(sysPermissions.getPermissions().getMnemonic())
                 ));
+    }
+
+    private String getSystemName(long systemId) {
+        Systems systems = service.getById(systemId);
+        if (systems != null) {
+            return systems.getName();
+        }
+        return "";
     }
 
 }

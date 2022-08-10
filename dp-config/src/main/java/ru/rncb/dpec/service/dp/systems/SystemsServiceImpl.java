@@ -1,4 +1,4 @@
-package ru.rncb.dpec.service.dp;
+package ru.rncb.dpec.service.dp.systems;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

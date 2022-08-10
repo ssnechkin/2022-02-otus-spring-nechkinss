@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
-import ru.rncb.dpec.dto.in.dp.PermissionsDto;
+import ru.rncb.dpec.dto.in.dp.permissions.PermissionsDto;
 import ru.rncb.dpec.dto.out.Content;
 import ru.rncb.dpec.dto.out.content.*;
 import ru.rncb.dpec.dto.out.content.table.Row;
@@ -14,7 +14,7 @@ import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.service.dp.PermissionsService;
+import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,15 +77,7 @@ public class PermissionsController {
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Описание")
                                 .setName("description")
-                                .setValue(permissions.getDescription()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Время жизни согласия (мин)")
-                                .setName("expire")
-                                .setValue(String.valueOf(permissions.getExpire())),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Наименование организации или ФИО ответственного")
-                                .setName("responsibleobject")
-                                .setValue(permissions.getResponsibleobject())
+                                .setValue(permissions.getDescription())
                 )));
     }
 
@@ -99,7 +91,7 @@ public class PermissionsController {
                     .setMessage("Мнемоника должна быть заполнена")
             ));
         } else {
-            service.edit(service.getById(id), permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription(), permissionsDto.getExpire(), permissionsDto.getResponsibleobject());
+            service.edit(service.getById(id), permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription());
             return getContentView(id).setNotifications(List.of(new Notification()
                     .setType(NotificationType.INFO)
                     .setMessage("Согласие успешно сохранено")
@@ -132,13 +124,7 @@ public class PermissionsController {
                                         .setName("name"),
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Описание")
-                                        .setName("description"),
-                                new Field().setType(FieldType.INPUT)
-                                        .setLabel("Время жизни согласия")
-                                        .setName("expire"),
-                                new Field().setType(FieldType.INPUT)
-                                        .setLabel("Наименование организации или ФИО ответственного")
-                                        .setName("responsibleobject")
+                                        .setName("description")
                         ))
                 );
     }
@@ -153,7 +139,7 @@ public class PermissionsController {
                                     .setMessage("Мнемоника должна быть заполнена")
                     ));
         } else {
-            Permissions permissions = service.add(permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription(), permissionsDto.getExpire(), permissionsDto.getResponsibleobject());
+            Permissions permissions = service.add(permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription());
             return getContentView(permissions.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
@@ -176,10 +162,6 @@ public class PermissionsController {
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/permissions")
-                                ),
                         new Button().setTitle("Добавить запись")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/add")
@@ -219,14 +201,12 @@ public class PermissionsController {
                             permissions.getMnemonic(),
                             permissions.getName() == null ? "" : permissions.getName(),
                             permissions.getDescription() == null ? "" : permissions.getDescription(),
-                            String.valueOf(permissions.getExpire()),
-                            permissions.getResponsibleobject() == null ? "" : permissions.getResponsibleobject(),
                             permissions.getScopeList() == null ? "" : String.join(", ", permissions.getScopeList().stream().map(Scope::getName).toList())
                     ))
             );
         }
         return new Table()
-                .setLabels(List.of("Мнемоника", "Нименование", "Описание", "Время жизни (минуты)", "Организация/ФИО ответственного", "Области доступа (Scope)"))
+                .setLabels(List.of("Мнемоника", "Нименование", "Описание", "Области доступа (Scope)"))
                 .setRows(rows);
     }
 
@@ -268,14 +248,6 @@ public class PermissionsController {
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(permissions.getDescription()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Время жизни (минуты)")
-                                .setName("expire")
-                                .setValue(String.valueOf(permissions.getExpire())),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Организация/ФИО ответственного")
-                                .setName("responsibleobject")
-                                .setValue(permissions.getResponsibleobject()),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Области доступа (Scope)")
                                 .setName("scope")

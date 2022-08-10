@@ -1,4 +1,4 @@
-package ru.rncb.dpec.service.dp;
+package ru.rncb.dpec.service.dp.systems;
 
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.SysPermissions;

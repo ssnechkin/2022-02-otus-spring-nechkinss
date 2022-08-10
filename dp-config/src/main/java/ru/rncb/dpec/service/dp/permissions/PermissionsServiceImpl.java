@@ -1,4 +1,4 @@
-package ru.rncb.dpec.service.dp;
+package ru.rncb.dpec.service.dp.permissions;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +24,11 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     @Transactional
-    public Permissions add(String mnemonic, String name, String description, long expire, String responsibleobject) {
+    public Permissions add(String mnemonic, String name, String description) {
         Permissions permissions = new Permissions();
         permissions.setMnemonic(mnemonic);
         permissions.setName(name);
         permissions.setDescription(description);
-        permissions.setExpire(expire);
-        permissions.setResponsibleobject(responsibleobject);
         return repository.save(permissions);
     }
 
@@ -46,12 +44,10 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public Permissions edit(Permissions permissions, String mnemonic, String name, String description, long expire, String responsibleobject) {
+    public Permissions edit(Permissions permissions, String mnemonic, String name, String description) {
         permissions.setMnemonic(mnemonic);
         permissions.setName(name);
         permissions.setDescription(description);
-        permissions.setExpire(expire);
-        permissions.setResponsibleobject(responsibleobject);
         return repository.save(permissions);
     }
 

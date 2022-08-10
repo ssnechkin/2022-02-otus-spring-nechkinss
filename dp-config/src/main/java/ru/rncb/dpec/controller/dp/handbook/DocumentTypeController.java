@@ -79,10 +79,6 @@ public class DocumentTypeController {
                                 .setName("name")
                                 .setValue(documentType.getName()),
                         new Field().setType(FieldType.INPUT)
-                                .setLabel("Тип файла XML/PDF")
-                                .setName("file_type")
-                                .setValue(documentType.getFileType()),
-                        new Field().setType(FieldType.INPUT)
                                 .setLabel("Источник данных (ведомство)")
                                 .setName("source")
                                 .setValue(documentType.getSource()),
@@ -106,7 +102,7 @@ public class DocumentTypeController {
                     .setMessage("Мнемоника должна быть заполнена")
             ));
         } else {
-            service.edit(service.getById(id), documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getFileType(), documentTypeDto.getSource());
+            service.edit(service.getById(id), documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getSource());
             return getContentView(id).setNotifications(List.of(new Notification()
                     .setType(NotificationType.INFO)
                     .setMessage("Тип документа успешно сохранен")
@@ -137,9 +133,6 @@ public class DocumentTypeController {
                                         .setLabel("Наименование")
                                         .setName("name"),
                                 new Field().setType(FieldType.INPUT)
-                                        .setLabel("Тип файла XML/PDF")
-                                        .setName("file_type"),
-                                new Field().setType(FieldType.INPUT)
                                         .setLabel("Источник документа (ведомство)")
                                         .setName("source"),
                                 new Field().setType(FieldType.SELECT)
@@ -163,7 +156,7 @@ public class DocumentTypeController {
                                     .setMessage("Мнемоника должна быть заполнена")
                     ));
         } else {
-            DocumentType documentType = service.add(documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getFileType(), documentTypeDto.getSource());
+            DocumentType documentType = service.add(documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getSource());
             return getContentView(documentType.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
@@ -188,7 +181,7 @@ public class DocumentTypeController {
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type")
+                                        .setValue("/handbook")
                                 ),
                         new Button().setTitle("Добавить запись")
                         .setLink(new Link().setMethod(HttpMethod.GET)
@@ -228,14 +221,13 @@ public class DocumentTypeController {
                     .setColumns(List.of(
                             documentType.getMnemonic(),
                             documentType.getName() == null ? "" : documentType.getName(),
-                            documentType.getFileType() == null ? "" : documentType.getFileType(),
                             documentType.getScope() == null ? "" : documentType.getScope().getName() + " (" + documentType.getScope().getDescription() + ")",
                             documentType.getSource() == null ? "" : documentType.getSource()
                     ))
             );
         }
         return new Table()
-                .setLabels(List.of("Мнемоника", "Наименование", "Тип файла", "Область доступа", "Источник данных"))
+                .setLabels(List.of("Мнемоника", "Наименование", "Область доступа", "Источник данных"))
                 .setRows(rows);
     }
 
@@ -269,10 +261,6 @@ public class DocumentTypeController {
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(documentType.getName()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Тип файла XML/PDF")
-                                .setName("file_type")
-                                .setValue(documentType.getFileType()),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Источник данных (ведомство)")
                                 .setName("source")

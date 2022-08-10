@@ -1,4 +1,4 @@
-package ru.rncb.dpec.service.dp;
+package ru.rncb.dpec.service.dp.documents;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +39,11 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService 
     @Override
     public List<RequestedDocuments> getAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public List<RequestedDocuments> getAllByListName(String listName) {
+        return repository.findByListName(listName);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package ru.rncb.dpec.service.dp;
+package ru.rncb.dpec.service.dp.permissions;
 
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface PermissionsService {
 
-    Permissions add(String mnemonic, String name, String description, long expire, String responsibleobject);
+    Permissions add(String mnemonic, String name, String description);
 
     Permissions getById(long id);
 
     List<Permissions> getAll();
 
-    Permissions edit(Permissions permissions, String mnemonic, String name, String description, long expire, String responsibleobject);
+    Permissions edit(Permissions permissions, String mnemonic, String name, String description);
 
     boolean delete(Permissions permissions);
 

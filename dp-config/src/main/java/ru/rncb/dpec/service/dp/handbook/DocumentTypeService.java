@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface DocumentTypeService {
 
-    DocumentType add(String mnemonic, String name, Scope scope, String fileType, String source);
+    DocumentType add(String mnemonic, String name, Scope scope, String source);
 
     DocumentType getById(long id);
 
     List<DocumentType> getAll();
 
-    DocumentType edit(DocumentType documentType, String mnemonic, String name, Scope scope, String fileType, String source);
+    DocumentType edit(DocumentType documentType, String mnemonic, String name, Scope scope, String source);
 
     boolean delete(DocumentType documentType);
 }

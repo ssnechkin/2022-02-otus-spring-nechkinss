@@ -1,4 +1,4 @@
-package ru.rncb.dpec.dto.in.dp.systems;
+package ru.rncb.dpec.dto.in.dp.systems.parameterval;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

@@ -14,9 +14,9 @@ import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.service.dp.PermissionsService;
-import ru.rncb.dpec.service.dp.SysPermissionsService;
-import ru.rncb.dpec.service.dp.SystemsService;
+import ru.rncb.dpec.service.dp.permissions.PermissionsService;
+import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
+import ru.rncb.dpec.service.dp.systems.SystemsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -243,7 +243,7 @@ public class SystemsController {
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + system.getId() + "/edit")
                                 ),
-                        new Button().setTitle("Добавить URL параметр")
+                        new Button().setTitle("Добавить значение URL параметра")
                                 .setPosition(3)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + system.getId() + "/url_parameter/add")
@@ -277,8 +277,8 @@ public class SystemsController {
                     .setColumns(List.of(
                             sysPermissions.getComparing(),
                             sysPermissions.getIsDefault() == 1 ? "&check;" : "",
-                            String.valueOf(sysPermissions.getExpire()),
                             sysPermissions.getPermissions() == null ? "" : sysPermissions.getPermissions().getMnemonic(),
+                            String.valueOf(sysPermissions.getExpire()),
                             sysPermissions.getResponsibleobject() == null ? "" : sysPermissions.getResponsibleobject()
                     ))
             );
@@ -287,8 +287,8 @@ public class SystemsController {
                 .setLabels(List.of(
                         "Значение URL параметра",
                         "Применять по умолчанию",
-                        "Время жизни согласия (минут)",
                         "Согласие",
+                        "Время жизни согласия (минут)",
                         "Организация/ФИО ответственного"
                 ))
                 .setRows(rows);

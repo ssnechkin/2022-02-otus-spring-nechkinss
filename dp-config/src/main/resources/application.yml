@@ -48,4 +48,4 @@ logging:
   level:
     ROOT: INFO
   file:
-    name: book_lib.log
+    name: dp-config.log

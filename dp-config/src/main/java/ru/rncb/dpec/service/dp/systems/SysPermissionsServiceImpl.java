@@ -1,4 +1,4 @@
-package ru.rncb.dpec.service.dp;
+package ru.rncb.dpec.service.dp.systems;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +9,7 @@ import ru.rncb.dpec.repository.dp.SysPermissionsRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class SysPermissionsServiceImpl implements SysPermissionsService {
@@ -32,6 +33,7 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
             omitTheDefaultFlagForEveryone(systems);
         }
         sysPermissions.setIsDefault(isDefault ? 1 : 0);
+        sysPermissions.setRequestedDocumentsListName(systems.getName() + permissions.getMnemonic() + comparing + UUID.randomUUID());
         return repository.save(sysPermissions);
     }
 

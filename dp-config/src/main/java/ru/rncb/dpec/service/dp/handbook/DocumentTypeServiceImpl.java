@@ -20,12 +20,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     @Transactional
-    public DocumentType add(String mnemonic, String name, Scope scope, String fileType, String source) {
+    public DocumentType add(String mnemonic, String name, Scope scope, String source) {
         DocumentType documentType = new DocumentType();
         documentType.setMnemonic(mnemonic);
         documentType.setName(name);
         documentType.setScope(scope);
-        documentType.setFileType(fileType);
         documentType.setSource(source);
         return repository.save(documentType);
     }
@@ -42,11 +41,10 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
 
     @Override
-    public DocumentType edit(DocumentType documentType, String mnemonic, String name, Scope scope, String fileType, String source) {
+    public DocumentType edit(DocumentType documentType, String mnemonic, String name, Scope scope, String source) {
         documentType.setMnemonic(mnemonic);
         documentType.setName(name);
         documentType.setScope(scope);
-        documentType.setFileType(fileType);
         documentType.setSource(source);
         return repository.save(documentType);
     }
