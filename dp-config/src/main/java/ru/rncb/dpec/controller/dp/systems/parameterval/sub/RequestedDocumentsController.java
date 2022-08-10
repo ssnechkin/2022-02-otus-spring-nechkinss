@@ -28,9 +28,9 @@ public class RequestedDocumentsController {
     private final SystemsService systemsService;
     private final SysPermissionsService sysPermissionsService;
     private final DocumentTypeService documentTypeService;
-    private final static String PAGE_NAME = "Системы -> ";
-    private final static String PAGE_NAME_PAR_VAL = " -> Значение параметра: ";
-    private final static String PAGE_NAME_REQ_DOC = " -> Список запрашиваемых документов";
+    private final static String PAGE_NAME = "Системы > ";
+    private final static String PAGE_NAME_PAR_VAL = " > Значение параметра: ";
+    private final static String PAGE_NAME_REQ_DOC = " > Список запрашиваемых документов";
 
     public RequestedDocumentsController(RequestedDocumentsService service, SystemsService systemsService,
                                         SysPermissionsService sysPermissionsService, DocumentTypeService documentTypeService) {
@@ -100,10 +100,12 @@ public class RequestedDocumentsController {
                                                 .toList()),
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Версия API (в ЕСИА)")
-                                        .setName("api_version"),
+                                        .setName("api_version")
+                                        .setPlaceholder("v1"),
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Тип запрашиваемого файла XML/PDF")
-                                        .setName("file_type"),
+                                        .setName("file_type")
+                                        .setPlaceholder("XML/PDF/Пусто-JSON"),
                                 new Field().setType(FieldType.CHECKBOX)
                                         .setLabel("Флаг расширенного запроса")
                                         .setName("is_extended")
@@ -116,7 +118,8 @@ public class RequestedDocumentsController {
     public Content create(@PathVariable("system_id") long systemId,
                           @PathVariable("parameter_val_id") long parameterValId,
                           @RequestBody RequestedDocumentsDto requestedDocumentsDto) {
-        RequestedDocuments requestedDocuments = service.add(documentTypeService.getById(requestedDocumentsDto.getDocumentTypeId()),
+        RequestedDocuments requestedDocuments = service.add(
+                documentTypeService.getById(requestedDocumentsDto.getDocumentTypeId()),
                 requestedDocumentsDto.getApiVersion(),
                 requestedDocumentsDto.getFileType(),
                 sysPermissionsService.getById(parameterValId).getRequestedDocumentsListName(),

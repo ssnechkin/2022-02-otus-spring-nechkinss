@@ -20,7 +20,7 @@ import java.util.List;
 public class ScopeController {
 
     private final ScopeService service;
-    private final static String PAGE_NAME = "Области доступа (Scope)";
+    private final static String PAGE_NAME = "Справочники > Области доступа (Scope)";
 
     public ScopeController(ScopeService service) {
         this.service = service;

@@ -2,6 +2,7 @@ package ru.rncb.dpec.service.dp.systems;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.rncb.dpec.domain.entity.dp.SysPermissions;
 import ru.rncb.dpec.domain.entity.dp.SysResponse;
 import ru.rncb.dpec.domain.entity.dp.handbook.DocumentType;
 import ru.rncb.dpec.repository.dp.SysResponseRepository;
@@ -20,11 +21,12 @@ public class SysResponseServiceImpl implements SysResponseService {
 
     @Override
     @Transactional
-    public SysResponse add(DocumentType documentType, String documentFactKey) {
+    public SysResponse add(SysPermissions sysPermissions, DocumentType documentType, String documentFactKey) {
         SysResponse sysResponse = new SysResponse();
         sysResponse.setDocumentType(documentType);
         sysResponse.setDocumentFactKey(documentFactKey == null || documentFactKey.length() == 0
                 ? "OriginalJSON" : documentFactKey);
+        sysResponse.setSysPermissions(sysPermissions);
         return repository.save(sysResponse);
     }
 

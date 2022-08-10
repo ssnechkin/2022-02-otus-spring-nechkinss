@@ -20,7 +20,7 @@ import java.util.List;
 public class ActionController {
 
     private final ActionsService service;
-    private final static String PAGE_NAME = "Действия запроса согласия";
+    private final static String PAGE_NAME = "Справочники > Действия запроса согласия";
 
     public ActionController(ActionsService service) {
         this.service = service;

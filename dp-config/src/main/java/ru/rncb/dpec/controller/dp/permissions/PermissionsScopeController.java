@@ -25,8 +25,8 @@ public class PermissionsScopeController {
 
     private final PermissionsService service;
     private final ScopeService scopeService;
-    private final static String PAGE_NAME = "Согласие ";
-    private final static String PAGE_NAME_SCOPE = " - Области доступа (Scope)";
+    private final static String PAGE_NAME = "Согласия > ";
+    private final static String PAGE_NAME_SCOPE = " > Области доступа (Scope)";
 
     public PermissionsScopeController(PermissionsService service, MenuRepository menuRepository, ScopeService scopeService) {
         this.service = service;

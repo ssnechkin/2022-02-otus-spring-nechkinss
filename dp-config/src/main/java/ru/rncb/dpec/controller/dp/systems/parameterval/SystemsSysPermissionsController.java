@@ -25,7 +25,7 @@ public class SystemsSysPermissionsController {
     private final SystemsService service;
     private final SysPermissionsService sysPermissionsService;
     private final PermissionsService permissionsService;
-    private final static String PAGE_NAME = "Сиситемы";
+    private final static String PAGE_NAME = "Системы > ";
 
     public SystemsSysPermissionsController(SystemsService service, MenuRepository menuRepository,
                                            SysPermissionsService sysPermissionsService, PermissionsService permissionsService) {
@@ -38,7 +38,7 @@ public class SystemsSysPermissionsController {
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content addUrlParameterVal(@PathVariable("systems_id") long systemsId) {
         return new Content()
-                .setPageName(PAGE_NAME + " " + getSystemName(systemsId) + " - добавление значения URL-параметра")
+                .setPageName(PAGE_NAME + getSystemName(systemsId) + " - добавление значения URL-параметра")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setLink(new Link().setMethod(HttpMethod.POST)
@@ -124,7 +124,7 @@ public class SystemsSysPermissionsController {
                         @PathVariable("id") long id) {
         SysPermissions sysPermissions = sysPermissionsService.getById(id);
         return new Content()
-                .setPageName(PAGE_NAME + " " + getSystemName(systemsId) + " - редактирование")
+                .setPageName(PAGE_NAME + getSystemName(systemsId) + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
@@ -233,7 +233,7 @@ public class SystemsSysPermissionsController {
     private Content getContentView(long systemsId, long sysPermissionsId) {
         SysPermissions sysPermissions = sysPermissionsService.getById(sysPermissionsId);
         return new Content()
-                .setPageName(PAGE_NAME + " " + getSystemName(systemsId))
+                .setPageName(PAGE_NAME + getSystemName(systemsId))
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setPosition(1)
@@ -292,5 +292,4 @@ public class SystemsSysPermissionsController {
         }
         return "";
     }
-
 }

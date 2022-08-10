@@ -28,9 +28,9 @@ public class ResponseFilterController {
     private final SystemsService systemsService;
     private final SysPermissionsService sysPermissionsService;
     private final DocumentTypeService documentTypeService;
-    private final static String PAGE_NAME = "Системы -> ";
-    private final static String PAGE_NAME_PAR_VAL = " -> Значение параметра: ";
-    private final static String PAGE_NAME_RESP_FILTER = " -> Фильтр ответа";
+    private final static String PAGE_NAME = "Системы > ";
+    private final static String PAGE_NAME_PAR_VAL = " > Значение параметра: ";
+    private final static String PAGE_NAME_RESP_FILTER = " > Фильтр ответа";
 
     public ResponseFilterController(SysResponseService service, SystemsService systemsService, SysPermissionsService sysPermissionsService, DocumentTypeService documentTypeService) {
         this.service = service;
@@ -153,8 +153,11 @@ public class ResponseFilterController {
     public Content create(@PathVariable("system_id") long systemId,
                           @PathVariable("parameter_val_id") long parameterValId,
                           @RequestBody ResponseFilerDto responseFilerDto) {
-        SysResponse sysResponse = service.add(documentTypeService.getById(responseFilerDto.getDocumentTypeId()),
-                responseFilerDto.getDocumentFactKey());
+        SysResponse sysResponse = service.add(
+                sysPermissionsService.getById(parameterValId),
+                documentTypeService.getById(responseFilerDto.getDocumentTypeId()),
+                responseFilerDto.getDocumentFactKey()
+        );
         return getContentView(systemId, parameterValId, sysResponse.getId())
                 .setNotifications(List.of(
                         new Notification().setType(NotificationType.INFO)
@@ -221,7 +224,7 @@ public class ResponseFilterController {
 
     private Table getTableAll(long systemId, long parameterValId) {
         List<Row> rows = new ArrayList<>();
-        for (SysResponse sysResponse : service.getAll()) {
+        for (SysResponse sysResponse : sysPermissionsService.getById(parameterValId).getSysResponseList()) {
             rows.add(new Row()
                     .setLink(new Link().setMethod(HttpMethod.GET)
                             .setValue("/systems/" + systemId

@@ -20,7 +20,7 @@ import java.util.List;
 public class PurposesController {
 
     private final PurposesService service;
-    private final static String PAGE_NAME = "Цели запроса согласия";
+    private final static String PAGE_NAME = "Справочники > Цели запроса согласия";
 
     public PurposesController(PurposesService service) {
         this.service = service;

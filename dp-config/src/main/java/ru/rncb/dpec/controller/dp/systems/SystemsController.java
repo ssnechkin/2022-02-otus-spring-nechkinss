@@ -14,7 +14,6 @@ import ru.rncb.dpec.dto.out.content.table.Table;
 import ru.rncb.dpec.dto.out.enums.FieldType;
 import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
 import ru.rncb.dpec.service.dp.systems.SystemsService;
 
@@ -26,14 +25,12 @@ public class SystemsController {
 
     private final SystemsService service;
     private final SysPermissionsService sysPermissionsService;
-    private final PermissionsService permissionsService;
-    private final static String PAGE_NAME = "Сиситемы";
+    private final static String PAGE_NAME = "Системы";
 
     public SystemsController(SystemsService service, MenuRepository menuRepository,
-                             SysPermissionsService sysPermissionsService, PermissionsService permissionsService) {
+                             SysPermissionsService sysPermissionsService) {
         this.service = service;
         this.sysPermissionsService = sysPermissionsService;
-        this.permissionsService = permissionsService;
         addMenu(menuRepository);
     }
 

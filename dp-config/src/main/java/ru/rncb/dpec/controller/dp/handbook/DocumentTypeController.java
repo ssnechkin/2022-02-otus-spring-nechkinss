@@ -23,7 +23,7 @@ public class DocumentTypeController {
 
     private final DocumentTypeService service;
     private final ScopeService scopeService;
-    private final static String PAGE_NAME = "Типы документов";
+    private final static String PAGE_NAME = "Справочники > Типы документов";
 
     public DocumentTypeController(DocumentTypeService service, ScopeService scopeService) {
         this.service = service;
