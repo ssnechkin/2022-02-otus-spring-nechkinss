@@ -24,7 +24,7 @@ public class SysResponseServiceImpl implements SysResponseService {
     public SysResponse add(SysPermissions sysPermissions, DocumentType documentType, String documentFactKey) {
         SysResponse sysResponse = new SysResponse();
         sysResponse.setDocumentType(documentType);
-        sysResponse.setDocumentFactKey(documentFactKey == null || documentFactKey.length() == 0
+        sysResponse.setDocumentFactKey(documentFactKey == null || documentFactKey.isEmpty()
                 ? "OriginalJSON" : documentFactKey);
         sysResponse.setSysPermissions(sysPermissions);
         return repository.save(sysResponse);

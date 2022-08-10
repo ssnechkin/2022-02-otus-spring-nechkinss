@@ -41,8 +41,8 @@ public class Purposes {
             CascadeType.REFRESH,
             CascadeType.PERSIST})
     @JoinTable(name = "permissions_purpose",
-            joinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "purpose_id", referencedColumnName = "id")}
+            joinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))},
+            inverseJoinColumns = {@JoinColumn(name = "purpose_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))}
     )
     private List<Permissions> permissionsList = new ArrayList<>();
 }

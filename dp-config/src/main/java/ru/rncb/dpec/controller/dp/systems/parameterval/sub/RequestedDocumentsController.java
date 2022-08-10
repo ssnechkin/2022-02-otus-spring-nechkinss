@@ -3,16 +3,16 @@ package ru.rncb.dpec.controller.dp.systems.parameterval.sub;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
+import ru.rncb.dpec.domain.dto.in.dp.handbook.ScopeDto;
+import ru.rncb.dpec.domain.dto.in.dp.systems.parameterval.sub.RequestedDocumentsDto;
+import ru.rncb.dpec.domain.dto.out.Content;
+import ru.rncb.dpec.domain.dto.out.content.*;
+import ru.rncb.dpec.domain.dto.out.content.table.Row;
+import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.dp.RequestedDocuments;
 import ru.rncb.dpec.domain.entity.dp.handbook.DocumentType;
-import ru.rncb.dpec.dto.in.dp.handbook.ScopeDto;
-import ru.rncb.dpec.dto.in.dp.systems.parameterval.sub.RequestedDocumentsDto;
-import ru.rncb.dpec.dto.out.Content;
-import ru.rncb.dpec.dto.out.content.*;
-import ru.rncb.dpec.dto.out.content.table.Row;
-import ru.rncb.dpec.dto.out.content.table.Table;
-import ru.rncb.dpec.dto.out.enums.FieldType;
-import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.service.dp.documents.RequestedDocumentsService;
 import ru.rncb.dpec.service.dp.handbook.DocumentTypeService;
 import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
@@ -45,19 +45,7 @@ public class RequestedDocumentsController {
     public Content list(@PathVariable("system_id") long systemId,
                         @PathVariable("parameter_val_id") long parameterValId) {
         return new Content().setPageName(getBasePageName(systemId, parameterValId))
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId)
-                                ),
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId
-                                                + "/requested_documents/add")
-                                )
-                ))
+                .setManagement(getBaseManagement(systemId, parameterValId))
                 .setTable(getTableAll(systemId, parameterValId));
     }
 
@@ -101,7 +89,7 @@ public class RequestedDocumentsController {
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Версия API (в ЕСИА)")
                                         .setName("api_version")
-                                        .setPlaceholder("v1"),
+                                        .setPlaceholder("v1/v2"),
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Тип запрашиваемого файла XML/PDF")
                                         .setName("file_type")
@@ -148,19 +136,7 @@ public class RequestedDocumentsController {
         }
         return new Content()
                 .setPageName(getBasePageName(systemId, parameterValId))
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId)
-                                ),
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId
-                                                + "/requested_documents/add")
-                                )
-                ))
+                .setManagement(getBaseManagement(systemId, parameterValId))
                 .setTable(getTableAll(systemId, parameterValId))
                 .setNotifications(List.of(notification));
     }
@@ -189,6 +165,22 @@ public class RequestedDocumentsController {
 
     private Content fallbackScopeDto(ScopeDto scopeDto) {
         return fallback();
+    }
+
+    private List<Button> getBaseManagement(long systemId, long parameterValId) {
+        return List.of(
+                new Button().setTitle("Назад")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/systems/" + systemId
+                                        + "/parameter_val/" + parameterValId)
+                        ),
+                new Button().setTitle("Добавить запись")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/systems/" + systemId
+                                        + "/parameter_val/" + parameterValId
+                                        + "/requested_documents/add")
+                        )
+        );
     }
 
     private Table getTableAll(long systemId, long parameterValId) {
@@ -237,7 +229,7 @@ public class RequestedDocumentsController {
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Тип документа")
                                 .setName("document_type_id")
-                                .setValue(requestedDocuments.getDocumentType().getMnemonic() + requestedDocuments.getDocumentType().getName()),
+                                .setValue(requestedDocuments.getDocumentType().getMnemonic() + " (" + requestedDocuments.getDocumentType().getName() + ")"),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Версия API (в ЕСИА)")
                                 .setName("api_version")

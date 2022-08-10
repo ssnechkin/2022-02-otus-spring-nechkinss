@@ -3,15 +3,15 @@ package ru.rncb.dpec.controller.dp.handbook;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
+import ru.rncb.dpec.domain.dto.in.dp.handbook.DocumentTypeDto;
+import ru.rncb.dpec.domain.dto.out.Content;
+import ru.rncb.dpec.domain.dto.out.content.*;
+import ru.rncb.dpec.domain.dto.out.content.table.Row;
+import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.dp.handbook.DocumentType;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
-import ru.rncb.dpec.dto.in.dp.handbook.DocumentTypeDto;
-import ru.rncb.dpec.dto.out.Content;
-import ru.rncb.dpec.dto.out.content.*;
-import ru.rncb.dpec.dto.out.content.table.Row;
-import ru.rncb.dpec.dto.out.content.table.Table;
-import ru.rncb.dpec.dto.out.enums.FieldType;
-import ru.rncb.dpec.dto.out.enums.NotificationType;
 import ru.rncb.dpec.service.dp.handbook.DocumentTypeService;
 import ru.rncb.dpec.service.dp.handbook.ScopeService;
 
@@ -34,16 +34,7 @@ public class DocumentTypeController {
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
         return new Content().setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/")
-                                ),
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/document_type/add")
-                                )
-                ))
+                .setManagement(getBaseManagement())
                 .setTable(getTableAll());
     }
 
@@ -178,16 +169,7 @@ public class DocumentTypeController {
         }
         return new Content()
                 .setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook")
-                                ),
-                        new Button().setTitle("Добавить запись")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/handbook/document_type/add")
-                        )
-                ))
+                .setManagement(getBaseManagement())
                 .setTable(getTableAll())
                 .setNotifications(List.of(notification));
     }
@@ -209,6 +191,19 @@ public class DocumentTypeController {
 
     private Content fallbackDocumentTypeDto(DocumentTypeDto documentTypeDto) {
         return fallback();
+    }
+
+    private List<Button> getBaseManagement() {
+        return List.of(
+                new Button().setTitle("Назад")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/handbook/")
+                        ),
+                new Button().setTitle("Добавить запись")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/handbook/document_type/add")
+                        )
+        );
     }
 
     private Table getTableAll() {
@@ -268,7 +263,7 @@ public class DocumentTypeController {
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Область доступа")
                                 .setName("scope")
-                                .setValue(documentType.getScope().getName() + "(" + documentType.getScope().getDescription() + ")")
+                                .setValue(documentType.getScope().getName())
                 ));
     }
 

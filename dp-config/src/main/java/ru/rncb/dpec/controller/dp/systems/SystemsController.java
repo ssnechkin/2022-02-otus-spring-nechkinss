@@ -3,16 +3,16 @@ package ru.rncb.dpec.controller.dp.systems;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
+import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.domain.entity.dp.SysPermissions;
 import ru.rncb.dpec.domain.entity.dp.Systems;
-import ru.rncb.dpec.dto.in.dp.systems.SystemsDto;
-import ru.rncb.dpec.dto.out.Content;
-import ru.rncb.dpec.dto.out.content.*;
-import ru.rncb.dpec.dto.out.content.table.Row;
-import ru.rncb.dpec.dto.out.content.table.Table;
-import ru.rncb.dpec.dto.out.enums.FieldType;
-import ru.rncb.dpec.dto.out.enums.NotificationType;
+import ru.rncb.dpec.domain.dto.in.dp.systems.SystemsDto;
+import ru.rncb.dpec.domain.dto.out.Content;
+import ru.rncb.dpec.domain.dto.out.content.table.Row;
+import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
 import ru.rncb.dpec.service.dp.systems.SystemsService;
@@ -38,12 +38,7 @@ public class SystemsController {
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
         return new Content().setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/add")
-                                )
-                ))
+                .setManagement(getManagement())
                 .setTable(getTableAll());
     }
 
@@ -158,16 +153,7 @@ public class SystemsController {
         }
         return new Content()
                 .setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems")
-                                ),
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/add")
-                                )
-                ))
+                .setManagement(getManagement())
                 .setTable(getTableAll())
                 .setNotifications(List.of(notification));
     }
@@ -205,6 +191,15 @@ public class SystemsController {
 
     private Content fallbackSystemsDto(SystemsDto systemsDto) {
         return fallback();
+    }
+
+    private List<Button> getManagement(){
+        return List.of(
+                new Button().setTitle("Добавить запись")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/systems/add")
+                        )
+        );
     }
 
     private Table getTableAll() {

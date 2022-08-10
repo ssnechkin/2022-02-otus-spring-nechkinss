@@ -3,14 +3,14 @@ package ru.rncb.dpec.controller.dp.handbook;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
+import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.entity.dp.handbook.Purposes;
-import ru.rncb.dpec.dto.in.dp.handbook.PurposesDto;
-import ru.rncb.dpec.dto.out.Content;
-import ru.rncb.dpec.dto.out.content.*;
-import ru.rncb.dpec.dto.out.content.table.Row;
-import ru.rncb.dpec.dto.out.content.table.Table;
-import ru.rncb.dpec.dto.out.enums.FieldType;
-import ru.rncb.dpec.dto.out.enums.NotificationType;
+import ru.rncb.dpec.domain.dto.in.dp.handbook.PurposesDto;
+import ru.rncb.dpec.domain.dto.out.Content;
+import ru.rncb.dpec.domain.dto.out.content.table.Row;
+import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.service.dp.handbook.PurposesService;
 
 import java.util.ArrayList;
@@ -30,16 +30,7 @@ public class PurposesController {
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
         return new Content().setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/")
-                                ),
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/purposes/add")
-                                )
-                ))
+                .setManagement(getBaseManagement())
                 .setTable(getTableAll());
     }
 
@@ -154,16 +145,7 @@ public class PurposesController {
         }
         return new Content()
                 .setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook")
-                                ),
-                        new Button().setTitle("Добавить запись")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/handbook/purposes/add")
-                        )
-                ))
+                .setManagement(getBaseManagement())
                 .setTable(getTableAll())
                 .setNotifications(List.of(notification));
     }
@@ -185,6 +167,19 @@ public class PurposesController {
 
     private Content fallbackPurposesDto(PurposesDto purposesDto) {
         return fallback();
+    }
+
+    private List<Button> getBaseManagement() {
+        return List.of(
+                new Button().setTitle("Назад")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/handbook/")
+                        ),
+                new Button().setTitle("Добавить запись")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/handbook/purposes/add")
+                        )
+        );
     }
 
     private Table getTableAll() {

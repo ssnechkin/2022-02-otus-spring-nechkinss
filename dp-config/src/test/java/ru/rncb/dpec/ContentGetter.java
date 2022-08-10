@@ -4,7 +4,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import ru.rncb.dpec.dto.out.Content;
+import ru.rncb.dpec.domain.dto.out.Content;
 
 import java.net.URI;
 

@@ -23,7 +23,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService 
     public RequestedDocuments add(DocumentType documentType, String apiVersion, String fileType, String listName, boolean extended) {
         RequestedDocuments requestedDocuments = new RequestedDocuments();
         requestedDocuments.setDocumentType(documentType);
-        requestedDocuments.setApiVersion(apiVersion);
+        requestedDocuments.setApiVersion(apiVersion==null||apiVersion.isEmpty()?"v1":apiVersion);
         requestedDocuments.setExtended(extended);
         requestedDocuments.setFileType(fileType);
         requestedDocuments.setListName(listName);
@@ -49,7 +49,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService 
     @Override
     public RequestedDocuments edit(RequestedDocuments requestedDocuments, DocumentType documentType, String apiVersion, String fileType, String listName, boolean extended) {
         requestedDocuments.setDocumentType(documentType);
-        requestedDocuments.setApiVersion(apiVersion);
+        requestedDocuments.setApiVersion(apiVersion==null||apiVersion.isEmpty()?"v1":apiVersion);
         requestedDocuments.setExtended(extended);
         requestedDocuments.setFileType(fileType);
         requestedDocuments.setListName(listName);

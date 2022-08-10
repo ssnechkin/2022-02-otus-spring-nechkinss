@@ -3,16 +3,16 @@ package ru.rncb.dpec.controller.dp.systems.parameterval.sub;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
+import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.entity.dp.SysResponse;
 import ru.rncb.dpec.domain.entity.dp.handbook.DocumentType;
-import ru.rncb.dpec.dto.in.dp.handbook.ScopeDto;
-import ru.rncb.dpec.dto.in.dp.systems.parameterval.sub.ResponseFilerDto;
-import ru.rncb.dpec.dto.out.Content;
-import ru.rncb.dpec.dto.out.content.*;
-import ru.rncb.dpec.dto.out.content.table.Row;
-import ru.rncb.dpec.dto.out.content.table.Table;
-import ru.rncb.dpec.dto.out.enums.FieldType;
-import ru.rncb.dpec.dto.out.enums.NotificationType;
+import ru.rncb.dpec.domain.dto.in.dp.handbook.ScopeDto;
+import ru.rncb.dpec.domain.dto.in.dp.systems.parameterval.sub.ResponseFilerDto;
+import ru.rncb.dpec.domain.dto.out.Content;
+import ru.rncb.dpec.domain.dto.out.content.table.Row;
+import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.service.dp.handbook.DocumentTypeService;
 import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
 import ru.rncb.dpec.service.dp.systems.SysResponseService;
@@ -44,18 +44,7 @@ public class ResponseFilterController {
     public Content list(@PathVariable("system_id") long systemId,
                         @PathVariable("parameter_val_id") long parameterValId) {
         return new Content().setPageName(getBasePageName(systemId, parameterValId))
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId)
-                                ),
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId + "/response_filter/add")
-                                )
-                ))
+                .setManagement(getBaseManagement(systemId, parameterValId))
                 .setTable(getTableAll(systemId, parameterValId));
     }
 
@@ -180,18 +169,7 @@ public class ResponseFilterController {
         }
         return new Content()
                 .setPageName(getBasePageName(systemId, parameterValId))
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId)
-                                ),
-                        new Button().setTitle("Добавить запись")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId
-                                                + "/parameter_val/" + parameterValId + "/response_filter/add")
-                                )
-                ))
+                .setManagement(getBaseManagement(systemId, parameterValId))
                 .setTable(getTableAll(systemId, parameterValId))
                 .setNotifications(List.of(notification));
     }
@@ -220,6 +198,21 @@ public class ResponseFilterController {
 
     private Content fallbackScopeDto(ScopeDto scopeDto) {
         return fallback();
+    }
+
+    private List<Button> getBaseManagement(long systemId, long parameterValId) {
+        return List.of(
+                new Button().setTitle("Назад")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/systems/" + systemId
+                                        + "/parameter_val/" + parameterValId)
+                        ),
+                new Button().setTitle("Добавить запись")
+                        .setLink(new Link().setMethod(HttpMethod.GET)
+                                .setValue("/systems/" + systemId
+                                        + "/parameter_val/" + parameterValId + "/response_filter/add")
+                        )
+        );
     }
 
     private Table getTableAll(long systemId, long parameterValId) {

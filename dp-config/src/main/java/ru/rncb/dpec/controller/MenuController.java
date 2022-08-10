@@ -3,28 +3,21 @@ package ru.rncb.dpec.controller;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.domain.GrantedAuthoritySid;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.model.Acl;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rncb.dpec.domain.entity.Menu;
-import ru.rncb.dpec.domain.entity.security.RoleGrantedAuthority;
 import ru.rncb.dpec.domain.entity.security.UserDetail;
 import ru.rncb.dpec.domain.entity.security.acl.AclClass;
 import ru.rncb.dpec.domain.entity.security.acl.AclEntry;
 import ru.rncb.dpec.domain.entity.security.acl.AclObjectIdentity;
 import ru.rncb.dpec.domain.entity.security.acl.AclSid;
-import ru.rncb.dpec.dto.out.Content;
-import ru.rncb.dpec.dto.out.content.Button;
-import ru.rncb.dpec.dto.out.content.Link;
-import ru.rncb.dpec.dto.out.content.Notification;
-import ru.rncb.dpec.dto.out.content.TopRight;
-import ru.rncb.dpec.dto.out.enums.NotificationType;
+import ru.rncb.dpec.domain.dto.out.Content;
+import ru.rncb.dpec.domain.dto.out.content.Button;
+import ru.rncb.dpec.domain.dto.out.content.Link;
+import ru.rncb.dpec.domain.dto.out.content.Notification;
+import ru.rncb.dpec.domain.dto.out.content.TopRight;
+import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.repository.security.acl.AclClassRepository;
 import ru.rncb.dpec.repository.security.acl.AclEntryRepository;
@@ -32,8 +25,6 @@ import ru.rncb.dpec.repository.security.acl.AclObjectIdentityRepository;
 import ru.rncb.dpec.repository.security.acl.AclSidRepository;
 import ru.rncb.dpec.security.SecurityAclService;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -135,7 +126,7 @@ public class MenuController {
                 e.printStackTrace();
             }*/
         }
-        Comparator<Button> comparator = (o1, o2) -> o1.getPosition() >= o2.getPosition() ? -1 : 0;
+        Comparator<Button> comparator = (o1, o2) -> o1.getPosition() < o2.getPosition() ? -1 : 0;
         buttons.sort(comparator);
         return buttons;
     }

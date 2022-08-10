@@ -46,11 +46,7 @@ public class SystemsServiceImpl implements SystemsService {
 
     @Override
     public boolean delete(Systems systems) {
-        if (systems.getSysPermissionsList().size() > 0) {
-            return false;
-        } else {
-            repository.delete(systems);
-            return true;
-        }
+        repository.delete(systems);
+        return true;
     }
 }

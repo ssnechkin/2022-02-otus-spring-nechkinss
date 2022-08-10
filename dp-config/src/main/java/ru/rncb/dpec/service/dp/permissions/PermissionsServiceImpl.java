@@ -3,9 +3,10 @@ package ru.rncb.dpec.service.dp.permissions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
+import ru.rncb.dpec.domain.entity.dp.handbook.Actions;
+import ru.rncb.dpec.domain.entity.dp.handbook.Purposes;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
 import ru.rncb.dpec.repository.dp.PermissionsRepository;
-import ru.rncb.dpec.repository.dp.handbook.ScopeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +16,9 @@ import java.util.Optional;
 public class PermissionsServiceImpl implements PermissionsService {
 
     private final PermissionsRepository repository;
-    private final ScopeRepository scopeRepository;
 
-    public PermissionsServiceImpl(PermissionsRepository repository, ScopeRepository scopeRepository) {
+    public PermissionsServiceImpl(PermissionsRepository repository) {
         this.repository = repository;
-        this.scopeRepository = scopeRepository;
     }
 
     @Override
@@ -52,17 +51,50 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public boolean addScope(Permissions permissions, long scopeId) {
-        Optional<Scope> scope = scopeRepository.findById(scopeId);
-        if (scope.isPresent()) {
+    public boolean addScope(Permissions permissions, Scope scope) {
+        if (scope != null) {
             if (permissions.getScopeList() == null) {
                 permissions.setScopeList(new ArrayList<>());
             }
-            if(permissions.getScopeList().contains(scope.get())){
+            if (permissions.getScopeList().contains(scope)) {
                 return false;
             }
-            permissions.getScopeList().add(scope.get());
-            scope.get().getPermissionsList().add(permissions);
+            permissions.getScopeList().add(scope);
+            scope.getPermissionsList().add(permissions);
+            repository.save(permissions);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addPurposes(Permissions permissions, Purposes purposes) {
+        if (purposes != null) {
+            if (permissions.getPurposesList() == null) {
+                permissions.setPurposesList(new ArrayList<>());
+            }
+            if (permissions.getPurposesList().contains(purposes)) {
+                return false;
+            }
+            permissions.getPurposesList().add(purposes);
+            purposes.getPermissionsList().add(permissions);
+            repository.save(permissions);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addActions(Permissions permissions, Actions actions) {
+        if (actions != null) {
+            if (permissions.getActionsList() == null) {
+                permissions.setActionsList(new ArrayList<>());
+            }
+            if (permissions.getActionsList().contains(actions)) {
+                return false;
+            }
+            permissions.getActionsList().add(actions);
+            actions.getPermissionsList().add(permissions);
             repository.save(permissions);
             return true;
         }
@@ -74,6 +106,28 @@ public class PermissionsServiceImpl implements PermissionsService {
         if (permissions != null && permissions.getScopeList() != null && permissions.getScopeList().contains(scope)) {
             permissions.getScopeList().remove(scope);
             scope.getPermissionsList().remove(permissions);
+            repository.save(permissions);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deletePurposes(Permissions permissions, Purposes purposes) {
+        if (permissions != null && permissions.getPurposesList() != null && permissions.getPurposesList().contains(purposes)) {
+            permissions.getPurposesList().remove(purposes);
+            purposes.getPermissionsList().remove(permissions);
+            repository.save(permissions);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteActions(Permissions permissions, Actions actions) {
+        if (permissions != null && permissions.getActionsList() != null && permissions.getActionsList().contains(actions)) {
+            permissions.getActionsList().remove(actions);
+            actions.getPermissionsList().remove(permissions);
             repository.save(permissions);
             return true;
         }
