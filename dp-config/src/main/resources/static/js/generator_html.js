@@ -58,13 +58,19 @@ const genHtml = {
                      + '<input id="' + fields[prop].name + '" type="password" '+ placeholder +' value="' + fields[prop].value + '" ' + readonly + '/>';
             }
             if (fields[prop].type == 'CHECKBOX') {
+                var checked = '';
+                if(fields[prop].checked) {checked = 'checked';}
                 str += '<label for="' + fields[prop].name + '">' + fields[prop].label + '</label>'
-                     + '<input id="' + fields[prop].name + '" type="checkbox" '+ placeholder +' ' + readonly + '/>';
+                     + '<input id="' + fields[prop].name + '" type="checkbox" '+ placeholder +' ' + readonly + ' ' + checked + '/>';
             }
             var opt = '';
             var options = fields[prop].values;
             for (var p in options) {
-                opt +='<option value="' + options[p].id + '">' + options[p].value + '</option>';
+                if(+fields[prop].selected_id == options[p].id) {
+                    opt +='<option selected value="' + options[p].id + '">' + options[p].value + '</option>';
+                } else {
+                    opt +='<option value="' + options[p].id + '">' + options[p].value + '</option>';
+                }
             }
             if (fields[prop].type == 'SELECT') {
                 str += '<label for="' + fields[prop].name + '">' + fields[prop].label + '</label>'

@@ -1,5 +1,6 @@
 package ru.rncb.dpec.dto.out.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,9 @@ public class Field {
     private FieldType type;
     private String label, name, value, placeholder;
     private List<ValueItem> values;
+    private boolean checked;
+    @JsonProperty("selected_id")
+    private Long selectedId;
 
     public Field setType(FieldType type) {
         this.type = type;
@@ -32,6 +36,16 @@ public class Field {
 
     public Field setValue(String value) {
         this.value = value;
+        return this;
+    }
+
+    public Field setChecked(Boolean value) {
+        this.checked = value;
+        return this;
+    }
+
+    public Field setSelectedId(Long value) {
+        this.selectedId = value;
         return this;
     }
 

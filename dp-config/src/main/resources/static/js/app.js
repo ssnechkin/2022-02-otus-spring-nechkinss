@@ -65,7 +65,11 @@ const followFormLink = (method, link) => {
     if (formDataType=='JSON') {
         var body = {};
         for (var prop in formFieldIds) {
-            body[formFieldIds[prop]] = document.getElementById(formFieldIds[prop]).value;
+            if(document.getElementById(formFieldIds[prop]).type == 'checkbox'){
+                body[formFieldIds[prop]] = document.getElementById(formFieldIds[prop]).checked;
+            } else {
+                body[formFieldIds[prop]] = document.getElementById(formFieldIds[prop]).value;
+            }
         }
         http.send(method, contentReader, link, {"Content-Type": "application/json"},  JSON.stringify(body));
     }
@@ -73,9 +77,17 @@ const followFormLink = (method, link) => {
         var requestParams='?';
         for (var prop in formFieldIds) {
             if (requestParams=='?') {
-                requestParams+=formFieldIds[prop]+'='+document.getElementById(formFieldIds[prop]).value;
+                if(document.getElementById(formFieldIds[prop]).type == 'checkbox'){
+                    requestParams+=formFieldIds[prop]+'='+document.getElementById(formFieldIds[prop]).checked;
+                } else {
+                    requestParams+=formFieldIds[prop]+'='+document.getElementById(formFieldIds[prop]).value;
+                }
             } else {
-                requestParams+='&'+formFieldIds[prop]+'='+document.getElementById(formFieldIds[prop]).value;
+                if(document.getElementById(formFieldIds[prop]).type == 'checkbox'){
+                    requestParams+='&'+formFieldIds[prop]+'='+document.getElementById(formFieldIds[prop]).checked;
+                } else {
+                    requestParams+='&'+formFieldIds[prop]+'='+document.getElementById(formFieldIds[prop]).value;
+                }
             }
         }
         http.send(method, contentReader, link+requestParams, null,  null);
@@ -83,7 +95,11 @@ const followFormLink = (method, link) => {
     if (formDataType=='FORM_DATA') {
         var formData = new FormData();
         for (var prop in formFieldIds) {
-            formData.append(formFieldIds[prop], document.getElementById(formFieldIds[prop]).value);
+            if(document.getElementById(formFieldIds[prop]).type == 'checkbox'){
+                formData.append(formFieldIds[prop], document.getElementById(formFieldIds[prop]).checked);
+            } else {
+                formData.append(formFieldIds[prop], document.getElementById(formFieldIds[prop]).value);
+            }
         }
         http.send(method, contentReader, link, {"Content-Type": "application/x-www-form-urlencoded"},  new URLSearchParams(formData));
     }

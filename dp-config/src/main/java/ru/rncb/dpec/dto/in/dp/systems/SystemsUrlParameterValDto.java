@@ -15,7 +15,7 @@ public class SystemsUrlParameterValDto {
     private long permissionId;
 
     @JsonProperty("is_default")
-    private String isDefault;
+    private boolean isDefault;
 
     @JsonProperty("permission_expire")
     private long permissionExpire;

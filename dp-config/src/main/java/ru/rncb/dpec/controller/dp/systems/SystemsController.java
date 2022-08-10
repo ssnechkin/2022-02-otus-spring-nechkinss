@@ -276,8 +276,9 @@ public class SystemsController {
                     )
                     .setColumns(List.of(
                             sysPermissions.getComparing(),
-                            sysPermissions.getIsDefault() == 1 ? "+" : "",
+                            sysPermissions.getIsDefault() == 1 ? "&check;" : "",
                             String.valueOf(sysPermissions.getExpire()),
+                            sysPermissions.getPermissions() == null ? "" : sysPermissions.getPermissions().getMnemonic(),
                             sysPermissions.getResponsibleobject() == null ? "" : sysPermissions.getResponsibleobject()
                     ))
             );
@@ -287,6 +288,7 @@ public class SystemsController {
                         "Значение URL параметра",
                         "Применять по умолчанию",
                         "Время жизни согласия (минут)",
+                        "Согласие",
                         "Организация/ФИО ответственного"
                 ))
                 .setRows(rows);

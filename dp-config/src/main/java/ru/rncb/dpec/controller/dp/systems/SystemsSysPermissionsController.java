@@ -107,12 +107,98 @@ public class SystemsSysPermissionsController {
                     urlParameterValDto.getUrlParameterValue(),
                     urlParameterValDto.getResponsibleobject(),
                     urlParameterValDto.getPermissionExpire(),
-                    (urlParameterValDto.getIsDefault() != null && urlParameterValDto.getIsDefault().equals("on"))
+                    urlParameterValDto.isDefault()
             );
             return getContentView(systemsId, sysPermissions.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
                                     .setMessage("Значение URL-параметра успешно добавлено")
+                    ));
+        }
+    }
+
+    @GetMapping("/systems/{systems_id}/parameter_val/{id}/edit")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
+    public Content edit(@PathVariable("systems_id") long systemsId,
+                        @PathVariable("id") long id) {
+        SysPermissions sysPermissions = sysPermissionsService.getById(id);
+        return new Content()
+                .setPageName(PAGE_NAME + " - редактирование")
+                .setManagement(List.of(
+                        new Button().setTitle("Сохранить")
+                                .setLink(new Link().setMethod(HttpMethod.PUT)
+                                        .setValue("/systems/" + systemsId + "/parameter_val/" + id)
+                                ),
+                        new Button().setTitle("Отмена")
+                                .setLink(new Link().setMethod(HttpMethod.GET)
+                                        .setValue("/systems/" + systemsId + "/parameter_val/" + id)
+                                )
+                ))
+                .setForm(new Form().setFields(List.of(
+                        new Field().setType(FieldType.INPUT)
+                                .setLabel("Значение URL параметра")
+                                .setName("url_parameter_value")
+                                .setValue(sysPermissions.getComparing()),
+                        new Field().setType(FieldType.CHECKBOX)
+                                .setLabel("Применять по умолчанию")
+                                .setName("is_default")
+                                .setChecked(sysPermissions.getIsDefault() == 1),
+                        new Field().setType(FieldType.INPUT)
+                                .setLabel("Время жизни согласия (минут)")
+                                .setName("permission_expire")
+                                .setValue(String.valueOf(sysPermissions.getExpire())),
+                        new Field().setType(FieldType.INPUT)
+                                .setLabel("Организация/ФИО ответственного")
+                                .setName("responsibleobject")
+                                .setValue(sysPermissions.getResponsibleobject()),
+                        new Field().setType(FieldType.SELECT)
+                                .setLabel("Запрашиваемое согласие")
+                                .setName("permissions_id")
+                                .setSelectedId(sysPermissions.getPermissions().getId())
+                                .setValues(permissionsService.getAll()
+                                        .stream()
+                                        .map(this::toValueItem)
+                                        .toList())
+                )));
+    }
+
+    @PutMapping("/systems/{systems_id}/parameter_val/{id}")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackIdSystemsDto")
+    public Content save(@PathVariable("systems_id") long systemsId,
+                        @PathVariable("id") long id,
+                        @RequestBody SystemsUrlParameterValDto urlParameterValDto) {
+        if (urlParameterValDto.getUrlParameterValue() == null || urlParameterValDto.getUrlParameterValue().isEmpty()) {
+            return new Content()
+                    .setNotifications(List.of(
+                            new Notification().setType(NotificationType.WARNING)
+                                    .setMessage("Значение URL-параметра должно быть заполнено")
+                    ));
+        } else if (service.getById(systemsId) == null) {
+            return new Content()
+                    .setNotifications(List.of(
+                            new Notification().setType(NotificationType.WARNING)
+                                    .setMessage("Система не найдена")
+                    ));
+        } else if (permissionsService.getById(urlParameterValDto.getPermissionId()) == null) {
+            return new Content()
+                    .setNotifications(List.of(
+                            new Notification().setType(NotificationType.WARNING)
+                                    .setMessage("Согласие не найдено. Согласие должно быть выбрано")
+                    ));
+        } else {
+            SysPermissions sysPermissions = sysPermissionsService.edit(
+                    sysPermissionsService.getById(id),
+                    service.getById(systemsId),
+                    permissionsService.getById(urlParameterValDto.getPermissionId()),
+                    urlParameterValDto.getUrlParameterValue(),
+                    urlParameterValDto.getResponsibleobject(),
+                    urlParameterValDto.getPermissionExpire(),
+                    urlParameterValDto.isDefault()
+            );
+            return getContentView(systemsId, sysPermissions.getId())
+                    .setNotifications(List.of(
+                            new Notification().setType(NotificationType.INFO)
+                                    .setMessage("Значение URL-параметра успешно изменено")
                     ));
         }
     }
@@ -172,7 +258,7 @@ public class SystemsSysPermissionsController {
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Применять по умолчанию")
                                 .setName("is_default")
-                                .setValue(sysPermissions.getIsDefault() == 1 ? "+" : ""),
+                                .setValue(sysPermissions.getIsDefault() == 1 ? "&check;" : ""),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Время жизни согласия (минут)")
                                 .setName("permission_expire")

@@ -28,6 +28,9 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
         sysPermissions.setComparing(comparing);
         sysPermissions.setResponsibleobject(responsibleobject);
         sysPermissions.setExpire(expire);
+        if (isDefault) {
+            omitTheDefaultFlagForEveryone(systems);
+        }
         sysPermissions.setIsDefault(isDefault ? 1 : 0);
         return repository.save(sysPermissions);
     }
@@ -50,6 +53,9 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
         sysPermissions.setComparing(comparing);
         sysPermissions.setResponsibleobject(responsibleobject);
         sysPermissions.setExpire(expire);
+        if (isDefault) {
+            omitTheDefaultFlagForEveryone(systems);
+        }
         sysPermissions.setIsDefault(isDefault ? 1 : 0);
         return repository.save(sysPermissions);
     }
@@ -58,5 +64,12 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
     public boolean delete(SysPermissions sysPermissions) {
         repository.delete(sysPermissions);
         return true;
+    }
+
+    private void omitTheDefaultFlagForEveryone(Systems systems) {
+        for (SysPermissions sysPermissions : systems.getSysPermissionsList()) {
+            sysPermissions.setIsDefault(0);
+            repository.save(sysPermissions);
+        }
     }
 }
