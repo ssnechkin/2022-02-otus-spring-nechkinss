@@ -28,9 +28,9 @@ public class RequestedDocumentsController {
     private final SystemsService systemsService;
     private final SysPermissionsService sysPermissionsService;
     private final DocumentTypeService documentTypeService;
-    private final static String PAGE_NAME = "Системы >> ";
-    private final static String PAGE_NAME_PAR_VAL = " >> Значение параметра: ";
-    private final static String PAGE_NAME_REQ_DOC = " >> Список запрашиваемых документов";
+    private final static String PAGE_NAME = "Системы -> ";
+    private final static String PAGE_NAME_PAR_VAL = " -> Значение параметра: ";
+    private final static String PAGE_NAME_REQ_DOC = " -> Список запрашиваемых документов";
 
     public RequestedDocumentsController(RequestedDocumentsService service, SystemsService systemsService,
                                         SysPermissionsService sysPermissionsService, DocumentTypeService documentTypeService) {
@@ -144,7 +144,7 @@ public class RequestedDocumentsController {
             notification.setMessage("Ошибка удаления документа из списка");
         }
         return new Content()
-                .setPageName(PAGE_NAME)
+                .setPageName(getBasePageName(systemId, parameterValId))
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
                                 .setLink(new Link().setMethod(HttpMethod.GET)
