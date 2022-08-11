@@ -41,8 +41,8 @@ public class Scope {
             CascadeType.REFRESH,
             CascadeType.PERSIST})
     @JoinTable(name = "permissions_scope",
-            joinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))},
-            inverseJoinColumns = {@JoinColumn(name = "scope_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))}
+            joinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "scope_id", referencedColumnName = "id")}
     )
     private List<Permissions> permissionsList = new ArrayList<>();
 

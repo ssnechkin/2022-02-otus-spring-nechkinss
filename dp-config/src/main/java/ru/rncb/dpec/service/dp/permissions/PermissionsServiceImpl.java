@@ -7,6 +7,9 @@ import ru.rncb.dpec.domain.entity.dp.handbook.Actions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Purposes;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
 import ru.rncb.dpec.repository.dp.PermissionsRepository;
+import ru.rncb.dpec.repository.dp.handbook.ActionsRepository;
+import ru.rncb.dpec.repository.dp.handbook.PurposesRepository;
+import ru.rncb.dpec.repository.dp.handbook.ScopeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +19,15 @@ import java.util.Optional;
 public class PermissionsServiceImpl implements PermissionsService {
 
     private final PermissionsRepository repository;
+    private final ActionsRepository actionsRepository;
+    private final PurposesRepository purposesRepository;
+    private final ScopeRepository scopeRepository;
 
-    public PermissionsServiceImpl(PermissionsRepository repository) {
+    public PermissionsServiceImpl(PermissionsRepository repository, ActionsRepository actionsRepository, PurposesRepository purposesRepository, ScopeRepository scopeRepository) {
         this.repository = repository;
+        this.actionsRepository = actionsRepository;
+        this.purposesRepository = purposesRepository;
+        this.scopeRepository = scopeRepository;
     }
 
     @Override
@@ -136,6 +145,18 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     public boolean delete(Permissions permissions) {
+        for (Actions actions : permissions.getActionsList()) {
+            actions.getPermissionsList().remove(permissions);
+            actionsRepository.save(actions);
+        }
+        for (Purposes purposes : permissions.getPurposesList()) {
+            purposes.getPermissionsList().remove(permissions);
+            purposesRepository.save(purposes);
+        }
+        for (Scope scope : permissions.getScopeList()) {
+            scope.getPermissionsList().remove(permissions);
+            scopeRepository.save(scope);
+        }
         repository.delete(permissions);
         return true;
     }

@@ -1,177 +1,70 @@
 package ru.rncb.dpec.controller.dp.systems;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
-import ru.rncb.dpec.domain.dto.out.content.*;
-import ru.rncb.dpec.domain.entity.Menu;
-import ru.rncb.dpec.domain.entity.dp.SysPermissions;
-import ru.rncb.dpec.domain.entity.dp.Systems;
 import ru.rncb.dpec.domain.dto.in.dp.systems.SystemsDto;
 import ru.rncb.dpec.domain.dto.out.Content;
-import ru.rncb.dpec.domain.dto.out.content.table.Row;
-import ru.rncb.dpec.domain.dto.out.content.table.Table;
-import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.content.Notification;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
-import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
-import ru.rncb.dpec.service.dp.systems.SystemsService;
+import ru.rncb.dpec.service.ui.systems.SystemsUiService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class SystemsController {
 
-    private final SystemsService service;
-    private final SysPermissionsService sysPermissionsService;
-    private final static String PAGE_NAME = "Системы";
+    private final SystemsUiService service;
 
-    public SystemsController(SystemsService service, MenuRepository menuRepository,
-                             SysPermissionsService sysPermissionsService) {
+    public SystemsController(SystemsUiService service) {
         this.service = service;
-        this.sysPermissionsService = sysPermissionsService;
-        addMenu(menuRepository);
     }
 
     @GetMapping("/systems")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
-        return new Content().setPageName(PAGE_NAME)
-                .setManagement(getManagement())
-                .setTable(getTableAll());
+        return service.list();
     }
 
     @GetMapping("/systems/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content view(@PathVariable("id") long id) {
-        return getContentView(id);
+        return service.getContentView(id);
     }
 
     @GetMapping("/systems/{id}/edit")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content edit(@PathVariable("id") long id) {
-        Systems systems = service.getById(id);
-        return new Content()
-                .setPageName(PAGE_NAME + " - редактирование")
-                .setManagement(List.of(
-                        new Button().setTitle("Сохранить")
-                                .setLink(new Link().setMethod(HttpMethod.PUT)
-                                        .setValue("/systems/" + systems.getId())
-                                ),
-                        new Button().setTitle("Отмена")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systems.getId())
-                                )
-                ))
-                .setForm(new Form().setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Наименование")
-                                .setName("name")
-                                .setValue(systems.getName()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Описание")
-                                .setName("description")
-                                .setValue(systems.getDescription())
-                )));
+        return service.edit(id);
     }
 
     @PutMapping("/systems/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackIdSystemsDto")
-    public Content save(@PathVariable("id") long id,
-                        @RequestBody SystemsDto systemsDto) {
-        if (systemsDto.getName() == null || systemsDto.getName().isEmpty()) {
-            return new Content().setNotifications(List.of(new Notification()
-                    .setType(NotificationType.WARNING)
-                    .setMessage("Наименование должно быть заполнено")
-            ));
-        } else {
-            service.edit(service.getById(id), systemsDto.getName(), systemsDto.getDescription());
-            return getContentView(id).setNotifications(List.of(new Notification()
-                    .setType(NotificationType.INFO)
-                    .setMessage("Система успешно сохранена")
-            ));
-        }
+    public Content save(@PathVariable("id") long id, @RequestBody SystemsDto systemsDto) {
+        return service.save(id, systemsDto);
     }
 
     @GetMapping("/systems/add")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content add() {
-        return new Content()
-                .setPageName(PAGE_NAME + " - добавление")
-                .setManagement(List.of(
-                        new Button().setTitle("Добавить")
-                                .setLink(new Link().setMethod(HttpMethod.POST)
-                                        .setValue("/systems")
-                                ),
-                        new Button().setTitle("Отмена")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems")
-                                )
-
-                ))
-                .setForm(new Form().setFields(List.of(
-                                new Field().setType(FieldType.INPUT)
-                                        .setLabel("Наименование")
-                                        .setName("name"),
-                                new Field().setType(FieldType.INPUT)
-                                        .setLabel("Описание")
-                                        .setName("description")
-                        ))
-                );
+        return service.add();
     }
 
     @PostMapping("/systems")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackSystemsDto")
     public Content create(@RequestBody SystemsDto systemsDto) {
-        if (systemsDto.getName() == null || systemsDto.getName().isEmpty()) {
-            return new Content()
-                    .setNotifications(List.of(
-                            new Notification().setType(NotificationType.WARNING)
-                                    .setMessage("Наименование должно быть заполнено")
-                    ));
-        } else {
-            Systems systems = service.add(systemsDto.getName(), systemsDto.getDescription());
-            return getContentView(systems.getId())
-                    .setNotifications(List.of(
-                            new Notification().setType(NotificationType.INFO)
-                                    .setMessage("Система успешно добавлена")
-                    ));
-        }
+        return service.create(systemsDto);
     }
 
     @DeleteMapping("/systems/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content delete(@PathVariable("id") long id) {
-        Notification notification = new Notification();
-        if (service.delete(service.getById(id))) {
-            notification.setType(NotificationType.INFO);
-            notification.setMessage("Система успешно удалена");
-        } else {
-            notification.setType(NotificationType.WARNING);
-            notification.setMessage("Ошибка удаления Системы");
-        }
-        return new Content()
-                .setPageName(PAGE_NAME)
-                .setManagement(getManagement())
-                .setTable(getTableAll())
-                .setNotifications(List.of(notification));
+        return service.delete(id);
     }
 
     @DeleteMapping("/systems/{systems_id}/parameter_val/{id}")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
-    public Content delete(@PathVariable("systems_id") long systemsId,
-                          @PathVariable("id") long id) {
-        Notification notification = new Notification();
-        if (sysPermissionsService.delete(sysPermissionsService.getById(id))) {
-            notification.setType(NotificationType.INFO);
-            notification.setMessage("Значение URL-параметра удалено из системы " + service.getById(systemsId).getName());
-        } else {
-            notification.setType(NotificationType.WARNING);
-            notification.setMessage("Ошибка удаления URL-параметра");
-        }
-        return getContentView(systemsId)
-                .setNotifications(List.of(notification));
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackSystemsIdId")
+    public Content delete(@PathVariable("systems_id") long systemsId, @PathVariable("id") long id) {
+        return service.delete(systemsId, id);
     }
 
     private Content fallback() {
@@ -185,115 +78,15 @@ public class SystemsController {
         return fallback();
     }
 
+    private Content fallbackSystemsIdId(long systemsId, long id) {
+        return fallback();
+    }
+
     private Content fallbackIdSystemsDto(long id, SystemsDto systemsDto) {
         return fallback();
     }
 
     private Content fallbackSystemsDto(SystemsDto systemsDto) {
         return fallback();
-    }
-
-    private List<Button> getManagement(){
-        return List.of(
-                new Button().setTitle("Добавить запись")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/systems/add")
-                        )
-        );
-    }
-
-    private Table getTableAll() {
-        List<Row> rows = new ArrayList<>();
-        for (Systems systems : service.getAll()) {
-            rows.add(new Row()
-                    .setLink(new Link().setMethod(HttpMethod.GET)
-                            .setValue("/systems/" + systems.getId())
-                    )
-                    .setColumns(List.of(
-                            systems.getName() == null ? "" : systems.getName(),
-                            systems.getDescription() == null ? "" : systems.getDescription()
-                    ))
-            );
-        }
-        return new Table()
-                .setLabels(List.of("Нименование", "Описание"))
-                .setRows(rows);
-    }
-
-    private Content getContentView(long systemId) {
-        Systems system = service.getById(systemId);
-        return new Content()
-                .setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setPosition(1)
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems")
-                                ),
-                        new Button().setTitle("Редактировать")
-                                .setPosition(2)
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + system.getId() + "/edit")
-                                ),
-                        new Button().setTitle("Добавить значение URL параметра")
-                                .setPosition(3)
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + system.getId() + "/url_parameter/add")
-                                ),
-                        new Button().setTitle("Удалить")
-                                .setPosition(4)
-                                .setLink(new Link().setMethod(HttpMethod.DELETE)
-                                        .setValue("/systems/" + system.getId())
-                                )
-                ))
-                .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Наименование")
-                                .setName("name")
-                                .setValue(system.getName()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Описание")
-                                .setName("description")
-                                .setValue(system.getDescription())
-                ))
-                .setTable(getTableParameters(system));
-    }
-
-    private Table getTableParameters(Systems systems) {
-        List<Row> rows = new ArrayList<>();
-        for (SysPermissions sysPermissions : systems.getSysPermissionsList()) {
-            rows.add(new Row()
-                    .setLink(new Link().setMethod(HttpMethod.GET)
-                            .setValue("/systems/" + systems.getId() + "/parameter_val/" + sysPermissions.getId())
-                    )
-                    .setColumns(List.of(
-                            sysPermissions.getComparing(),
-                            sysPermissions.getIsDefault() == 1 ? "&check;" : "",
-                            sysPermissions.getPermissions() == null ? "" : sysPermissions.getPermissions().getMnemonic(),
-                            String.valueOf(sysPermissions.getExpire()),
-                            sysPermissions.getResponsibleobject() == null ? "" : sysPermissions.getResponsibleobject()
-                    ))
-            );
-        }
-        return new Table()
-                .setLabels(List.of(
-                        "Значение URL параметра",
-                        "Применять по умолчанию",
-                        "Согласие",
-                        "Время жизни согласия (минут)",
-                        "Организация/ФИО ответственного"
-                ))
-                .setRows(rows);
-    }
-
-    private void addMenu(MenuRepository menuRepository) {
-        if (menuRepository.findByLink("/systems").size() == 0) {
-            Menu menu = new Menu().setTitle(PAGE_NAME)
-                    .setPosition(1)
-                    .setMethod(HttpMethod.GET.name())
-                    .setLink("/systems")
-                    .setAlt(true);
-            menuRepository.save(menu);
-        }
     }
 }

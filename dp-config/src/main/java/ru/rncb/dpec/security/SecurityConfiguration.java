@@ -26,9 +26,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/handbook/scope/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers("/handbook").authenticated()
-                .and().authorizeRequests().antMatchers("/permissions").authenticated()
+                .authorizeRequests().antMatchers("/handbook/**").hasAnyRole("ADMIN", "EDITOR")
+                .and().authorizeRequests().antMatchers("/permissions", "/permissions/**").hasAnyRole("ADMIN", "EDITOR")
+                .and().authorizeRequests().antMatchers("/systems", "/systems/**").hasAnyRole("ADMIN", "EDITOR")
                 .and().authorizeRequests().antMatchers("/menu").authenticated()
                 .and().authorizeRequests().antMatchers("/page/login", "/css/**", "/js/**", "/actuator/*").permitAll()
                 .and().formLogin().loginPage("/page/login").defaultSuccessUrl("/menu").failureUrl("/error/login")

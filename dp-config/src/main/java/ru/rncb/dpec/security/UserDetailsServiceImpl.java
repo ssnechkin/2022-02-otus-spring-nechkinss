@@ -33,12 +33,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private void createUsers(RoleRepository roleRepository) {
-        creaateUser(roleRepository, "Администратор", "admin", "password", List.of("ROLE_ADMIN"));
-        //creaateUser(roleRepository, "Редактор", "editor", "123", List.of("ROLE_EDITOR"));
-        //creaateUser(roleRepository, "Посетитель", "visitor", "123", List.of("ROLE_VISITOR"));
+        createUser(roleRepository, "Администратор", "admin", "password", List.of("ROLE_ADMIN"));
+        createUser(roleRepository, "Редактор", "editor", "123", List.of("ROLE_EDITOR"));
+        createUser(roleRepository, "Посетитель", "visitor", "123", List.of("ROLE_VISITOR"));
     }
 
-    private void creaateUser(RoleRepository roleRepository, String publicName, String username, String password, List<String> roles) {
+    private void createUser(RoleRepository roleRepository, String publicName, String username, String password, List<String> roles) {
         UserDetail userDetail = userRepository.findByUsername(username);
         if (userDetail == null) {
             Set<RoleGrantedAuthority> rolesSet = new HashSet<>();

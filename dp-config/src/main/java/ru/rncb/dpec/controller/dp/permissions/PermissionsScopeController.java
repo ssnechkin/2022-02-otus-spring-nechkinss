@@ -1,136 +1,53 @@
 package ru.rncb.dpec.controller.dp.permissions;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
-import ru.rncb.dpec.domain.dto.in.dp.permissions.PermissionsDto;
 import ru.rncb.dpec.domain.dto.in.dp.permissions.PermissionsScopeDto;
 import ru.rncb.dpec.domain.dto.out.Content;
-import ru.rncb.dpec.domain.dto.out.content.*;
-import ru.rncb.dpec.domain.dto.out.content.table.Row;
-import ru.rncb.dpec.domain.dto.out.content.table.Table;
-import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.content.Notification;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
-import ru.rncb.dpec.domain.entity.dp.Permissions;
-import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
-import ru.rncb.dpec.service.dp.handbook.ScopeService;
-import ru.rncb.dpec.service.dp.permissions.PermissionsService;
+import ru.rncb.dpec.service.ui.permissions.PermissionsScopeUiService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class PermissionsScopeController {
 
-    private final PermissionsService service;
-    private final ScopeService scopeService;
-    private final static String PAGE_NAME = "Согласия > ";
-    private final static String PAGE_NAME_SCOPE = " > Области доступа (Scope)";
+    private final PermissionsScopeUiService service;
 
-    public PermissionsScopeController(PermissionsService service, ScopeService scopeService) {
+    public PermissionsScopeController(PermissionsScopeUiService service) {
         this.service = service;
-        this.scopeService = scopeService;
     }
 
     @GetMapping("/permissions/{permissions_id}/scope")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackPermissionsId")
     public Content list(@PathVariable("permissions_id") long permissionsId) {
-        return new Content().setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE)
-                .setManagement(getBaseManagement(permissionsId))
-                .setTable(getTableAll(permissionsId));
+        return service.list(permissionsId);
     }
 
     @GetMapping("/permissions/{permissions_id}/scope/{id}")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackPermissionsIdId")
     public Content view(@PathVariable("permissions_id") long permissionsId, @PathVariable("id") long id) {
-        return getContentView(permissionsId, id);
+        return service.getContentView(permissionsId, id);
     }
 
     @GetMapping("/permissions/{permissions_id}/scope/add")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackPermissionsId")
     public Content add(@PathVariable("permissions_id") long permissionsId) {
-        Permissions permissions = service.getById(permissionsId);
-        List<Scope> scopeList = null;
-        if (permissions != null) {
-            scopeList = permissions.getScopeList();
-        }
-        if (scopeList == null) scopeList = new ArrayList<>();
-        List<Scope> finalScopeList = scopeList;
-        return new Content()
-                .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE + " - Добавление")
-                .setManagement(List.of(
-                        new Button().setTitle("Добавить")
-                                .setLink(new Link().setMethod(HttpMethod.POST)
-                                        .setValue("/permissions/" + permissionsId + "/scope")
-                                ),
-                        new Button().setTitle("Отмена")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/permissions/" + permissionsId + "/scope")
-                                )
-
-                ))
-                .setForm(new Form().setFields(List.of(
-                                new Field().setType(FieldType.SELECT)
-                                        .setLabel("Область доступа (Scope)")
-                                        .setName("scope")
-                                        .setValues(scopeService.getAll()
-                                                .stream()
-                                                .filter(scope -> !finalScopeList.contains(scope))
-                                                .map(this::toValueItem)
-                                                .toList())
-                        ))
-                );
+        return service.add(permissionsId);
     }
 
     @PostMapping("/permissions/{permissions_id}/scope")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackPermissionsDto")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackPermissionsIdPermissionsScopeDto")
     public Content create(@PathVariable("permissions_id") long permissionsId,
                           @RequestBody PermissionsScopeDto permissionsScopeDto) {
-        Permissions permissions = service.getById(permissionsId);
-        String notification;
-        if (permissions != null && service.addScope(permissions, scopeService.getById(permissionsScopeDto.getScope()))) {
-            notification = "Scope добавлен в Согласие " + permissions.getMnemonic();
-        } else if (permissions == null) {
-            notification = "Ошибка добавления. Согласие не найдено";
-        } else {
-            notification = "Ошибка добавления. Scope не найден или уже есть в согласии " + permissions.getMnemonic();
-        }
-        return getContentView(permissionsId, permissionsScopeDto.getScope())
-                .setNotifications(List.of(
-                        new Notification().setType(NotificationType.INFO)
-                                .setMessage(notification)
-                ));
+        return service.create(permissionsId, permissionsScopeDto);
     }
 
     @DeleteMapping("/permissions/{permissions_id}/scope/{id}")
-    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
+    @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackPermissionsId")
     public Content delete(@PathVariable("permissions_id") long permissionsId, @PathVariable("id") long id) {
-        Notification notification = new Notification();
-        Permissions permissions = service.getById(permissionsId);
-        Scope scope = scopeService.getById(id);
-        if (permissions != null) {
-            if (scope != null) {
-                if (service.deleteScope(permissions, scope)) {
-                    notification.setType(NotificationType.INFO);
-                    notification.setMessage("Scope уделен из Согласия " + permissions.getMnemonic());
-                } else {
-                    notification.setType(NotificationType.WARNING);
-                    notification.setMessage("Ошибка удаления Scope из Согласия " + permissions.getMnemonic()
-                            + " Scope " + scope.getName() + " отсутствует в согласии");
-                }
-            } else {
-                notification.setType(NotificationType.INFO);
-                notification.setMessage("Ошибка удаления scope из Согласия. Scope не найден");
-            }
-        } else {
-            notification.setType(NotificationType.WARNING);
-            notification.setMessage("Ошибка удаления scope из Согласия. Согласие не найдено");
-        }
-        return new Content()
-                .setPageName(PAGE_NAME + PAGE_NAME_SCOPE)
-                .setManagement(getBaseManagement(permissionsId))
-                .setTable(getTableAll(permissionsId))
-                .setNotifications(List.of(notification));
+        return service.delete(permissionsId, id);
     }
 
     private Content fallback() {
@@ -140,81 +57,15 @@ public class PermissionsScopeController {
         ));
     }
 
-    private Content fallbackId(long id) {
+    private Content fallbackPermissionsId(long permissionsId) {
         return fallback();
     }
 
-    private Content fallbackIdPermissionsDto(long id, PermissionsDto permissionsDto) {
+    private Content fallbackPermissionsIdId(long permissionsId, long id) {
         return fallback();
     }
 
-    private Content fallbackPermissionsDto(PermissionsDto permissionsDto) {
+    private Content fallbackPermissionsIdPermissionsScopeDto(long permissionsId, PermissionsScopeDto permissionsScopeDto) {
         return fallback();
-    }
-
-    private List<Button> getBaseManagement(long permissionsId) {
-        return List.of(
-                new Button().setTitle("Назад")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/permissions/" + permissionsId)
-                        ),
-                new Button().setTitle("Добавить запись")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/permissions/" + permissionsId + "/scope/add")
-                        )
-        );
-    }
-
-    private ValueItem toValueItem(Scope scope) {
-        ValueItem valueItem = new ValueItem();
-        valueItem.setId(scope.getId());
-        valueItem.setValue(scope.getName() + " (" + scope.getDescription() + ")");
-        return valueItem;
-    }
-
-    private Table getTableAll(long permissionsId) {
-        List<Row> rows = new ArrayList<>();
-        for (Scope scope : service.getById(permissionsId).getScopeList()) {
-            rows.add(new Row()
-                    .setLink(new Link().setMethod(HttpMethod.GET)
-                            .setValue("/permissions/" + permissionsId + "/scope/" + scope.getId())
-                    )
-                    .setColumns(List.of(
-                            scope.getName() == null ? "" : scope.getName(),
-                            scope.getDescription() == null ? "" : scope.getDescription()
-                    ))
-            );
-        }
-        return new Table()
-                .setLabels(List.of("Нименование", "Описание"))
-                .setRows(rows);
-    }
-
-    private Content getContentView(long permissionsId, long id) {
-        Scope scope = scopeService.getById(id);
-        return new Content()
-                .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setPosition(1)
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/permissions/" + permissionsId + "/scope")
-                                ),
-                        new Button().setTitle("Удалить из согласия")
-                                .setPosition(3)
-                                .setLink(new Link().setMethod(HttpMethod.DELETE)
-                                        .setValue("/permissions/" + permissionsId + "/scope/" + id)
-                                )
-                ))
-                .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Наименование")
-                                .setName("name")
-                                .setValue(scope.getName()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Описание")
-                                .setName("description")
-                                .setValue(scope.getDescription())
-                ));
     }
 }

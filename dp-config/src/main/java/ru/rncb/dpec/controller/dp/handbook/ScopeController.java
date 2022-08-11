@@ -1,153 +1,64 @@
 package ru.rncb.dpec.controller.dp.handbook;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
-import ru.rncb.dpec.domain.dto.out.content.*;
-import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
 import ru.rncb.dpec.domain.dto.in.dp.handbook.ScopeDto;
 import ru.rncb.dpec.domain.dto.out.Content;
-import ru.rncb.dpec.domain.dto.out.content.table.Row;
-import ru.rncb.dpec.domain.dto.out.content.table.Table;
-import ru.rncb.dpec.domain.dto.out.enums.FieldType;
+import ru.rncb.dpec.domain.dto.out.content.Notification;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
-import ru.rncb.dpec.service.dp.handbook.ScopeService;
+import ru.rncb.dpec.service.ui.handbook.ScopeUiService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class ScopeController {
 
-    private final ScopeService service;
-    private final static String PAGE_NAME = "Справочники > Области доступа (Scope)";
+    private final ScopeUiService service;
 
-    public ScopeController(ScopeService service) {
+    public ScopeController(ScopeUiService service) {
         this.service = service;
     }
 
     @GetMapping("/handbook/scope")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content list() {
-        return new Content().setPageName(PAGE_NAME)
-                .setManagement(getBaseManagement())
-                .setTable(getTableAll());
+        return service.list();
     }
 
     @GetMapping("/handbook/scope/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content view(@PathVariable("id") long id) {
-        return getContentView(id);
+        return service.getContentView(id);
     }
 
     @GetMapping("/handbook/scope/edit/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content edit(@PathVariable("id") long id) {
-        Scope scope = service.getById(id);
-        return new Content()
-                .setPageName(PAGE_NAME + " - редактирование")
-                .setManagement(List.of(
-                        new Button().setTitle("Сохранить")
-                                .setLink(new Link().setMethod(HttpMethod.PUT)
-                                        .setValue("/handbook/scope/" + scope.getId())
-                                ),
-                        new Button().setTitle("Отмена")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/scope/" + scope.getId())
-                                )
-                ))
-                .setForm(new Form().setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Наименование")
-                                .setName("name")
-                                .setValue(scope.getName()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Описание")
-                                .setName("description")
-                                .setValue(scope.getDescription())
-                )));
+        return service.edit(id);
     }
 
     @PutMapping("/handbook/scope/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackIdScopeDto")
-    public Content save(@PathVariable("id") long id,
-                        @RequestBody ScopeDto scopeDto) {
-        if (scopeDto.getName() == null || scopeDto.getName().isEmpty()) {
-            return new Content().setNotifications(List.of(new Notification()
-                    .setType(NotificationType.WARNING)
-                    .setMessage("Наименование должно быть заполнено")
-            ));
-        } else {
-            service.edit(service.getById(id), scopeDto.getName(), scopeDto.getDescription());
-            return getContentView(id).setNotifications(List.of(new Notification()
-                    .setType(NotificationType.INFO)
-                    .setMessage("Область доступа (Scope) успешно сохранена")
-            ));
-        }
+    public Content save(@PathVariable("id") long id, @RequestBody ScopeDto scopeDto) {
+        return service.save(id, scopeDto);
     }
 
     @GetMapping("/handbook/scope/add")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallback")
     public Content add() {
-        return new Content()
-                .setPageName(PAGE_NAME + " - добавление")
-                .setManagement(List.of(
-                        new Button().setTitle("Добавить")
-                                .setLink(new Link().setMethod(HttpMethod.POST)
-                                        .setValue("/handbook/scope")
-                                ),
-                        new Button().setTitle("Отмена")
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/scope")
-                                )
-
-                ))
-                .setForm(new Form().setFields(List.of(
-                                new Field().setType(FieldType.INPUT)
-                                        .setLabel("Наименование")
-                                        .setName("name"),
-                                new Field().setType(FieldType.INPUT)
-                                        .setLabel("Описание")
-                                        .setName("description")
-                        ))
-                );
+        return service.add();
     }
 
     @PostMapping("/handbook/scope")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackScopeDto")
     public Content create(@RequestBody ScopeDto scopeDto) {
-        if (scopeDto.getName() == null || scopeDto.getName().isEmpty()) {
-            return new Content()
-                    .setNotifications(List.of(
-                            new Notification().setType(NotificationType.WARNING)
-                                    .setMessage("Наименование должно быть заполнено")
-                    ));
-        } else {
-            Scope scope = service.add(scopeDto.getName(), scopeDto.getDescription());
-            return getContentView(scope.getId())
-                    .setNotifications(List.of(
-                            new Notification().setType(NotificationType.INFO)
-                                    .setMessage("Область доступа (Scope) успешно добавлена")
-                    ));
-        }
+        return service.create(scopeDto);
     }
 
     @DeleteMapping("/handbook/scope/{id}")
     @HystrixCommand(commandKey = "getFallKey", fallbackMethod = "fallbackId")
     public Content delete(@PathVariable("id") long id) {
-        Notification notification = new Notification();
-        if (service.delete(service.getById(id))) {
-            notification.setType(NotificationType.INFO);
-            notification.setMessage("Scope успешно удален");
-        } else {
-            notification.setType(NotificationType.WARNING);
-            notification.setMessage("Ошибка удаления Scope");
-        }
-        return new Content()
-                .setPageName(PAGE_NAME)
-                .setManagement(getBaseManagement())
-                .setTable(getTableAll())
-                .setNotifications(List.of(notification));
+        return service.delete(id);
     }
 
     private Content fallback() {
@@ -167,69 +78,5 @@ public class ScopeController {
 
     private Content fallbackScopeDto(ScopeDto scopeDto) {
         return fallback();
-    }
-
-    private List<Button> getBaseManagement(){
-        return List.of(
-                new Button().setTitle("Назад")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/handbook/")
-                        ),
-                new Button().setTitle("Добавить запись")
-                        .setLink(new Link().setMethod(HttpMethod.GET)
-                                .setValue("/handbook/scope/add")
-                        )
-        );
-    }
-
-    private Table getTableAll() {
-        List<Row> rows = new ArrayList<>();
-        for (Scope scope : service.getAll()) {
-            rows.add(new Row()
-                    .setLink(new Link().setMethod(HttpMethod.GET)
-                            .setValue("/handbook/scope/" + scope.getId())
-                    )
-                    .setColumns(List.of(
-                            scope.getName(),
-                            scope.getDescription() == null ? "" : scope.getDescription()
-                    ))
-            );
-        }
-        return new Table()
-                .setLabels(List.of("Нименование", "Описание"))
-                .setRows(rows);
-    }
-
-    private Content getContentView(long id) {
-        Scope scope = service.getById(id);
-        return new Content()
-                .setPageName(PAGE_NAME)
-                .setManagement(List.of(
-                        new Button().setTitle("Назад")
-                                .setPosition(1)
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/scope")
-                                ),
-                        new Button().setTitle("Редактировать")
-                                .setPosition(2)
-                                .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/handbook/scope/edit/" + scope.getId())
-                                ),
-                        new Button().setTitle("Удалить")
-                                .setPosition(3)
-                                .setLink(new Link().setMethod(HttpMethod.DELETE)
-                                        .setValue("/handbook/scope/" + scope.getId())
-                                )
-                ))
-                .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Наименование")
-                                .setName("name")
-                                .setValue(scope.getName()),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Описание")
-                                .setName("description")
-                                .setValue(scope.getDescription())
-                ));
     }
 }
