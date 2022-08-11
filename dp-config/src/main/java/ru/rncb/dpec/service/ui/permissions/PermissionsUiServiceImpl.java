@@ -157,6 +157,12 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
     @Override
     public Content getContentView(long id) {
         Permissions permissions = service.getById(id);
+        if(permissions == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Согласие отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(

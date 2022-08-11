@@ -144,6 +144,12 @@ public class ScopeUiServiceImpl implements ScopeUiService {
     @Override
     public Content getContentView(long id) {
         Scope scope = service.getById(id);
+        if(scope == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Scope отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(

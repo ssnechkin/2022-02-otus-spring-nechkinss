@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PermissionsScopeUiServiceImpl implements PermissionsScopeUiService{
+public class PermissionsScopeUiServiceImpl implements PermissionsScopeUiService {
 
     private final PermissionsService service;
     private final ScopeService scopeService;
@@ -128,6 +128,12 @@ public class PermissionsScopeUiServiceImpl implements PermissionsScopeUiService{
     @Override
     public Content getContentView(long permissionsId, long id) {
         Scope scope = scopeService.getById(id);
+        if (scope == null) {
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Scope отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE)
                 .setManagement(List.of(

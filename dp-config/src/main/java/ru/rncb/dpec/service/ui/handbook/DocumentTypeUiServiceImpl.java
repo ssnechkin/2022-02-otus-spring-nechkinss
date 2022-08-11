@@ -168,6 +168,12 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
     @Override
     public Content getContentView(long id) {
         DocumentType documentType = service.getById(id);
+        if(documentType == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Тип документа отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(

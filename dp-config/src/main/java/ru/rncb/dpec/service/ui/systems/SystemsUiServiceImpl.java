@@ -166,6 +166,12 @@ public class SystemsUiServiceImpl implements SystemsUiService{
     @Override
     public Content getContentView(long systemId) {
         Systems system = service.getById(systemId);
+        if(system == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Система отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(

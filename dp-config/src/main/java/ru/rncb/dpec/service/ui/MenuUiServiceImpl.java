@@ -46,7 +46,6 @@ public class MenuUiServiceImpl implements MenuUiService{
 
     private List<Button> getAssembledMenu() {
         List<Button> buttons = new LinkedList<>();
-        System.out.println(getAllMenu().size());
         for (Menu menu : getAllMenu()) {
             buttons.add(new Button()
                     .setPosition(menu.getPosition())

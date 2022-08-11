@@ -155,6 +155,12 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
     @Override
     public Content getContentView(long systemId, long parameterValId, long id) {
         SysResponse sysResponse = service.getById(id);
+        if(sysResponse == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Фильтр отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(getBasePageName(systemId, parameterValId))
                 .setManagement(List.of(

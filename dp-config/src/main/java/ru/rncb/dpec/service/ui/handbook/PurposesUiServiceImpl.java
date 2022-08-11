@@ -144,6 +144,12 @@ public class PurposesUiServiceImpl implements PurposesUiService{
     @Override
     public Content getContentView(long id) {
         Purposes purposes = service.getById(id);
+        if(purposes == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Цель отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(

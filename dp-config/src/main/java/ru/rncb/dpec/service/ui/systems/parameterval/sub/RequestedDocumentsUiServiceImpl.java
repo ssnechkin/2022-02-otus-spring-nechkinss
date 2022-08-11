@@ -129,6 +129,12 @@ public class RequestedDocumentsUiServiceImpl implements RequestedDocumentsUiServ
     @Override
     public Content getContentView(long systemId, long parameterValId, long id) {
         RequestedDocuments requestedDocuments = service.getById(id);
+        if(requestedDocuments == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Запрашиваемый документ отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(getBasePageName(systemId, parameterValId))
                 .setManagement(List.of(

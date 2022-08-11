@@ -46,6 +46,12 @@ const contentReader = (response, isOk) => {
             alert(response.notifications[prop].message);
         }
     }
+    if (response.status == 403 && response.error == 'Forbidden') {
+        alert('У Вас недостаточно прав для совершения операции');
+    }
+    if (response.status == 500 && response.error == 'Internal Server Error') {
+        alert('Непредвиденная ошибка на сервере. Операция не выполнена');
+    }
 }
 
 const saveFormFieldIds = (form) => {

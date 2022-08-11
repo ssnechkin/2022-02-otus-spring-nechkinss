@@ -128,6 +128,12 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
     @Override
     public Content getContentView(long permissionsId, long id) {
         Actions actions = actionsService.getById(id);
+        if(actions == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Действие отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_ACTIONS)
                 .setManagement(List.of(

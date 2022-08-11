@@ -195,6 +195,12 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
     @Override
     public Content getContentView(long systemsId, long sysPermissionsId) {
         SysPermissions sysPermissions = sysPermissionsService.getById(sysPermissionsId);
+        if(sysPermissions == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Значение параметра отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME + getSystemName(systemsId))
                 .setManagement(List.of(

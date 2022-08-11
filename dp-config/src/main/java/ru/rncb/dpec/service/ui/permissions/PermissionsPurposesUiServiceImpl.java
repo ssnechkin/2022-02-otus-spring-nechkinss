@@ -128,6 +128,12 @@ public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiSe
     @Override
     public Content getContentView(long permissionsId, long id) {
         Purposes purposes = purposesService.getById(id);
+        if(purposes == null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.WARNING);
+            notification.setMessage("Цель отсутствует");
+            return new Content().setNotifications(List.of(notification));
+        }
         return new Content()
                 .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_PURPOSES)
                 .setManagement(List.of(
