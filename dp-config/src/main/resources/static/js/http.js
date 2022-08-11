@@ -26,7 +26,7 @@ const http = {
              method: 'get',
              headers: headers
          })
-        .then(data => {if(data.status==403){return data;}else{return data.json();}})
+        .then(data => data.json())
         .then((json) => {
             if (!json.ok) {
                 callBack(json, false);

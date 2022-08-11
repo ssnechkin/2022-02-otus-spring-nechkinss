@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(HttpMethod.DELETE,"/handbook/**").hasAnyRole("ADMIN", "EDITOR")
                 .and().authorizeRequests().antMatchers(HttpMethod.DELETE,"/permissions", "/permissions/**").hasAnyRole("ADMIN", "EDITOR")
                 .and().authorizeRequests().antMatchers(HttpMethod.DELETE,"/systems", "/systems/**").hasAnyRole("ADMIN", "EDITOR")
+                .and().authorizeRequests().antMatchers("/users", "/users/**").hasAnyRole("ADMIN")
                 .and().authorizeRequests().antMatchers("/menu").authenticated()
                 .and().authorizeRequests().antMatchers("/page/login", "/css/**", "/js/**", "/actuator/*").permitAll()
                 .and().formLogin().loginPage("/page/login").defaultSuccessUrl("/menu").failureUrl("/error/login")
