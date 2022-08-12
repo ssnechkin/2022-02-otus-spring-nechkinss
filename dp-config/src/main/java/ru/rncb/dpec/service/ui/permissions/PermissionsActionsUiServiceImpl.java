@@ -7,6 +7,7 @@ import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.dto.out.content.table.Row;
 import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
@@ -55,10 +56,12 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
                 .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_ACTIONS + " - Добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.POST)
                                         .setValue("/permissions/" + permissionsId + "/actions")
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/" + permissionsId + "/actions")
                                 )
@@ -138,12 +141,15 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
                 .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_ACTIONS)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
+                                .setColor(Color.cyan)
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/" + permissionsId + "/actions")
                                 ),
                         new Button().setTitle("Удалить из согласия")
+                                .setColor(Color.red)
                                 .setPosition(3)
+                                .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/permissions/" + permissionsId + "/actions/" + id)
                                 )
@@ -163,10 +169,12 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
     private List<Button> getBaseManagement(long permissionsId) {
         return List.of(
                 new Button().setTitle("Назад")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/permissions/" + permissionsId)
                         ),
                 new Button().setTitle("Добавить запись")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/permissions/" + permissionsId + "/actions/add")
                         )

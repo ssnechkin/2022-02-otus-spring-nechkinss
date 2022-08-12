@@ -63,8 +63,14 @@ const saveFormFieldIds = (form) => {
     }
 };
 
-const followLink = (method, link) => {
-    http.send(method, contentReader, link);
+const followLink = (method, link, confirmText) => {
+    if(confirmText != 'undefined' && typeof confirmText !== 'undefined' && confirmText.length > 0) {
+        if(confirm(confirmText)) {
+            http.send(method, contentReader, link);
+        }
+    } else {
+        http.send(method, contentReader, link);
+    }
 };
 
 const followFormLink = (method, link) => {

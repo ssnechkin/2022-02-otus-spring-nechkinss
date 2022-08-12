@@ -7,6 +7,7 @@ import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.dto.out.content.table.Row;
 import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.dp.SysResponse;
@@ -56,12 +57,14 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
                 .setPageName(getBasePageName(systemId, parameterValId) + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
                                         .setValue("/systems/" + systemId
                                                 + "/parameter_val/" + parameterValId
                                                 + "/response_filter/" + id)
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemId
                                                 + "/parameter_val/" + parameterValId
@@ -95,11 +98,13 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
                 .setPageName(getBasePageName(systemId, parameterValId) + " - добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.POST)
                                         .setValue("/systems/" + systemId
                                                 + "/parameter_val/" + parameterValId + "/response_filter")
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemId
                                                 + "/parameter_val/" + parameterValId + "/response_filter")
@@ -165,12 +170,14 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
                 .setPageName(getBasePageName(systemId, parameterValId))
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
+                                .setColor(Color.cyan)
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemId
                                                 + "/parameter_val/" + parameterValId + "/response_filter")
                                 ),
                         new Button().setTitle("Редактировать")
+                                .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemId
@@ -178,7 +185,9 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
                                                 + "/response_filter/" + id + "/edit")
                                 ),
                         new Button().setTitle("Удалить")
+                                .setColor(Color.red)
                                 .setPosition(3)
+                                .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/systems/" + systemId
                                                 + "/parameter_val/" + parameterValId
@@ -211,11 +220,13 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
     private List<Button> getBaseManagement(long systemId, long parameterValId) {
         return List.of(
                 new Button().setTitle("Назад")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/systems/" + systemId
                                         + "/parameter_val/" + parameterValId)
                         ),
                 new Button().setTitle("Добавить запись")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/systems/" + systemId
                                         + "/parameter_val/" + parameterValId + "/response_filter/add")

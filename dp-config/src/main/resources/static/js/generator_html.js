@@ -11,7 +11,7 @@ const genHtml = {
             if (!button.color) {<!--brown, pink, purple, gray, cyan, green, blue, red-->
                 button.color='blue';
             }
-            str += '<a href="javascript:' + funcClick.name + '(\'' + button.link.method + '\', \'' + button.link.value + '\');" class="button ' + button.color + alt + '">' + button.title + '</a>';
+            str += '<a href="javascript:' + funcClick.name + '(\'' + button.link.method + '\', \'' + button.link.value + '\', \'' + button.confirm + '\');" class="button ' + button.color + alt + '">' + button.title + '</a>';
         }
         return str;
     },

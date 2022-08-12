@@ -4,9 +4,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 import ru.rncb.dpec.domain.dto.out.Content;
-import ru.rncb.dpec.domain.dto.out.content.Button;
-import ru.rncb.dpec.domain.dto.out.content.Link;
-import ru.rncb.dpec.domain.dto.out.content.TopRight;
+import ru.rncb.dpec.domain.dto.out.content.*;
+import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.domain.entity.security.UserDetail;
 import ru.rncb.dpec.repository.MenuRepository;
@@ -42,7 +41,12 @@ public class MenuUiServiceImpl implements MenuUiService {
         content.setButtons(getAssembledMenu());
         content.setManagement(List.of());
         content.setPageName("Конфигуратор интеграционных сервисов цифрового профиля ЕСИА");
-        content.setFields(List.of());
+        content.setFields(List.of(
+                new Field()
+                        .setType(FieldType.SPAN)
+                        .setLabel("")
+                        .setValue("Приложение преднахначенно для настраивания правил формирования json-запросов инеграционными сервисами esia_digital_profile, а также настраивания JSON в ответных сообщениях сервисов.")
+        ));
         return content;
     }
 

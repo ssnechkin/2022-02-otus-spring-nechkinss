@@ -7,6 +7,7 @@ import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.dto.out.content.table.Row;
 import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.dp.handbook.DocumentType;
@@ -48,10 +49,12 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                 .setPageName(PAGE_NAME + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
                                         .setValue("/handbook/document_type/" + documentType.getId())
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/handbook/document_type/" + documentType.getId())
                                 )
@@ -101,10 +104,12 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                 .setPageName(PAGE_NAME + " - добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.POST)
                                         .setValue("/handbook/document_type")
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/handbook/document_type")
                                 )
@@ -178,17 +183,21 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
+                                .setColor(Color.cyan)
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/handbook/document_type")
                                 ),
                         new Button().setTitle("Редактировать")
+                                .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/handbook/document_type/edit/" + documentType.getId())
                                 ),
                         new Button().setTitle("Удалить")
+                                .setColor(Color.red)
                                 .setPosition(3)
+                                .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/handbook/document_type/" + documentType.getId())
                                 )
@@ -216,10 +225,12 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
     private List<Button> getBaseManagement() {
         return List.of(
                 new Button().setTitle("Назад")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/handbook/")
                         ),
                 new Button().setTitle("Добавить запись")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/handbook/document_type/add")
                         )

@@ -7,6 +7,7 @@ import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.dto.out.content.table.Row;
 import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.Menu;
@@ -50,10 +51,12 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                 .setPageName(PAGE_NAME + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
                                         .setValue("/permissions/" + permissions.getId())
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/" + permissions.getId())
                                 )
@@ -104,10 +107,12 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                 .setPageName(PAGE_NAME + " - добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.POST)
                                         .setValue("/permissions")
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions")
                                 )
@@ -181,29 +186,36 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
+                                .setColor(Color.cyan)
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions")
                                 ),
                         new Button().setTitle("Редактировать")
+                                .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/" + permissions.getId() + "/edit")
                                 ),
                         new Button().setTitle("Цели")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/" + permissions.getId() + "/purposes")
                                 ),
                         new Button().setTitle("Действия")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/" + permissions.getId() + "/actions")
                                 ),
                         new Button().setTitle("Области доступа (Scope)")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/permissions/" + permissions.getId() + "/scope")
                                 ),
                         new Button().setTitle("Удалить")
+                                .setColor(Color.red)
                                 .setPosition(3)
+                                .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/permissions/" + permissions.getId())
                                 )
@@ -247,6 +259,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
     private List<Button> getBaseManagement() {
         return List.of(
                 new Button().setTitle("Добавить запись")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/permissions/add")
                         )

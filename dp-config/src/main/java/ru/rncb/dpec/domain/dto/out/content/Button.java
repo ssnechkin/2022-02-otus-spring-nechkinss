@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.rncb.dpec.domain.dto.out.enums.Color;
 
 @Data
 @AllArgsConstructor
@@ -12,11 +13,23 @@ import lombok.NoArgsConstructor;
 public class Button {
     private int position;
     private String title;
+    private String confirm;
     private Link link;
     private Boolean alt;
+    private Color color;
+
+    public Button setColor(Color color) {
+        this.color = color;
+        return this;
+    }
 
     public Button setPosition(int position) {
         this.position = position;
+        return this;
+    }
+
+    public Button setConfirm(String confirm) {
+        this.confirm = confirm;
         return this;
     }
 

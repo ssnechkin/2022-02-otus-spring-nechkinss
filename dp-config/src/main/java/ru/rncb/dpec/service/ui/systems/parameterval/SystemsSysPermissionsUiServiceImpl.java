@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.rncb.dpec.domain.dto.in.dp.systems.parameterval.SystemsUrlParameterValDto;
 import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.*;
+import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
@@ -38,10 +39,12 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                 .setPageName(PAGE_NAME + getSystemName(systemsId) + " - добавление URL-параметра")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.POST)
                                         .setValue("/systems/" + systemsId + "/parameter_val")
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemsId)
                                 )
@@ -124,10 +127,12 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                 .setPageName(PAGE_NAME + getSystemName(systemsId) + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
                                         .setValue("/systems/" + systemsId + "/parameter_val/" + id)
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemsId + "/parameter_val/" + id)
                                 )
@@ -217,27 +222,33 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                 .setPageName(PAGE_NAME + getSystemName(systemsId))
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
+                                .setColor(Color.cyan)
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemsId)
                                 ),
                         new Button().setTitle("Редактировать")
+                                .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/edit")
                                 ),
                         new Button().setTitle("Список запрашиваемых документов")
+                                .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/requested_documents")
                                 ),
                         new Button().setTitle("Фильтр ответа")
+                                .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/response_filter")
                                 ),
                         new Button().setTitle("Удалить")
+                                .setColor(Color.red)
                                 .setPosition(4)
+                                .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId)
                                 )

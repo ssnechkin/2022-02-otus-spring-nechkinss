@@ -7,6 +7,7 @@ import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.*;
 import ru.rncb.dpec.domain.dto.out.content.table.Row;
 import ru.rncb.dpec.domain.dto.out.content.table.Table;
+import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.Menu;
@@ -52,10 +53,12 @@ public class SystemsUiServiceImpl implements SystemsUiService {
                 .setPageName(PAGE_NAME + " - редактирование")
                 .setManagement(List.of(
                         new Button().setTitle("Сохранить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.PUT)
                                         .setValue("/systems/" + systems.getId())
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + systems.getId())
                                 )
@@ -94,10 +97,12 @@ public class SystemsUiServiceImpl implements SystemsUiService {
                 .setPageName(PAGE_NAME + " - добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
+                                .setColor(Color.green)
                                 .setLink(new Link().setMethod(HttpMethod.POST)
                                         .setValue("/systems")
                                 ),
                         new Button().setTitle("Отмена")
+                                .setColor(Color.cyan)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems")
                                 )
@@ -176,22 +181,27 @@ public class SystemsUiServiceImpl implements SystemsUiService {
                 .setPageName(PAGE_NAME)
                 .setManagement(List.of(
                         new Button().setTitle("Назад")
+                                .setColor(Color.cyan)
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems")
                                 ),
                         new Button().setTitle("Редактировать")
+                                .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + system.getId() + "/edit")
                                 ),
                         new Button().setTitle("Добавить URL параметр")
+                                .setColor(Color.cyan)
                                 .setPosition(3)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + system.getId() + "/url_parameter/add")
                                 ),
                         new Button().setTitle("Удалить")
+                                .setColor(Color.red)
                                 .setPosition(4)
+                                .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
                                         .setValue("/systems/" + system.getId())
                                 )
@@ -212,6 +222,7 @@ public class SystemsUiServiceImpl implements SystemsUiService {
     private List<Button> getManagement() {
         return List.of(
                 new Button().setTitle("Добавить запись")
+                        .setColor(Color.cyan)
                         .setLink(new Link().setMethod(HttpMethod.GET)
                                 .setValue("/systems/add")
                         )
