@@ -1,7 +1,6 @@
 package ru.rncb.dpec.service.ui;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.*;
@@ -9,6 +8,7 @@ import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.domain.entity.security.UserDetail;
 import ru.rncb.dpec.repository.MenuRepository;
+import ru.rncb.dpec.service.securaty.ButtonsSecure;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -17,15 +17,16 @@ import java.util.List;
 @Service
 public class MenuUiServiceImpl implements MenuUiService {
     private final MenuRepository menuRepository;
+    private final ButtonsSecure buttonsSecure;
 
-    public MenuUiServiceImpl(MenuRepository menuRepository) {
+    public MenuUiServiceImpl(MenuRepository menuRepository, ButtonsSecure buttonsSecure) {
         this.menuRepository = menuRepository;
+        this.buttonsSecure = buttonsSecure;
     }
 
     @Override
-    @PostFilter("hasPermission(filterObject, 'READ')")
     public List<Menu> getAllMenu() {
-        return menuRepository.findAll();
+        return buttonsSecure.getMenu();
     }
 
     @Override
