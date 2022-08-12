@@ -24,7 +24,7 @@ public class UsersUiServiceImpl implements UsersUiService {
 
     private final UserService service;
     private final RoleRepository roleRepository;
-    private final static String PAGE_NAME = "Пользователей";
+    private final static String PAGE_NAME = "Пользователи";
 
     public UsersUiServiceImpl(UserService service, MenuRepository menuRepository, RoleRepository roleRepository) {
         this.service = service;

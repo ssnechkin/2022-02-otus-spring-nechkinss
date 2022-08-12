@@ -1,3 +1,13 @@
+CREATE TABLE IF NOT EXISTS menu (
+  id BIGSERIAL NOT NULL PRIMARY KEY,
+  position int NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  alt BOOLEAN NOT NULL,
+  method VARCHAR(255) NOT NULL,
+  link VARCHAR(255) NOT NULL,
+  CONSTRAINT UNIQUE_UK_0 UNIQUE(title, link, method)
+);
+
 create table IF NOT EXISTS acl_sid(
     id bigserial not null primary key,
     principal boolean not null,

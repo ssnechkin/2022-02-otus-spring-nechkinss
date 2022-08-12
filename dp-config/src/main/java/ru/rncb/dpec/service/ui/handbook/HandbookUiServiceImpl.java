@@ -1,6 +1,7 @@
 package ru.rncb.dpec.service.ui.handbook;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Service;
 import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.Button;
@@ -10,6 +11,7 @@ import ru.rncb.dpec.domain.dto.out.content.table.Table;
 import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.repository.MenuRepository;
+import ru.rncb.dpec.security.SecurityAclService;
 
 import java.util.ArrayList;
 import java.util.List;

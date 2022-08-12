@@ -2,6 +2,11 @@ package ru.rncb.dpec.security;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.acls.AclPermissionCacheOptimizer;
+import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
@@ -15,8 +20,8 @@ import javax.sql.DataSource;
 import java.io.Serializable;
 import java.util.List;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Service
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityAclService {
     private final DataSource dataSource;
     private final JdbcMutableAclService jdbcMutableAclService;
@@ -32,14 +37,14 @@ public class SecurityAclService {
         return jdbcMutableAclService;
     }
 
-/*    @Bean
+    @Bean
     public MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         AclPermissionEvaluator permissionEvaluator = new AclPermissionEvaluator(jdbcMutableAclService);
         expressionHandler.setPermissionEvaluator(permissionEvaluator);
         expressionHandler.setPermissionCacheOptimizer(new AclPermissionCacheOptimizer(jdbcMutableAclService));
         return expressionHandler;
-    }*/
+    }
 
     @Transactional
     public void addSecurityUserRight(Class<?> clas, Serializable objectId, Permission permission, String user, boolean granting) {
