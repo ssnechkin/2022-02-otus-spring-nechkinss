@@ -3,10 +3,12 @@ package ru.rncb.dpec.service.dp.permissions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
+import ru.rncb.dpec.domain.entity.dp.SysPermissions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Actions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Purposes;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
 import ru.rncb.dpec.repository.dp.PermissionsRepository;
+import ru.rncb.dpec.repository.dp.SysPermissionsRepository;
 import ru.rncb.dpec.repository.dp.handbook.ActionsRepository;
 import ru.rncb.dpec.repository.dp.handbook.PurposesRepository;
 import ru.rncb.dpec.repository.dp.handbook.ScopeRepository;
@@ -22,20 +24,24 @@ public class PermissionsServiceImpl implements PermissionsService {
     private final ActionsRepository actionsRepository;
     private final PurposesRepository purposesRepository;
     private final ScopeRepository scopeRepository;
+    private final SysPermissionsRepository sysPermissionsRepository;
 
-    public PermissionsServiceImpl(PermissionsRepository repository, ActionsRepository actionsRepository, PurposesRepository purposesRepository, ScopeRepository scopeRepository) {
+    public PermissionsServiceImpl(PermissionsRepository repository, ActionsRepository actionsRepository, PurposesRepository purposesRepository, ScopeRepository scopeRepository, SysPermissionsRepository sysPermissionsRepository) {
         this.repository = repository;
         this.actionsRepository = actionsRepository;
         this.purposesRepository = purposesRepository;
         this.scopeRepository = scopeRepository;
+        this.sysPermissionsRepository = sysPermissionsRepository;
     }
 
     @Override
     @Transactional
-    public Permissions add(String mnemonic, String name, String description) {
+    public Permissions add(String mnemonic, String name, String orgNameFio, long expire, String description) {
         Permissions permissions = new Permissions();
         permissions.setMnemonic(mnemonic);
         permissions.setName(name);
+        permissions.setResponsibleobject(orgNameFio);
+        permissions.setExpire(expire);
         permissions.setDescription(description);
         return repository.save(permissions);
     }
@@ -52,9 +58,11 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public Permissions edit(Permissions permissions, String mnemonic, String name, String description) {
+    public Permissions edit(Permissions permissions, String mnemonic, String name, String orgNameFio, long expire, String description) {
         permissions.setMnemonic(mnemonic);
         permissions.setName(name);
+        permissions.setResponsibleobject(orgNameFio);
+        permissions.setExpire(expire);
         permissions.setDescription(description);
         return repository.save(permissions);
     }
@@ -156,6 +164,11 @@ public class PermissionsServiceImpl implements PermissionsService {
         for (Scope scope : permissions.getScopeList()) {
             scope.getPermissionsList().remove(permissions);
             scopeRepository.save(scope);
+        }
+        for (SysPermissions sysPermissions : sysPermissionsRepository.findAll()) {
+            if (sysPermissions.getPermissions().equals(permissions)) {
+                sysPermissionsRepository.delete(sysPermissions);
+            }
         }
         repository.delete(permissions);
         return true;

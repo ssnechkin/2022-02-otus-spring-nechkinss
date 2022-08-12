@@ -57,7 +57,7 @@ public class ScopeUiServiceImpl implements ScopeUiService {
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(scope.getName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.TEXTAREA)
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(scope.getDescription())
@@ -99,7 +99,7 @@ public class ScopeUiServiceImpl implements ScopeUiService {
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Наименование")
                                         .setName("name"),
-                                new Field().setType(FieldType.INPUT)
+                                new Field().setType(FieldType.TEXTAREA)
                                         .setLabel("Описание")
                                         .setName("description")
                         ))
@@ -170,11 +170,11 @@ public class ScopeUiServiceImpl implements ScopeUiService {
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(scope.getName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(scope.getDescription())

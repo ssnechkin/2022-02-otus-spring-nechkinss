@@ -21,6 +21,7 @@ public class Scope {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "scope_seq")
+    @SequenceGenerator(name = "scope_seq", allocationSize = 1)
     private long id;
 
     @Comment("Наименование (Мнемоника области доступа)")
@@ -41,8 +42,8 @@ public class Scope {
             CascadeType.REFRESH,
             CascadeType.PERSIST})
     @JoinTable(name = "permissions_scope",
-            joinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "scope_id", referencedColumnName = "id")}
+            joinColumns = {@JoinColumn(name = "scope_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")}
     )
     private List<Permissions> permissionsList = new ArrayList<>();
 

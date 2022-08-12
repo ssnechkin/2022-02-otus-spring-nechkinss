@@ -19,6 +19,7 @@ public class SysResponse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sys_response_map_seq")
+    @SequenceGenerator(name = "sys_response_map_seq", allocationSize = 1)
     private long id;
 
     @Comment("Значения ключа(json-путь к значению поля документа) для формирования ответа")

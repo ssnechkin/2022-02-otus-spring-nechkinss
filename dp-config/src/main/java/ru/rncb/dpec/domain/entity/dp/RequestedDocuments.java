@@ -19,6 +19,7 @@ public class RequestedDocuments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "requested_documents_id_seq")
+    @SequenceGenerator(name = "requested_documents_id_seq", allocationSize = 1)
     private long id;
 
     @Comment("Наименование листа запрашиваемых документов из ЕСИА")

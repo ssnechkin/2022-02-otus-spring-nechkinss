@@ -170,11 +170,11 @@ public class PurposesUiServiceImpl implements PurposesUiService{
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Мнемоника")
                                 .setName("mnemonic")
                                 .setValue(purposes.getMnemonic()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(purposes.getName())

@@ -20,19 +20,20 @@ public class SysPermissions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sys_permissions_map_seq")
+    @SequenceGenerator(name = "sys_permissions_map_seq", allocationSize = 1)
     private long id;
 
     @Comment("Согласие по умолчанию. 1-использовать по умолчанию")
     @Column(name = "is_default")
     private long isDefault;
 
+    @Comment("Наименование URL-параметра")
+    @Column(length = 2000)
+    private String responsibleobject;
+
     @Comment("Проверяемое значение переданное в URL-параметре")
     @Column(length = 4000)
     private String comparing;
-
-    @Comment("Наименование организации или ФИО ответственного сотрудника. Будет отображаться в личном кабинете у согласий")
-    @Column(length = 2000)
-    private String responsibleobject;
 
     @Comment("Время жизни согласия в минутах")
     private long expire;

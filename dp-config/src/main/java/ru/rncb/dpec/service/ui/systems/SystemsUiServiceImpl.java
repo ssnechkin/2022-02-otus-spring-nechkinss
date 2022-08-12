@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SystemsUiServiceImpl implements SystemsUiService{
+public class SystemsUiServiceImpl implements SystemsUiService {
 
     private final SystemsService service;
     private final SysPermissionsService sysPermissionsService;
@@ -65,7 +65,7 @@ public class SystemsUiServiceImpl implements SystemsUiService{
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(systems.getName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.TEXTAREA)
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(systems.getDescription())
@@ -107,7 +107,7 @@ public class SystemsUiServiceImpl implements SystemsUiService{
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Наименование")
                                         .setName("name"),
-                                new Field().setType(FieldType.INPUT)
+                                new Field().setType(FieldType.TEXTAREA)
                                         .setLabel("Описание")
                                         .setName("description")
                         ))
@@ -154,7 +154,7 @@ public class SystemsUiServiceImpl implements SystemsUiService{
         Notification notification = new Notification();
         if (sysPermissionsService.delete(sysPermissionsService.getById(id))) {
             notification.setType(NotificationType.INFO);
-            notification.setMessage("Значение URL-параметра удалено из системы " + service.getById(systemsId).getName());
+            notification.setMessage("URL-параметр удален из системы " + service.getById(systemsId).getName());
         } else {
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Ошибка удаления URL-параметра");
@@ -166,7 +166,7 @@ public class SystemsUiServiceImpl implements SystemsUiService{
     @Override
     public Content getContentView(long systemId) {
         Systems system = service.getById(systemId);
-        if(system == null){
+        if (system == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Система отсутствует");
@@ -185,7 +185,7 @@ public class SystemsUiServiceImpl implements SystemsUiService{
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + system.getId() + "/edit")
                                 ),
-                        new Button().setTitle("Добавить значение URL параметра")
+                        new Button().setTitle("Добавить URL параметр")
                                 .setPosition(3)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
                                         .setValue("/systems/" + system.getId() + "/url_parameter/add")
@@ -197,11 +197,11 @@ public class SystemsUiServiceImpl implements SystemsUiService{
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(system.getName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(system.getDescription())
@@ -244,21 +244,23 @@ public class SystemsUiServiceImpl implements SystemsUiService{
                             .setValue("/systems/" + systems.getId() + "/parameter_val/" + sysPermissions.getId())
                     )
                     .setColumns(List.of(
-                            sysPermissions.getComparing(),
+                            sysPermissions.getResponsibleobject() == null ? "" : sysPermissions.getResponsibleobject(),
+                            sysPermissions.getComparing() == null ? "" : sysPermissions.getComparing(),
                             sysPermissions.getIsDefault() == 1 ? "&check;" : "",
-                            sysPermissions.getPermissions() == null ? "" : sysPermissions.getPermissions().getMnemonic(),
-                            String.valueOf(sysPermissions.getExpire()),
-                            sysPermissions.getResponsibleobject() == null ? "" : sysPermissions.getResponsibleobject()
+                            sysPermissions.getPermissions() == null && sysPermissions.getPermissions() != null ? "" : sysPermissions.getPermissions().getMnemonic(),
+                            sysPermissions.getPermissions() == null && sysPermissions.getPermissions() != null ? "" : sysPermissions.getPermissions().getResponsibleobject(),
+                            String.valueOf(sysPermissions.getExpire())
                     ))
             );
         }
         return new Table()
                 .setLabels(List.of(
+                        "Наименование URL параметра",
                         "Значение URL параметра",
                         "Применять по умолчанию",
                         "Согласие",
-                        "Время жизни согласия (минут)",
-                        "Организация/ФИО ответственного"
+                        "Организация/ФИО ответственного",
+                        "Время жизни согласия (минут)"
                 ))
                 .setRows(rows);
     }

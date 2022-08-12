@@ -194,19 +194,19 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Мнемоника")
                                 .setName("mnemonic")
                                 .setValue(documentType.getMnemonic()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(documentType.getName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Источник данных (ведомство)")
                                 .setName("source")
                                 .setValue(documentType.getSource()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Область доступа")
                                 .setName("scope")
                                 .setValue(documentType.getScope().getName())

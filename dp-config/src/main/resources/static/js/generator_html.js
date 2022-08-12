@@ -53,6 +53,14 @@ const genHtml = {
                 str += '<label for="' + fields[prop].name + '">' + fields[prop].label + '</label>'
                      + '<input id="' + fields[prop].name + '" type="text" '+ placeholder +' value="' + fields[prop].value + '" ' + readonly + '/>';
             }
+            if (fields[prop].type == 'SPAN') {
+                str += '<label for="' + fields[prop].name + '">' + fields[prop].label + '</label>'
+                     + '<span id="' + fields[prop].name + '" type="text" '+ placeholder +' value="' + fields[prop].value + '" ' + readonly + '>' + fields[prop].value + '</span>';
+            }
+            if (fields[prop].type == 'TEXTAREA') {
+            str += '<label for="' + fields[prop].name + '">' + fields[prop].label + '</label>'
+                 + '<textarea id="' + fields[prop].name + '" '+ placeholder +' ' + readonly + '>' + fields[prop].value + '</textarea>';
+            }
             if (fields[prop].type == 'PASSWORD') {
                 str += '<label for="' + fields[prop].name + '">' + fields[prop].label + '</label>'
                      + '<input id="' + fields[prop].name + '" type="password" '+ placeholder +' value="' + fields[prop].value + '" ' + readonly + '/>';

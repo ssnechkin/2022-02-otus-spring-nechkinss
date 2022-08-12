@@ -21,6 +21,7 @@ public class Actions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "actions_seq")
+    @SequenceGenerator(name = "actions_seq", allocationSize = 1)
     private long id;
 
     @Comment("Действие запроса согласия")
@@ -41,8 +42,8 @@ public class Actions {
             CascadeType.REFRESH,
             CascadeType.PERSIST})
     @JoinTable(name = "permissions_action",
-            joinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "action_id", referencedColumnName = "id")}
+            joinColumns = {@JoinColumn(name = "actions_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")}
     )
     private List<Permissions> permissionsList = new ArrayList<>();
 }

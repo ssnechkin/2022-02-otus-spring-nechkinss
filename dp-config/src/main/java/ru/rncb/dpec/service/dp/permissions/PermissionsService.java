@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface PermissionsService {
 
-    Permissions add(String mnemonic, String name, String description);
+    Permissions add(String mnemonic, String name, String orgNameFio, long expire, String description);
 
     Permissions getById(long id);
 
     List<Permissions> getAll();
 
-    Permissions edit(Permissions permissions, String mnemonic, String name, String description);
+    Permissions edit(Permissions permissions, String mnemonic, String name, String orgNameFio, long expire, String description);
 
     boolean delete(Permissions permissions);
 

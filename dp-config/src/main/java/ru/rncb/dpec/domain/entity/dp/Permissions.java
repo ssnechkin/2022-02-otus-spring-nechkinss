@@ -23,6 +23,7 @@ public class Permissions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "permissions_seq")
+    @SequenceGenerator(name = "permissions_seq", allocationSize = 1)
     private long id;
 
     @Comment("Мнемоника типа согласия")
@@ -33,7 +34,7 @@ public class Permissions {
     @Column(length = 2000)
     private String name;
 
-    @Comment("Наименование организации или ФИО ответственного сотрудника")
+    @Comment("Наименование организации или ФИО ответственного сотрудника. Будет отображаться в личном кабинете у согласий")
     @Column(length = 2000)
     private String responsibleobject = "Организация/ФИО ответственного представителя";
 

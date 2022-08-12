@@ -20,6 +20,7 @@ public class Systems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "systems_seq")
+    @SequenceGenerator(name = "systems_seq", allocationSize = 1)
     private long id;
 
     @Comment("Наименование системы")

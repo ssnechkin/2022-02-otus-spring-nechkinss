@@ -22,6 +22,7 @@ public class DocumentType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_type_seq")
+    @SequenceGenerator(name = "document_type_seq", allocationSize = 1)
     private long id;
 
     @Comment("Мнемоника типа документа")

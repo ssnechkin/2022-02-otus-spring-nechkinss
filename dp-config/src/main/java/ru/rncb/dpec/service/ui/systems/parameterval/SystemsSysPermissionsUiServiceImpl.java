@@ -18,7 +18,7 @@ import ru.rncb.dpec.service.dp.systems.SystemsService;
 import java.util.List;
 
 @Service
-public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissionsUiService{
+public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissionsUiService {
 
     private final SystemsService service;
     private final SysPermissionsService sysPermissionsService;
@@ -35,7 +35,7 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
     @Override
     public Content addUrlParameterVal(long systemsId) {
         return new Content()
-                .setPageName(PAGE_NAME + getSystemName(systemsId) + " - добавление значения URL-параметра")
+                .setPageName(PAGE_NAME + getSystemName(systemsId) + " - добавление URL-параметра")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setLink(new Link().setMethod(HttpMethod.POST)
@@ -48,6 +48,9 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                 ))
                 .setForm(new Form().setFields(List.of(
                                 new Field().setType(FieldType.INPUT)
+                                        .setLabel("Наименование URL параметра")
+                                        .setName("url_parameter_name"),
+                                new Field().setType(FieldType.INPUT)
                                         .setLabel("Значение URL параметра")
                                         .setName("url_parameter_value"),
                                 new Field().setType(FieldType.CHECKBOX)
@@ -56,9 +59,6 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Время жизни согласия (минут)")
                                         .setName("permission_expire"),
-                                new Field().setType(FieldType.INPUT)
-                                        .setLabel("Организация/ФИО ответственного")
-                                        .setName("responsibleobject"),
                                 new Field().setType(FieldType.SELECT)
                                         .setLabel("Запрашиваемое согласие")
                                         .setName("permissions_id")
@@ -83,6 +83,12 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                             new Notification().setType(NotificationType.WARNING)
                                     .setMessage("Значение URL-параметра должно быть заполнено")
                     ));
+        } else if (urlParameterValDto.getUrlParameterName() == null || urlParameterValDto.getUrlParameterName().isEmpty()) {
+            return new Content()
+                    .setNotifications(List.of(
+                            new Notification().setType(NotificationType.WARNING)
+                                    .setMessage("Наименование URL-параметра должно быть заполнено")
+                    ));
         } else if (service.getById(systemsId) == null) {
             return new Content()
                     .setNotifications(List.of(
@@ -98,15 +104,15 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
         } else {
             SysPermissions sysPermissions = sysPermissionsService.add(service.getById(systemsId),
                     permissionsService.getById(urlParameterValDto.getPermissionId()),
+                    urlParameterValDto.getUrlParameterName(),
                     urlParameterValDto.getUrlParameterValue(),
-                    urlParameterValDto.getResponsibleobject(),
                     urlParameterValDto.getPermissionExpire(),
                     urlParameterValDto.isDefault()
             );
             return getContentView(systemsId, sysPermissions.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
-                                    .setMessage("Значение URL-параметра успешно добавлено")
+                                    .setMessage("Запись успешно добавлена")
                     ));
         }
     }
@@ -128,6 +134,10 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                 ))
                 .setForm(new Form().setFields(List.of(
                         new Field().setType(FieldType.INPUT)
+                                .setLabel("Наименование URL параметра")
+                                .setName("url_parameter_name")
+                                .setValue(sysPermissions.getResponsibleobject()),
+                        new Field().setType(FieldType.INPUT)
                                 .setLabel("Значение URL параметра")
                                 .setName("url_parameter_value")
                                 .setValue(sysPermissions.getComparing()),
@@ -139,10 +149,6 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                                 .setLabel("Время жизни согласия (минут)")
                                 .setName("permission_expire")
                                 .setValue(String.valueOf(sysPermissions.getExpire())),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Организация/ФИО ответственного")
-                                .setName("responsibleobject")
-                                .setValue(sysPermissions.getResponsibleobject()),
                         new Field().setType(FieldType.SELECT)
                                 .setLabel("Запрашиваемое согласие")
                                 .setName("permissions_id")
@@ -162,6 +168,12 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                             new Notification().setType(NotificationType.WARNING)
                                     .setMessage("Значение URL-параметра должно быть заполнено")
                     ));
+        } else if (urlParameterValDto.getUrlParameterName() == null || urlParameterValDto.getUrlParameterName().isEmpty()) {
+            return new Content()
+                    .setNotifications(List.of(
+                            new Notification().setType(NotificationType.WARNING)
+                                    .setMessage("Наименование URL-параметра должно быть заполнено")
+                    ));
         } else if (service.getById(systemsId) == null) {
             return new Content()
                     .setNotifications(List.of(
@@ -179,15 +191,15 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                     sysPermissionsService.getById(id),
                     service.getById(systemsId),
                     permissionsService.getById(urlParameterValDto.getPermissionId()),
+                    urlParameterValDto.getUrlParameterName(),
                     urlParameterValDto.getUrlParameterValue(),
-                    urlParameterValDto.getResponsibleobject(),
                     urlParameterValDto.getPermissionExpire(),
                     urlParameterValDto.isDefault()
             );
             return getContentView(systemsId, sysPermissions.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
-                                    .setMessage("Значение URL-параметра успешно изменено")
+                                    .setMessage("Запись успешно изменена")
                     ));
         }
     }
@@ -195,7 +207,7 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
     @Override
     public Content getContentView(long systemsId, long sysPermissionsId) {
         SysPermissions sysPermissions = sysPermissionsService.getById(sysPermissionsId);
-        if(sysPermissions == null){
+        if (sysPermissions == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Значение параметра отсутствует");
@@ -231,23 +243,23 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
+                                .setLabel("Наименование URL параметра")
+                                .setName("url_parameter_name")
+                                .setValue(sysPermissions.getResponsibleobject()),
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Значение URL параметра")
                                 .setName("url_parameter_value")
                                 .setValue(sysPermissions.getComparing()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Применять по умолчанию")
                                 .setName("is_default")
                                 .setValue(sysPermissions.getIsDefault() == 1 ? "&check;" : ""),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Время жизни согласия (минут)")
                                 .setName("permission_expire")
                                 .setValue(String.valueOf(sysPermissions.getExpire())),
-                        new Field().setType(FieldType.INPUT)
-                                .setLabel("Организация/ФИО ответственного")
-                                .setName("responsibleobject")
-                                .setValue(sysPermissions.getResponsibleobject()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Запрашиваемое согласие")
                                 .setName("permissions_id")
                                 .setValue(sysPermissions.getPermissions().getMnemonic())

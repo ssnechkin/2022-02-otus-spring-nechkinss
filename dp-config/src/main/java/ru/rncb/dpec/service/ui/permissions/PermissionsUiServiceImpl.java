@@ -68,6 +68,14 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                 .setName("name")
                                 .setValue(permissions.getName()),
                         new Field().setType(FieldType.INPUT)
+                                .setLabel("Организация/Фио ответственного (Оторажается в согласии у клиента в ЕСИА)")
+                                .setName("responsibleobject")
+                                .setValue(permissions.getResponsibleobject()),
+                        new Field().setType(FieldType.INPUT)
+                                .setLabel("Время жизни согласия (минут)")
+                                .setName("permission_expire")
+                                .setValue(String.valueOf(permissions.getExpire())),
+                        new Field().setType(FieldType.TEXTAREA)
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(permissions.getDescription())
@@ -82,7 +90,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                     .setMessage("Мнемоника должна быть заполнена")
             ));
         } else {
-            service.edit(service.getById(id), permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription());
+            service.edit(service.getById(id), permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getResponsibleobject(), permissionsDto.getPermissionExpire(), permissionsDto.getDescription());
             return getContentView(id).setNotifications(List.of(new Notification()
                     .setType(NotificationType.INFO)
                     .setMessage("Согласие успешно сохранено")
@@ -113,6 +121,12 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                         .setLabel("Наименование")
                                         .setName("name"),
                                 new Field().setType(FieldType.INPUT)
+                                        .setLabel("Организация/Фио ответственного (Оторажается в согласии у клиента в ЕСИА)")
+                                        .setName("responsibleobject"),
+                                new Field().setType(FieldType.INPUT)
+                                        .setLabel("Время жизни согласия (минут)")
+                                        .setName("permission_expire"),
+                                new Field().setType(FieldType.TEXTAREA)
                                         .setLabel("Описание")
                                         .setName("description")
                         ))
@@ -128,7 +142,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                     .setMessage("Мнемоника должна быть заполнена")
                     ));
         } else {
-            Permissions permissions = service.add(permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getDescription());
+            Permissions permissions = service.add(permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getResponsibleobject(), permissionsDto.getPermissionExpire(), permissionsDto.getDescription());
             return getContentView(permissions.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
@@ -145,7 +159,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
             notification.setMessage("Согласие успешно удалено");
         } else {
             notification.setType(NotificationType.WARNING);
-            notification.setMessage("Ошибка удаления Согласия");
+            notification.setMessage("Ошибка удаления Согласия.");
         }
         return new Content()
                 .setPageName(PAGE_NAME)
@@ -157,7 +171,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
     @Override
     public Content getContentView(long id) {
         Permissions permissions = service.getById(id);
-        if(permissions == null){
+        if (permissions == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Согласие отсутствует");
@@ -195,27 +209,35 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Мнемоника")
                                 .setName("mnemonic")
                                 .setValue(permissions.getMnemonic()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(permissions.getName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
+                                .setLabel("Организация/Фио ответственного (Оторажается в согласии у клиента в ЕСИА)")
+                                .setName("responsibleobject")
+                                .setValue(permissions.getResponsibleobject()),
+                        new Field().setType(FieldType.SPAN)
+                                .setLabel("Время жизни согласия (минут)")
+                                .setName("permission_expire")
+                                .setValue(String.valueOf(permissions.getExpire())),
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(permissions.getDescription()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Цели")
                                 .setName("purposes")
                                 .setValue(permissions.getPurposesList() == null ? "" : String.join(", ", permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList())),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Действия")
                                 .setName("actions")
                                 .setValue(permissions.getActionsList() == null ? "" : String.join(", ", permissions.getActionsList().stream().map(Actions::getMnemonic).toList())),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Области доступа (Scope)")
                                 .setName("scope")
                                 .setValue(permissions.getScopeList() == null ? "" : String.join(", ", permissions.getScopeList().stream().map(Scope::getName).toList()))
@@ -241,15 +263,16 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                     .setColumns(List.of(
                             permissions.getMnemonic(),
                             permissions.getName() == null ? "" : permissions.getName(),
+                            permissions.getResponsibleobject() == null ? "" : permissions.getResponsibleobject(),
+                            String.valueOf(permissions.getExpire()),
                             permissions.getDescription() == null ? "" : permissions.getDescription(),
                             permissions.getPurposesList() == null ? "" : String.join(", ", permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList()),
-                            permissions.getActionsList() == null ? "" : String.join(", ", permissions.getActionsList().stream().map(Actions::getMnemonic).toList()),
-                            permissions.getScopeList() == null ? "" : String.join(", ", permissions.getScopeList().stream().map(Scope::getName).toList())
+                            permissions.getActionsList() == null ? "" : String.join(", ", permissions.getActionsList().stream().map(Actions::getMnemonic).toList())
                     ))
             );
         }
         return new Table()
-                .setLabels(List.of("Мнемоника", "Нименование", "Описание", "Цели", "Действия", "Области доступа (Scope)"))
+                .setLabels(List.of("Мнемоника", "Нименование", "Организация/ФИО ответственного", "Время жизни согласия (минут)", "Описание", "Цели", "Действия"))
                 .setRows(rows);
     }
 

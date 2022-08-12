@@ -22,18 +22,18 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
 
     @Override
     @Transactional
-    public SysPermissions add(Systems systems, Permissions permissions, String comparing, String responsibleobject, long expire, boolean isDefault) {
+    public SysPermissions add(Systems systems, Permissions permissions, String urlParameterName, String urlParameterValue,  long expire, boolean isDefault) {
         SysPermissions sysPermissions = new SysPermissions();
         sysPermissions.setSystems(systems);
         sysPermissions.setPermissions(permissions);
-        sysPermissions.setComparing(comparing);
-        sysPermissions.setResponsibleobject(responsibleobject);
+        sysPermissions.setResponsibleobject(urlParameterName);
+        sysPermissions.setComparing(urlParameterValue);
         sysPermissions.setExpire(expire);
         if (isDefault) {
             omitTheDefaultFlagForEveryone(systems);
         }
         sysPermissions.setIsDefault(isDefault ? 1 : 0);
-        sysPermissions.setRequestedDocumentsListName(systems.getName() + permissions.getMnemonic() + comparing + UUID.randomUUID());
+        sysPermissions.setRequestedDocumentsListName(systems.getName() + permissions.getMnemonic() + urlParameterValue + UUID.randomUUID());
         return repository.save(sysPermissions);
     }
 
@@ -49,11 +49,11 @@ public class SysPermissionsServiceImpl implements SysPermissionsService {
     }
 
     @Override
-    public SysPermissions edit(SysPermissions sysPermissions, Systems systems, Permissions permissions, String comparing, String responsibleobject, long expire, boolean isDefault) {
+    public SysPermissions edit(SysPermissions sysPermissions, Systems systems, Permissions permissions, String urlParameterName, String urlParameterValue,  long expire, boolean isDefault) {
         sysPermissions.setSystems(systems);
         sysPermissions.setPermissions(permissions);
-        sysPermissions.setComparing(comparing);
-        sysPermissions.setResponsibleobject(responsibleobject);
+        sysPermissions.setResponsibleobject(urlParameterName);
+        sysPermissions.setComparing(urlParameterValue);
         sysPermissions.setExpire(expire);
         if (isDefault) {
             omitTheDefaultFlagForEveryone(systems);

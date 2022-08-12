@@ -149,11 +149,11 @@ public class PermissionsScopeUiServiceImpl implements PermissionsScopeUiService 
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(scope.getName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Описание")
                                 .setName("description")
                                 .setValue(scope.getDescription())

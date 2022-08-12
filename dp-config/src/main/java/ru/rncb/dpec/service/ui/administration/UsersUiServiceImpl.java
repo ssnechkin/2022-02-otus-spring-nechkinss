@@ -210,15 +210,15 @@ public class UsersUiServiceImpl implements UsersUiService {
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Имя уч. записи (login)")
                                 .setName("username")
                                 .setValue(userDetail.getUsername()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Имя пользователя")
                                 .setName("public_name")
                                 .setValue(userDetail.getPublicName()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Роли")
                                 .setName("roles")
                                 .setValue(String.join(", ", userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).toList()))

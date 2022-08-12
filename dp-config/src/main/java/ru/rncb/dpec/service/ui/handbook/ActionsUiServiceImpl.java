@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ActionsActionsUiServiceImpl implements ActionsUiService {
+public class ActionsUiServiceImpl implements ActionsUiService {
 
     private final ActionsService service;
     private final static String PAGE_NAME = "Справочники > Действия запроса согласия";
 
-    public ActionsActionsUiServiceImpl(ActionsService service) {
+    public ActionsUiServiceImpl(ActionsService service) {
         this.service = service;
     }
 
@@ -163,11 +163,11 @@ public class ActionsActionsUiServiceImpl implements ActionsUiService {
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Мнемоника")
                                 .setName("mnemonic")
                                 .setValue(actions.getMnemonic()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(actions.getName())

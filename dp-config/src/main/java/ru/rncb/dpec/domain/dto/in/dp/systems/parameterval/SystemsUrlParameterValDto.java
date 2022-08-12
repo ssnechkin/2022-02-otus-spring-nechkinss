@@ -6,10 +6,11 @@ import lombok.Data;
 @Data
 public class SystemsUrlParameterValDto {
 
+    @JsonProperty("url_parameter_name")
+    private String urlParameterName;
+
     @JsonProperty("url_parameter_value")
     private String urlParameterValue;
-
-    private String responsibleobject;
 
     @JsonProperty("permissions_id")
     private long permissionId;

@@ -149,11 +149,11 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Мнемоника")
                                 .setName("mnemonic")
                                 .setValue(actions.getMnemonic()),
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Наименование")
                                 .setName("name")
                                 .setValue(actions.getName())

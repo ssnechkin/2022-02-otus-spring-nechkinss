@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDetail saveUserDetail(UserDetail userDetail, String publicName, String username, String password, Set<RoleGrantedAuthority> rolesSet) {
         String pass = password;
-        if (!userDetail.getPassword().equals(pass)) {
+        if (userDetail.getPassword() == null || !userDetail.getPassword().equals(pass)) {
             pass = new BCryptPasswordEncoder().encode(password);
         }
         userDetail.setUsername(username);

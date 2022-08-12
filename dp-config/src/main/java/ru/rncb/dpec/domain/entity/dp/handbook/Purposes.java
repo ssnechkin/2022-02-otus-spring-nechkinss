@@ -21,6 +21,7 @@ public class Purposes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purposes_seq")
+    @SequenceGenerator(name = "purposes_seq", allocationSize = 1)
     private long id;
 
     @Comment("Мнемоника цели")
@@ -41,8 +42,8 @@ public class Purposes {
             CascadeType.REFRESH,
             CascadeType.PERSIST})
     @JoinTable(name = "permissions_purpose",
-            joinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "purpose_id", referencedColumnName = "id")}
+            joinColumns = {@JoinColumn(name = "purposes_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "permissions_id", referencedColumnName = "id")}
     )
     private List<Permissions> permissionsList = new ArrayList<>();
 }
