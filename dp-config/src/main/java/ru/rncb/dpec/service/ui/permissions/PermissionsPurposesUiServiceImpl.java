@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiService{
+public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiService {
 
     private final PermissionsService service;
     private final PurposesService purposesService;
@@ -53,7 +53,10 @@ public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiSe
         if (purposesListList == null) purposesListList = new ArrayList<>();
         List<Purposes> finalPurposesList = purposesListList;
         return new Content()
-                .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_PURPOSES + " - Добавление")
+                .setPageName(PAGE_NAME
+                        + service.getById(permissionsId).getMnemonic()
+                        + PAGE_NAME_PURPOSES
+                        + " - Добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setColor(Color.green)
@@ -84,7 +87,8 @@ public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiSe
     public Content create(long permissionsId, PermissionsPurposesDto permissionsPurposesDto) {
         Permissions permissions = service.getById(permissionsId);
         String notification;
-        if (permissions != null && service.addPurposes(permissions, purposesService.getById(permissionsPurposesDto.getPurposes()))) {
+        if (permissions != null
+                && service.addPurposes(permissions, purposesService.getById(permissionsPurposesDto.getPurposes()))) {
             notification = "Цель добавлена в Согласие " + permissions.getMnemonic();
         } else if (permissions == null) {
             notification = "Ошибка добавления. Согласии не найдено";
@@ -131,7 +135,7 @@ public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiSe
     @Override
     public Content getContentView(long permissionsId, long id) {
         Purposes purposes = purposesService.getById(id);
-        if(purposes == null){
+        if (purposes == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Цель отсутствует");

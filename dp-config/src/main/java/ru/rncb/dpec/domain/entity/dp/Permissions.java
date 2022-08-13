@@ -18,7 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "permissions")
-@org.hibernate.annotations.Table(comment = "Согласия. Группа областей доступа к документам клиента в ЕСИА", appliesTo = "permissions")
+@org.hibernate.annotations.Table(
+        comment = "Согласия. Группа областей доступа к документам клиента в ЕСИА",
+        appliesTo = "permissions")
 public class Permissions {
 
     @Id
@@ -34,7 +36,8 @@ public class Permissions {
     @Column(length = 2000)
     private String name;
 
-    @Comment("Наименование организации или ФИО ответственного сотрудника. Будет отображаться в личном кабинете у согласий")
+    @Comment("Наименование организации или ФИО ответственного сотрудника. " +
+            "Будет отображаться в личном кабинете у согласий")
     @Column(length = 2000)
     private String responsibleobject = "Организация/ФИО ответственного представителя";
 

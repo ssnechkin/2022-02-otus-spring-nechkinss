@@ -11,7 +11,6 @@ import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.SysPermissions;
 import ru.rncb.dpec.domain.entity.dp.Systems;
-import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
 import ru.rncb.dpec.service.dp.systems.SystemsService;
@@ -26,8 +25,8 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
     private final PermissionsService permissionsService;
     private final static String PAGE_NAME = "Системы > ";
 
-    public SystemsSysPermissionsUiServiceImpl(SystemsService service, MenuRepository menuRepository,
-                                              SysPermissionsService sysPermissionsService, PermissionsService permissionsService) {
+    public SystemsSysPermissionsUiServiceImpl(SystemsService service, SysPermissionsService sysPermissionsService,
+                                              PermissionsService permissionsService) {
         this.service = service;
         this.sysPermissionsService = sysPermissionsService;
         this.permissionsService = permissionsService;
@@ -80,13 +79,15 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
 
     @Override
     public Content createParamVal(long systemsId, SystemsUrlParameterValDto urlParameterValDto) {
-        if (urlParameterValDto.getUrlParameterValue() == null || urlParameterValDto.getUrlParameterValue().isEmpty()) {
+        if (urlParameterValDto.getUrlParameterValue() == null
+                || urlParameterValDto.getUrlParameterValue().isEmpty()) {
             return new Content()
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.WARNING)
                                     .setMessage("Значение URL-параметра должно быть заполнено")
                     ));
-        } else if (urlParameterValDto.getUrlParameterName() == null || urlParameterValDto.getUrlParameterName().isEmpty()) {
+        } else if (urlParameterValDto.getUrlParameterName() == null
+                || urlParameterValDto.getUrlParameterName().isEmpty()) {
             return new Content()
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.WARNING)
@@ -173,7 +174,8 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                             new Notification().setType(NotificationType.WARNING)
                                     .setMessage("Значение URL-параметра должно быть заполнено")
                     ));
-        } else if (urlParameterValDto.getUrlParameterName() == null || urlParameterValDto.getUrlParameterName().isEmpty()) {
+        } else if (urlParameterValDto.getUrlParameterName() == null
+                || urlParameterValDto.getUrlParameterName().isEmpty()) {
             return new Content()
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.WARNING)
@@ -231,26 +233,33 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                                 .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/edit")
+                                        .setValue("/systems/" + systemsId
+                                                + "/parameter_val/" + sysPermissionsId
+                                                + "/edit")
                                 ),
                         new Button().setTitle("Список запрашиваемых документов")
                                 .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/requested_documents")
+                                        .setValue("/systems/" + systemsId
+                                                + "/parameter_val/" + sysPermissionsId
+                                                + "/requested_documents")
                                 ),
                         new Button().setTitle("Фильтр ответа")
                                 .setColor(Color.cyan)
                                 .setPosition(2)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId + "/response_filter")
+                                        .setValue("/systems/" + systemsId
+                                                + "/parameter_val/" + sysPermissionsId
+                                                + "/response_filter")
                                 ),
                         new Button().setTitle("Удалить")
                                 .setColor(Color.red)
                                 .setPosition(4)
                                 .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
-                                        .setValue("/systems/" + systemsId + "/parameter_val/" + sysPermissionsId)
+                                        .setValue("/systems/" + systemsId
+                                                + "/parameter_val/" + sysPermissionsId)
                                 )
                 ))
                 .setFields(List.of(

@@ -15,7 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "sys_permissions_map")
-@org.hibernate.annotations.Table(comment = "Запрашиваемые согласия системой у клиента", appliesTo = "sys_permissions_map")
+@org.hibernate.annotations.Table(
+        comment = "Запрашиваемые согласия системой у клиента",
+        appliesTo = "sys_permissions_map")
 public class SysPermissions {
 
     @Id

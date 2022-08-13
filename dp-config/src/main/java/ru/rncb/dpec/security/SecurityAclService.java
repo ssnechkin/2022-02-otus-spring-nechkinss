@@ -47,12 +47,14 @@ public class SecurityAclService {
     }
 
     @Transactional
-    public void addSecurityUserRight(Class<?> clas, Serializable objectId, Permission permission, String user, boolean granting) {
+    public void addSecurityUserRight(Class<?> clas, Serializable objectId,
+                                     Permission permission, String user, boolean granting) {
         addSecurityRight(clas, objectId, permission, new PrincipalSid(user), granting);
     }
 
     @Transactional
-    public void addSecurityRoleRight(Class<?> clas, Serializable objectId, Permission permission, String role, boolean granting) {
+    public void addSecurityRoleRight(Class<?> clas, Serializable objectId,
+                                     Permission permission, String role, boolean granting) {
         addSecurityRight(clas, objectId, permission, new GrantedAuthoritySid(role), granting);
     }
 
@@ -60,14 +62,19 @@ public class SecurityAclService {
         ConcurrentMapCacheManager concurrentMapCacheManager = new ConcurrentMapCacheManager();
         concurrentMapCacheManager.setCacheNames(List.of("aclCache"));
         Cache cache = concurrentMapCacheManager.getCache("aclCache");
-        AclAuthorizationStrategyImpl aclAuthorizationStrategy = new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        DefaultPermissionGrantingStrategy defaultPermissionGrantingStrategy = new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
-        AclCache aclCache = new SpringCacheBasedAclCache(cache, defaultPermissionGrantingStrategy, aclAuthorizationStrategy);
-        BasicLookupStrategy lookupStrategy = new BasicLookupStrategy(dataSource, aclCache, aclAuthorizationStrategy, new ConsoleAuditLogger());
+        AclAuthorizationStrategyImpl aclAuthorizationStrategy
+                = new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        DefaultPermissionGrantingStrategy defaultPermissionGrantingStrategy
+                = new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
+        AclCache aclCache
+                = new SpringCacheBasedAclCache(cache, defaultPermissionGrantingStrategy, aclAuthorizationStrategy);
+        BasicLookupStrategy lookupStrategy
+                = new BasicLookupStrategy(dataSource, aclCache, aclAuthorizationStrategy, new ConsoleAuditLogger());
         return new JdbcMutableAclService(dataSource, lookupStrategy, aclCache);
     }
 
-    private void addSecurityRight(Class<?> clas, Serializable objectId, Permission permission, Sid sid, boolean granting) {
+    private void addSecurityRight(Class<?> clas, Serializable objectId,
+                                  Permission permission, Sid sid, boolean granting) {
         Sid owner = getOwnerSid();
         ObjectIdentity oid = getOid(clas, objectId);
         MutableAcl acl = getMutableAcl(owner, sid, oid, permission, granting);

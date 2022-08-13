@@ -10,10 +10,8 @@ import ru.rncb.dpec.domain.dto.out.content.table.Table;
 import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
-import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.domain.entity.security.RoleGrantedAuthority;
 import ru.rncb.dpec.domain.entity.security.UserDetail;
-import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.repository.security.RoleRepository;
 import ru.rncb.dpec.security.UserService;
 
@@ -26,10 +24,9 @@ public class UsersUiServiceImpl implements UsersUiService {
     private final RoleRepository roleRepository;
     private final static String PAGE_NAME = "Пользователи";
 
-    public UsersUiServiceImpl(UserService service, MenuRepository menuRepository, RoleRepository roleRepository) {
+    public UsersUiServiceImpl(UserService service, RoleRepository roleRepository) {
         this.service = service;
         this.roleRepository = roleRepository;
-        addMenu(menuRepository);
     }
 
     @Override
@@ -159,7 +156,8 @@ public class UsersUiServiceImpl implements UsersUiService {
         } else {
             Set<RoleGrantedAuthority> rolesSet = new HashSet<>();
             rolesSet.add(roleRepository.findById(userDto.getRoleId()).get());
-            UserDetail userDetail = service.add(userDto.getPublicName(), userDto.getUsername(), userDto.getPassword(), rolesSet);
+            UserDetail userDetail = service.add(userDto.getPublicName(), userDto.getUsername(),
+                    userDto.getPassword(), rolesSet);
             return getContentView(userDetail.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
@@ -230,7 +228,8 @@ public class UsersUiServiceImpl implements UsersUiService {
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Роли")
                                 .setName("roles")
-                                .setValue(String.join(", ", userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).toList()))
+                                .setValue(String.join(", ",
+                                        userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).toList()))
                 ));
     }
 
@@ -254,7 +253,8 @@ public class UsersUiServiceImpl implements UsersUiService {
                     .setColumns(List.of(
                             userDetail.getUsername(),
                             userDetail.getPublicName() == null ? "" : userDetail.getPublicName(),
-                            userDetail.getRoles() == null ? "" : String.join(", ", userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).toList())
+                            userDetail.getRoles() == null ? "" : String.join(", ",
+                                    userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).toList())
                     ))
             );
         }
@@ -268,16 +268,5 @@ public class UsersUiServiceImpl implements UsersUiService {
         valueItem.setId(roleGrantedAuthority.getId());
         valueItem.setValue(roleGrantedAuthority.getRole());
         return valueItem;
-    }
-
-    private void addMenu(MenuRepository menuRepository) {
-        if (menuRepository.findByLink("/users").size() == 0) {
-            Menu menu = new Menu().setTitle(PAGE_NAME)
-                    .setPosition(4)
-                    .setMethod(HttpMethod.GET.name())
-                    .setLink("/users")
-                    .setAlt(true);
-            menuRepository.save(menu);
-        }
     }
 }

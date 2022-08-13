@@ -14,9 +14,14 @@ public interface UserService {
 
     UserDetail add(String publicName, String username, String password, Set<RoleGrantedAuthority> roleSet);
 
-    UserDetail edit(UserDetail userDetail, String publicName, String username, String password, Set<RoleGrantedAuthority> roleSet);
+    UserDetail edit(UserDetail userDetail, String publicName, String username,
+                    String password, Set<RoleGrantedAuthority> roleSet);
 
     Optional<UserDetail> getById(long id);
+
+    RoleGrantedAuthority getByRole(String role);
+
+    List<RoleGrantedAuthority> getRoleAll();
 
     boolean delete(UserDetail userDetail);
 

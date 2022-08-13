@@ -17,7 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "document_type")
-@org.hibernate.annotations.Table(comment = "Типы документов пользователя в ЕСИА (Цифровой профиль)", appliesTo = "document_type")
+@org.hibernate.annotations.Table(
+        comment = "Типы документов пользователя в ЕСИА (Цифровой профиль)",
+        appliesTo = "document_type")
 public class DocumentType {
 
     @Id

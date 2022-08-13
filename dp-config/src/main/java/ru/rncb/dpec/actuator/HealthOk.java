@@ -12,7 +12,7 @@ public class HealthOk implements HealthIndicator {
         return Health
                 .status(Status.UP)
                 .status("OK")
-                .withDetail("Health check","is alive")
+                .withDetail("Health check", "is alive")
                 .build();
     }
 }

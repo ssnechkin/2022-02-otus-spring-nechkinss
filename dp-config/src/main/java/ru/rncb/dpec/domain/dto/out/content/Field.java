@@ -16,6 +16,7 @@ public class Field {
     private String label, name, value, placeholder;
     private List<ValueItem> values;
     private boolean checked;
+
     @JsonProperty("selected_id")
     private Long selectedId;
 

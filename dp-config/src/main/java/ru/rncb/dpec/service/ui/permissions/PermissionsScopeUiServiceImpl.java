@@ -53,7 +53,10 @@ public class PermissionsScopeUiServiceImpl implements PermissionsScopeUiService 
         if (scopeList == null) scopeList = new ArrayList<>();
         List<Scope> finalScopeList = scopeList;
         return new Content()
-                .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_SCOPE + " - Добавление")
+                .setPageName(PAGE_NAME
+                        + service.getById(permissionsId).getMnemonic()
+                        + PAGE_NAME_SCOPE
+                        + " - Добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setColor(Color.green)

@@ -90,7 +90,8 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                     .setMessage("Мнемоника должна быть заполнена")
             ));
         } else {
-            service.edit(service.getById(id), documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getSource());
+            service.edit(service.getById(id), documentTypeDto.getMnemonic(), documentTypeDto.getName(),
+                    scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getSource());
             return getContentView(id).setNotifications(List.of(new Notification()
                     .setType(NotificationType.INFO)
                     .setMessage("Тип документа успешно сохранен")
@@ -144,7 +145,8 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                                     .setMessage("Мнемоника должна быть заполнена")
                     ));
         } else {
-            DocumentType documentType = service.add(documentTypeDto.getMnemonic(), documentTypeDto.getName(), scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getSource());
+            DocumentType documentType = service.add(documentTypeDto.getMnemonic(), documentTypeDto.getName(),
+                    scopeService.getById(documentTypeDto.getScope()), documentTypeDto.getSource());
             return getContentView(documentType.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
@@ -173,7 +175,7 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
     @Override
     public Content getContentView(long id) {
         DocumentType documentType = service.getById(id);
-        if(documentType == null){
+        if (documentType == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Тип документа отсутствует");
@@ -247,7 +249,8 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                     .setColumns(List.of(
                             documentType.getMnemonic(),
                             documentType.getName() == null ? "" : documentType.getName(),
-                            documentType.getScope() == null ? "" : documentType.getScope().getName() + " (" + documentType.getScope().getDescription() + ")",
+                            documentType.getScope() == null ? "" : documentType.getScope().getName()
+                                    + " (" + documentType.getScope().getDescription() + ")",
                             documentType.getSource() == null ? "" : documentType.getSource()
                     ))
             );

@@ -15,7 +15,8 @@ public interface PermissionsService {
 
     List<Permissions> getAll();
 
-    Permissions edit(Permissions permissions, String mnemonic, String name, String orgNameFio, long expire, String description);
+    Permissions edit(Permissions permissions, String mnemonic, String name, String orgNameFio,
+                     long expire, String description);
 
     boolean delete(Permissions permissions);
 

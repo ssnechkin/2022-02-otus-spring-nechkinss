@@ -26,7 +26,9 @@ public class PermissionsServiceImpl implements PermissionsService {
     private final ScopeRepository scopeRepository;
     private final SysPermissionsRepository sysPermissionsRepository;
 
-    public PermissionsServiceImpl(PermissionsRepository repository, ActionsRepository actionsRepository, PurposesRepository purposesRepository, ScopeRepository scopeRepository, SysPermissionsRepository sysPermissionsRepository) {
+    public PermissionsServiceImpl(PermissionsRepository repository, ActionsRepository actionsRepository,
+                                  PurposesRepository purposesRepository, ScopeRepository scopeRepository,
+                                  SysPermissionsRepository sysPermissionsRepository) {
         this.repository = repository;
         this.actionsRepository = actionsRepository;
         this.purposesRepository = purposesRepository;
@@ -58,7 +60,8 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public Permissions edit(Permissions permissions, String mnemonic, String name, String orgNameFio, long expire, String description) {
+    public Permissions edit(Permissions permissions, String mnemonic, String name, String orgNameFio,
+                            long expire, String description) {
         permissions.setMnemonic(mnemonic);
         permissions.setName(name);
         permissions.setResponsibleobject(orgNameFio);
@@ -131,7 +134,9 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     public boolean deletePurposes(Permissions permissions, Purposes purposes) {
-        if (permissions != null && permissions.getPurposesList() != null && permissions.getPurposesList().contains(purposes)) {
+        if (permissions != null
+                && permissions.getPurposesList() != null
+                && permissions.getPurposesList().contains(purposes)) {
             permissions.getPurposesList().remove(purposes);
             purposes.getPermissionsList().remove(permissions);
             repository.save(permissions);
@@ -142,7 +147,9 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     public boolean deleteActions(Permissions permissions, Actions actions) {
-        if (permissions != null && permissions.getActionsList() != null && permissions.getActionsList().contains(actions)) {
+        if (permissions != null
+                && permissions.getActionsList() != null
+                && permissions.getActionsList().contains(actions)) {
             permissions.getActionsList().remove(actions);
             actions.getPermissionsList().remove(permissions);
             repository.save(permissions);

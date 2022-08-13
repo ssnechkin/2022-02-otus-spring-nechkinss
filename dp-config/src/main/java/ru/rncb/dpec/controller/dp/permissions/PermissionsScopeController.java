@@ -65,7 +65,8 @@ public class PermissionsScopeController {
         return fallback();
     }
 
-    private Content fallbackPermissionsIdPermissionsScopeDto(long permissionsId, PermissionsScopeDto permissionsScopeDto) {
+    private Content fallbackPermissionsIdPermissionsScopeDto(long permissionsId,
+                                                             PermissionsScopeDto permissionsScopeDto) {
         return fallback();
     }
 }

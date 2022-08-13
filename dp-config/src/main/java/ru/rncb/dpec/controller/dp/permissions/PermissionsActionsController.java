@@ -65,9 +65,8 @@ public class PermissionsActionsController {
         return fallback();
     }
 
-    private Content fallbackPermissionsIdPermissionsActionsDto(long permissionsId, PermissionsActionsDto permissionsActionsDto) {
+    private Content fallbackPermissionsIdPermissionsActionsDto(long permissionsId,
+                                                               PermissionsActionsDto permissionsActionsDto) {
         return fallback();
     }
-
-
 }

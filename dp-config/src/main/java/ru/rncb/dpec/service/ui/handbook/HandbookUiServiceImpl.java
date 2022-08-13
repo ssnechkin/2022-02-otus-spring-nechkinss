@@ -1,7 +1,6 @@
 package ru.rncb.dpec.service.ui.handbook;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Service;
 import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.Button;
@@ -9,9 +8,6 @@ import ru.rncb.dpec.domain.dto.out.content.Form;
 import ru.rncb.dpec.domain.dto.out.content.Link;
 import ru.rncb.dpec.domain.dto.out.content.table.Table;
 import ru.rncb.dpec.domain.dto.out.enums.Color;
-import ru.rncb.dpec.domain.entity.Menu;
-import ru.rncb.dpec.repository.MenuRepository;
-import ru.rncb.dpec.security.SecurityAclService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +16,6 @@ import java.util.List;
 public class HandbookUiServiceImpl implements HandbookUiService {
 
     private final static String PAGE_NAME = "Справочники";
-
-    public HandbookUiServiceImpl(MenuRepository menuRepository) {
-        addMenu(menuRepository);
-    }
 
     @Override
     public Content list() {
@@ -52,16 +44,5 @@ public class HandbookUiServiceImpl implements HandbookUiService {
                 .setManagement(buttons)
                 .setTable(new Table())
                 .setForm(new Form());
-    }
-
-    private void addMenu(MenuRepository menuRepository) {
-        if (menuRepository.findByLink("/handbook").size() == 0) {
-            Menu menu = new Menu().setTitle(PAGE_NAME)
-                    .setPosition(3)
-                    .setMethod(HttpMethod.GET.name())
-                    .setLink("/handbook")
-                    .setAlt(true);
-            menuRepository.save(menu);
-        }
     }
 }

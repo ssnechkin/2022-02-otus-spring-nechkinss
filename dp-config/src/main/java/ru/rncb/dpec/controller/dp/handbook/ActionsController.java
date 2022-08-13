@@ -79,5 +79,4 @@ public class ActionsController {
     private Content fallbackActionsDto(ActionsDto actionsDto) {
         return fallback();
     }
-
 }

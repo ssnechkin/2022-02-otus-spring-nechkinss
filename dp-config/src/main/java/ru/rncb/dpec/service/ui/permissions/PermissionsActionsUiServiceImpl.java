@@ -53,7 +53,10 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
         if (actionsList == null) actionsList = new ArrayList<>();
         List<Actions> finalActionsList = actionsList;
         return new Content()
-                .setPageName(PAGE_NAME + service.getById(permissionsId).getMnemonic() + PAGE_NAME_ACTIONS + " - Добавление")
+                .setPageName(PAGE_NAME
+                        + service.getById(permissionsId).getMnemonic()
+                        + PAGE_NAME_ACTIONS
+                        + " - Добавление")
                 .setManagement(List.of(
                         new Button().setTitle("Добавить")
                                 .setColor(Color.green)
@@ -84,7 +87,8 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
     public Content create(long permissionsId, PermissionsActionsDto permissionsActionsDto) {
         Permissions permissions = service.getById(permissionsId);
         String notification;
-        if (permissions != null && service.addActions(permissions, actionsService.getById(permissionsActionsDto.getActions()))) {
+        if (permissions != null
+                && service.addActions(permissions, actionsService.getById(permissionsActionsDto.getActions()))) {
             notification = "Действие добавлено в Согласие " + permissions.getMnemonic();
         } else if (permissions == null) {
             notification = "Ошибка добавления. Согласии не найдено";
@@ -131,7 +135,7 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
     @Override
     public Content getContentView(long permissionsId, long id) {
         Actions actions = actionsService.getById(id);
-        if(actions == null){
+        if (actions == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Действие отсутствует");

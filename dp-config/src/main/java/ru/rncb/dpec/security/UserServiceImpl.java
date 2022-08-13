@@ -39,13 +39,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetail edit(UserDetail userDetail, String publicName, String username, String password, Set<RoleGrantedAuthority> roleSet) {
+    public UserDetail edit(UserDetail userDetail, String publicName, String username, String password,
+                           Set<RoleGrantedAuthority> roleSet) {
         return saveUserDetail(userDetail, publicName, username, password, roleSet);
     }
 
     @Override
     public Optional<UserDetail> getById(long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public RoleGrantedAuthority getByRole(String role) {
+        return roleRepository.findByRole(role);
+    }
+
+    @Override
+    public List<RoleGrantedAuthority> getRoleAll() {
+        return roleRepository.findAll();
     }
 
     @Override
@@ -74,7 +85,8 @@ public class UserServiceImpl implements UserService {
         return rolesSet;
     }
 
-    private UserDetail createUser(String publicName, String username, String password, Set<RoleGrantedAuthority> rolesSet) {
+    private UserDetail createUser(String publicName, String username, String password,
+                                  Set<RoleGrantedAuthority> rolesSet) {
         UserDetail userDetail = userRepository.findByUsername(username);
         if (userDetail == null) {
             userDetail = new UserDetail();
@@ -84,7 +96,8 @@ public class UserServiceImpl implements UserService {
         return userDetail;
     }
 
-    private UserDetail saveUserDetail(UserDetail userDetail, String publicName, String username, String password, Set<RoleGrantedAuthority> rolesSet) {
+    private UserDetail saveUserDetail(UserDetail userDetail, String publicName, String username, String password,
+                                      Set<RoleGrantedAuthority> rolesSet) {
         String pass = password;
         if (userDetail.getPassword() == null || !userDetail.getPassword().equals(pass)) {
             pass = new BCryptPasswordEncoder().encode(password);

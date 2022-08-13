@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface RequestedDocumentsService {
 
-    RequestedDocuments add(DocumentType documentType, String apiVersion, String fileType, String listName, boolean extended);
+    RequestedDocuments add(DocumentType documentType, String apiVersion, String fileType,
+                           String listName, boolean extended);
 
     RequestedDocuments getById(long id);
 
@@ -15,7 +16,8 @@ public interface RequestedDocumentsService {
 
     List<RequestedDocuments> getAllByListName(String listName);
 
-    RequestedDocuments edit(RequestedDocuments requestedDocuments, DocumentType documentType, String apiVersion, String fileType, String listName, boolean extended);
+    RequestedDocuments edit(RequestedDocuments requestedDocuments, DocumentType documentType,
+                            String apiVersion, String fileType, String listName, boolean extended);
 
     boolean delete(RequestedDocuments requestedDocuments);
 }

@@ -10,12 +10,10 @@ import ru.rncb.dpec.domain.dto.out.content.table.Table;
 import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
-import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.domain.entity.dp.Permissions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Actions;
 import ru.rncb.dpec.domain.entity.dp.handbook.Purposes;
 import ru.rncb.dpec.domain.entity.dp.handbook.Scope;
-import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 
 import java.util.ArrayList;
@@ -27,9 +25,8 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
     private final PermissionsService service;
     private final static String PAGE_NAME = "Согласия";
 
-    public PermissionsUiServiceImpl(PermissionsService service, MenuRepository menuRepository) {
+    public PermissionsUiServiceImpl(PermissionsService service) {
         this.service = service;
-        addMenu(menuRepository);
     }
 
     @Override
@@ -93,7 +90,9 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                     .setMessage("Мнемоника должна быть заполнена")
             ));
         } else {
-            service.edit(service.getById(id), permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getResponsibleobject(), permissionsDto.getPermissionExpire(), permissionsDto.getDescription());
+            service.edit(service.getById(id), permissionsDto.getMnemonic(), permissionsDto.getName(),
+                    permissionsDto.getResponsibleobject(), permissionsDto.getPermissionExpire(),
+                    permissionsDto.getDescription());
             return getContentView(id).setNotifications(List.of(new Notification()
                     .setType(NotificationType.INFO)
                     .setMessage("Согласие успешно сохранено")
@@ -126,7 +125,8 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                         .setLabel("Наименование")
                                         .setName("name"),
                                 new Field().setType(FieldType.INPUT)
-                                        .setLabel("Организация/Фио ответственного (Оторажается в согласии у клиента в ЕСИА)")
+                                        .setLabel("Организация/Фио ответственного " +
+                                                "(Оторажается в согласии у клиента в ЕСИА)")
                                         .setName("responsibleobject"),
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Время жизни согласия (минут)")
@@ -147,7 +147,9 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                     .setMessage("Мнемоника должна быть заполнена")
                     ));
         } else {
-            Permissions permissions = service.add(permissionsDto.getMnemonic(), permissionsDto.getName(), permissionsDto.getResponsibleobject(), permissionsDto.getPermissionExpire(), permissionsDto.getDescription());
+            Permissions permissions = service.add(permissionsDto.getMnemonic(), permissionsDto.getName(),
+                    permissionsDto.getResponsibleobject(), permissionsDto.getPermissionExpire(),
+                    permissionsDto.getDescription());
             return getContentView(permissions.getId())
                     .setNotifications(List.of(
                             new Notification().setType(NotificationType.INFO)
@@ -244,15 +246,18 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Цели")
                                 .setName("purposes")
-                                .setValue(permissions.getPurposesList() == null ? "" : String.join(", ", permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList())),
+                                .setValue(permissions.getPurposesList() == null ? "" : String.join(", ",
+                                        permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList())),
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Действия")
                                 .setName("actions")
-                                .setValue(permissions.getActionsList() == null ? "" : String.join(", ", permissions.getActionsList().stream().map(Actions::getMnemonic).toList())),
+                                .setValue(permissions.getActionsList() == null ? "" : String.join(", ",
+                                        permissions.getActionsList().stream().map(Actions::getMnemonic).toList())),
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Области доступа (Scope)")
                                 .setName("scope")
-                                .setValue(permissions.getScopeList() == null ? "" : String.join(", ", permissions.getScopeList().stream().map(Scope::getName).toList()))
+                                .setValue(permissions.getScopeList() == null ? "" : String.join(", ",
+                                        permissions.getScopeList().stream().map(Scope::getName).toList()))
                 ));
     }
 
@@ -279,24 +284,23 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                             permissions.getResponsibleobject() == null ? "" : permissions.getResponsibleobject(),
                             String.valueOf(permissions.getExpire()),
                             permissions.getDescription() == null ? "" : permissions.getDescription(),
-                            permissions.getPurposesList() == null ? "" : String.join(", ", permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList()),
-                            permissions.getActionsList() == null ? "" : String.join(", ", permissions.getActionsList().stream().map(Actions::getMnemonic).toList())
+                            permissions.getPurposesList() == null ? "" : String.join(", ",
+                                    permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList()),
+                            permissions.getActionsList() == null ? "" : String.join(", ",
+                                    permissions.getActionsList().stream().map(Actions::getMnemonic).toList())
                     ))
             );
         }
         return new Table()
-                .setLabels(List.of("Мнемоника", "Нименование", "Организация/ФИО ответственного", "Время жизни согласия (минут)", "Описание", "Цели", "Действия"))
+                .setLabels(List.of(
+                        "Мнемоника",
+                        "Нименование",
+                        "Организация/ФИО ответственного",
+                        "Время жизни согласия (минут)",
+                        "Описание",
+                        "Цели",
+                        "Действия"
+                ))
                 .setRows(rows);
-    }
-
-    private void addMenu(MenuRepository menuRepository) {
-        if (menuRepository.findByLink("/permissions").size() == 0) {
-            Menu menu = new Menu().setTitle(PAGE_NAME)
-                    .setPosition(2)
-                    .setMethod(HttpMethod.GET.name())
-                    .setLink("/permissions")
-                    .setAlt(true);
-            menuRepository.save(menu);
-        }
     }
 }

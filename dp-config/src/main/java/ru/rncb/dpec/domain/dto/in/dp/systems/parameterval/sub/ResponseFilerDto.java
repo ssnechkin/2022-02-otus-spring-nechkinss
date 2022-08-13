@@ -10,5 +10,5 @@ public class ResponseFilerDto {
     private long documentTypeId;
 
     @JsonProperty("document_fact_key")
-    private String documentFactKey="OriginalJSON";
+    private String documentFactKey = "OriginalJSON";
 }

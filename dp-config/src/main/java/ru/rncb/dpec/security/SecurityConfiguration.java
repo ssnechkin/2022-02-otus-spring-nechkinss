@@ -26,23 +26,40 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests().antMatchers(HttpMethod.GET,"/handbook/**").hasAnyRole("ADMIN", "EDITOR", "VISITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.GET,"/permissions", "/permissions/**").hasAnyRole("ADMIN", "EDITOR", "VISITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.GET,"/systems", "/systems/**").hasAnyRole("ADMIN", "EDITOR", "VISITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.PUT,"/handbook/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.PUT,"/permissions", "/permissions/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.PUT,"/systems", "/systems/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.POST,"/handbook/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.POST,"/permissions", "/permissions/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.POST,"/systems", "/systems/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.DELETE,"/handbook/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.DELETE,"/permissions", "/permissions/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers(HttpMethod.DELETE,"/systems", "/systems/**").hasAnyRole("ADMIN", "EDITOR")
-                .and().authorizeRequests().antMatchers("/users", "/users/**").hasAnyRole("ADMIN")
-                .and().authorizeRequests().antMatchers("/menu").authenticated()
-                .and().authorizeRequests().antMatchers("/page/login", "/css/**", "/js/**", "/actuator/*").permitAll()
-                .and().formLogin().loginPage("/page/login").defaultSuccessUrl("/menu").failureUrl("/error/login")
+        http.csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.GET,
+                        "/handbook/**",
+                        "/permissions", "/permissions/**",
+                        "/systems", "/systems/**"
+                ).hasAnyRole("ADMIN", "EDITOR", "VISITOR")
+                .and().authorizeRequests().antMatchers(HttpMethod.PUT,
+                        "/handbook/**",
+                        "/permissions", "/permissions/**",
+                        "/systems", "/systems/**"
+                ).hasAnyRole("ADMIN", "EDITOR")
+                .and().authorizeRequests().antMatchers(HttpMethod.POST,
+                        "/handbook/**",
+                        "/permissions", "/permissions/**",
+                        "/systems", "/systems/**"
+                ).hasAnyRole("ADMIN", "EDITOR")
+                .and().authorizeRequests().antMatchers(HttpMethod.DELETE,
+                        "/handbook/**",
+                        "/permissions", "/permissions/**",
+                        "/systems", "/systems/**"
+                ).hasAnyRole("ADMIN", "EDITOR")
+                .and().authorizeRequests().antMatchers(
+                        "/users", "/users/**"
+                ).hasAnyRole("ADMIN")
+                .and().authorizeRequests().antMatchers(
+                        "/menu"
+                ).authenticated()
+                .and().authorizeRequests().antMatchers(
+                        "/page/login", "/css/**", "/js/**", "/actuator/*"
+                ).permitAll()
+                .and().formLogin()
+                .loginPage("/page/login")
+                .defaultSuccessUrl("/menu")
+                .failureUrl("/error/login")
                 .and().rememberMe();
     }
 

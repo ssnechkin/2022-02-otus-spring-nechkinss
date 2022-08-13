@@ -10,10 +10,8 @@ import ru.rncb.dpec.domain.dto.out.content.table.Table;
 import ru.rncb.dpec.domain.dto.out.enums.Color;
 import ru.rncb.dpec.domain.dto.out.enums.FieldType;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
-import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.domain.entity.dp.SysPermissions;
 import ru.rncb.dpec.domain.entity.dp.Systems;
-import ru.rncb.dpec.repository.MenuRepository;
 import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
 import ru.rncb.dpec.service.dp.systems.SystemsService;
 
@@ -27,11 +25,9 @@ public class SystemsUiServiceImpl implements SystemsUiService {
     private final SysPermissionsService sysPermissionsService;
     private final static String PAGE_NAME = "Системы";
 
-    public SystemsUiServiceImpl(SystemsService service, MenuRepository menuRepository,
-                                SysPermissionsService sysPermissionsService) {
+    public SystemsUiServiceImpl(SystemsService service, SysPermissionsService sysPermissionsService) {
         this.service = service;
         this.sysPermissionsService = sysPermissionsService;
-        addMenu(menuRepository);
     }
 
     @Override
@@ -258,8 +254,10 @@ public class SystemsUiServiceImpl implements SystemsUiService {
                             sysPermissions.getResponsibleobject() == null ? "" : sysPermissions.getResponsibleobject(),
                             sysPermissions.getComparing() == null ? "" : sysPermissions.getComparing(),
                             sysPermissions.getIsDefault() == 1 ? "&check;" : "",
-                            sysPermissions.getPermissions() == null && sysPermissions.getPermissions() != null ? "" : sysPermissions.getPermissions().getMnemonic(),
-                            sysPermissions.getPermissions() == null && sysPermissions.getPermissions() != null ? "" : sysPermissions.getPermissions().getResponsibleobject(),
+                            sysPermissions.getPermissions() == null && sysPermissions.getPermissions() != null ? ""
+                                    : sysPermissions.getPermissions().getMnemonic(),
+                            sysPermissions.getPermissions() == null && sysPermissions.getPermissions() != null ? ""
+                                    : sysPermissions.getPermissions().getResponsibleobject(),
                             String.valueOf(sysPermissions.getExpire())
                     ))
             );
@@ -274,16 +272,5 @@ public class SystemsUiServiceImpl implements SystemsUiService {
                         "Время жизни согласия (минут)"
                 ))
                 .setRows(rows);
-    }
-
-    private void addMenu(MenuRepository menuRepository) {
-        if (menuRepository.findByLink("/systems").size() == 0) {
-            Menu menu = new Menu().setTitle(PAGE_NAME)
-                    .setPosition(1)
-                    .setMethod(HttpMethod.GET.name())
-                    .setLink("/systems")
-                    .setAlt(true);
-            menuRepository.save(menu);
-        }
     }
 }

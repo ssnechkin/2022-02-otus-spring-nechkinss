@@ -10,7 +10,7 @@ public class RequestedDocumentsDto {
     private long documentTypeId;
 
     @JsonProperty("api_version")
-    private String apiVersion="v1";
+    private String apiVersion = "v1";
 
     @JsonProperty("file_type")
     private String fileType;

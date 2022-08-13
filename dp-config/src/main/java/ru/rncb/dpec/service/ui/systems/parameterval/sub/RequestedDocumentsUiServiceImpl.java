@@ -32,7 +32,8 @@ public class RequestedDocumentsUiServiceImpl implements RequestedDocumentsUiServ
     private final static String PAGE_NAME_REQ_DOC = " > Список запрашиваемых документов";
 
     public RequestedDocumentsUiServiceImpl(RequestedDocumentsService service, SystemsService systemsService,
-                                           SysPermissionsService sysPermissionsService, DocumentTypeService documentTypeService) {
+                                           SysPermissionsService sysPermissionsService,
+                                           DocumentTypeService documentTypeService) {
         this.service = service;
         this.systemsService = systemsService;
         this.sysPermissionsService = sysPermissionsService;
@@ -132,7 +133,7 @@ public class RequestedDocumentsUiServiceImpl implements RequestedDocumentsUiServ
     @Override
     public Content getContentView(long systemId, long parameterValId, long id) {
         RequestedDocuments requestedDocuments = service.getById(id);
-        if(requestedDocuments == null){
+        if (requestedDocuments == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Запрашиваемый документ отсутствует");
@@ -145,21 +146,26 @@ public class RequestedDocumentsUiServiceImpl implements RequestedDocumentsUiServ
                                 .setColor(Color.cyan)
                                 .setPosition(1)
                                 .setLink(new Link().setMethod(HttpMethod.GET)
-                                        .setValue("/systems/" + systemId + "/parameter_val/" + parameterValId + "/requested_documents")
+                                        .setValue("/systems/" + systemId
+                                                + "/parameter_val/" + parameterValId
+                                                + "/requested_documents")
                                 ),
                         new Button().setTitle("Удалить из списка")
                                 .setColor(Color.red)
                                 .setPosition(3)
                                 .setConfirm("Подтверждаете удаление?")
                                 .setLink(new Link().setMethod(HttpMethod.DELETE)
-                                        .setValue("/systems/" + systemId + "/parameter_val/" + parameterValId + "/requested_documents/" + requestedDocuments.getId())
+                                        .setValue("/systems/" + systemId
+                                                + "/parameter_val/" + parameterValId
+                                                + "/requested_documents/" + requestedDocuments.getId())
                                 )
                 ))
                 .setFields(List.of(
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Тип документа")
                                 .setName("document_type_id")
-                                .setValue(requestedDocuments.getDocumentType().getMnemonic() + " (" + requestedDocuments.getDocumentType().getName() + ")"),
+                                .setValue(requestedDocuments.getDocumentType().getMnemonic()
+                                        + " (" + requestedDocuments.getDocumentType().getName() + ")"),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Версия API (в ЕСИА)")
                                 .setName("api_version")
@@ -223,6 +229,10 @@ public class RequestedDocumentsUiServiceImpl implements RequestedDocumentsUiServ
     }
 
     private String getBasePageName(long systemId, long parameterValId) {
-        return PAGE_NAME + systemsService.getById(systemId).getName() + PAGE_NAME_PAR_VAL + sysPermissionsService.getById(parameterValId).getComparing() + PAGE_NAME_REQ_DOC;
+        return PAGE_NAME
+                + systemsService.getById(systemId).getName()
+                + PAGE_NAME_PAR_VAL
+                + sysPermissionsService.getById(parameterValId).getComparing()
+                + PAGE_NAME_REQ_DOC;
     }
 }

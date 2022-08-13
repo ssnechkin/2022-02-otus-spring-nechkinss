@@ -3,12 +3,10 @@ package ru.rncb.dpec.controller;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.web.bind.annotation.*;
 import ru.rncb.dpec.domain.dto.in.UserDto;
-import ru.rncb.dpec.domain.dto.in.dp.permissions.PermissionsDto;
 import ru.rncb.dpec.domain.dto.out.Content;
 import ru.rncb.dpec.domain.dto.out.content.Notification;
 import ru.rncb.dpec.domain.dto.out.enums.NotificationType;
 import ru.rncb.dpec.service.ui.administration.UsersUiService;
-import ru.rncb.dpec.service.ui.permissions.PermissionsUiService;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package ru.rncb.dpec.service.securaty;
 
 import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Service;
 import ru.rncb.dpec.domain.entity.Menu;
 import ru.rncb.dpec.repository.MenuRepository;

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PurposesUiServiceImpl implements PurposesUiService{
+public class PurposesUiServiceImpl implements PurposesUiService {
 
     private final PurposesService service;
     private final static String PAGE_NAME = "Справочники > Цели запроса согласия";
@@ -149,7 +149,7 @@ public class PurposesUiServiceImpl implements PurposesUiService{
     @Override
     public Content getContentView(long id) {
         Purposes purposes = service.getById(id);
-        if(purposes == null){
+        if (purposes == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Цель отсутствует");

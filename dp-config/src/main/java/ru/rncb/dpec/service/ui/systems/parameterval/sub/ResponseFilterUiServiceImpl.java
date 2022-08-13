@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
+public class ResponseFilterUiServiceImpl implements ResponseFilterUiService {
 
     private final SysResponseService service;
     private final SystemsService systemsService;
@@ -31,7 +31,9 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
     private final static String PAGE_NAME_PAR_VAL = " > Значение параметра: ";
     private final static String PAGE_NAME_RESP_FILTER = " > Фильтр ответа";
 
-    public ResponseFilterUiServiceImpl(SysResponseService service, SystemsService systemsService, SysPermissionsService sysPermissionsService, DocumentTypeService documentTypeService) {
+    public ResponseFilterUiServiceImpl(SysResponseService service, SystemsService systemsService,
+                                       SysPermissionsService sysPermissionsService,
+                                       DocumentTypeService documentTypeService) {
         this.service = service;
         this.systemsService = systemsService;
         this.sysPermissionsService = sysPermissionsService;
@@ -85,7 +87,8 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
 
     @Override
     public Content save(long systemId, long parameterValId, long id, ResponseFilerDto responseFilerDto) {
-        service.edit(service.getById(id), documentTypeService.getById(responseFilerDto.getDocumentTypeId()), responseFilerDto.getDocumentFactKey());
+        service.edit(service.getById(id), documentTypeService.getById(responseFilerDto.getDocumentTypeId()),
+                responseFilerDto.getDocumentFactKey());
         return getContentView(systemId, parameterValId, id).setNotifications(List.of(new Notification()
                 .setType(NotificationType.INFO)
                 .setMessage("Фильтр ответа успешно изменен")
@@ -160,7 +163,7 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
     @Override
     public Content getContentView(long systemId, long parameterValId, long id) {
         SysResponse sysResponse = service.getById(id);
-        if(sysResponse == null){
+        if (sysResponse == null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.WARNING);
             notification.setMessage("Фильтр отсутствует");
@@ -255,6 +258,10 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService{
     }
 
     private String getBasePageName(long systemId, long parameterValId) {
-        return PAGE_NAME + systemsService.getById(systemId).getName() + PAGE_NAME_PAR_VAL + sysPermissionsService.getById(parameterValId).getComparing() + PAGE_NAME_RESP_FILTER;
+        return PAGE_NAME
+                + systemsService.getById(systemId).getName()
+                + PAGE_NAME_PAR_VAL
+                + sysPermissionsService.getById(parameterValId).getComparing()
+                + PAGE_NAME_RESP_FILTER;
     }
 }

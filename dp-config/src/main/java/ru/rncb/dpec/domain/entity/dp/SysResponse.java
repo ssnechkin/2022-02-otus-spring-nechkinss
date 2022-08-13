@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "sys_response_map")
-@org.hibernate.annotations.Table(comment = "Карта сопоставленя данных системы с согласиями (Для фильтрации полей json-ответа)", appliesTo = "sys_response_map")
+@org.hibernate.annotations.Table(
+        comment = "Карта сопоставленя данных системы с согласиями (Для фильтрации полей json-ответа)",
+        appliesTo = "sys_response_map")
 public class SysResponse {
 
     @Id
