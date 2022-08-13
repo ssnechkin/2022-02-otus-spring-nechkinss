@@ -68,7 +68,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                 .setName("name")
                                 .setValue(permissions.getName()),
                         new Field().setType(FieldType.INPUT)
-                                .setLabel("Организация/Фио ответственного (Оторажается в согласии у клиента в ЕСИА)")
+                                .setLabel("Организация/ФИО ответственного (Оторажается в согласии у клиента в ЕСИА)")
                                 .setName("responsibleobject")
                                 .setValue(permissions.getResponsibleobject()),
                         new Field().setType(FieldType.INPUT)
@@ -125,7 +125,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                         .setLabel("Наименование")
                                         .setName("name"),
                                 new Field().setType(FieldType.INPUT)
-                                        .setLabel("Организация/Фио ответственного " +
+                                        .setLabel("Организация/ФИО ответственного " +
                                                 "(Оторажается в согласии у клиента в ЕСИА)")
                                         .setName("responsibleobject"),
                                 new Field().setType(FieldType.INPUT)
@@ -232,7 +232,7 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                                 .setName("name")
                                 .setValue(permissions.getName()),
                         new Field().setType(FieldType.SPAN)
-                                .setLabel("Организация/Фио ответственного (Оторажается в согласии у клиента в ЕСИА)")
+                                .setLabel("Организация/ФИО ответственного (Оторажается в согласии у клиента в ЕСИА)")
                                 .setName("responsibleobject")
                                 .setValue(permissions.getResponsibleobject()),
                         new Field().setType(FieldType.SPAN)
