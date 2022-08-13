@@ -54,7 +54,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/menu"
                 ).authenticated()
                 .and().authorizeRequests().antMatchers(
-                        "/page/login", "/css/**", "/js/**", "/actuator/*"
+                        "/page/login", "/css/**", "/js/**",
+                        "/actuator/*",
+                        "/swagger-ui", "/swagger-ui/*", "/swagger-ui/**"
                 ).permitAll()
                 .and().formLogin()
                 .loginPage("/page/login")

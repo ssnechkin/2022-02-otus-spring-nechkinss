@@ -46,8 +46,8 @@ public class MenuUiServiceImpl implements MenuUiService {
                 new Field()
                         .setType(FieldType.SPAN)
                         .setLabel("")
-                        .setValue("Приложение преднахначенно для настраивания правил формирования json-запросов " +
-                                "инеграционными сервисами esia_digital_profile, а также настраивания JSON " +
+                        .setValue("Приложение предназначенно для настраивания правил формирования json-запросов " +
+                                "интеграционными сервисами esia_digital_profile, а также настраивания JSON " +
                                 "в ответных сообщениях сервисов.")
         ));
         return content;
