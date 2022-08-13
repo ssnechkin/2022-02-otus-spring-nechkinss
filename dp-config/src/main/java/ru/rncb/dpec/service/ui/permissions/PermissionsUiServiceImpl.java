@@ -18,6 +18,7 @@ import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PermissionsUiServiceImpl implements PermissionsUiService {
@@ -246,18 +247,21 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Цели")
                                 .setName("purposes")
-                                .setValue(permissions.getPurposesList() == null ? "" : String.join(", ",
-                                        permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList())),
+                                .setValue(permissions.getPurposesList() == null ? ""
+                                        : permissions.getPurposesList().stream()
+                                        .map(Purposes::getMnemonic).collect(Collectors.joining(", "))),
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Действия")
                                 .setName("actions")
-                                .setValue(permissions.getActionsList() == null ? "" : String.join(", ",
-                                        permissions.getActionsList().stream().map(Actions::getMnemonic).toList())),
+                                .setValue(permissions.getActionsList() == null ? ""
+                                        : permissions.getActionsList().stream()
+                                        .map(Actions::getMnemonic).collect(Collectors.joining(", "))),
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Области доступа (Scope)")
                                 .setName("scope")
-                                .setValue(permissions.getScopeList() == null ? "" : String.join(", ",
-                                        permissions.getScopeList().stream().map(Scope::getName).toList()))
+                                .setValue(permissions.getScopeList() == null ? ""
+                                        : permissions.getScopeList().stream()
+                                        .map(Scope::getName).collect(Collectors.joining(", ")))
                 ));
     }
 
@@ -284,10 +288,12 @@ public class PermissionsUiServiceImpl implements PermissionsUiService {
                             permissions.getResponsibleobject() == null ? "" : permissions.getResponsibleobject(),
                             String.valueOf(permissions.getExpire()),
                             permissions.getDescription() == null ? "" : permissions.getDescription(),
-                            permissions.getPurposesList() == null ? "" : String.join(", ",
-                                    permissions.getPurposesList().stream().map(Purposes::getMnemonic).toList()),
-                            permissions.getActionsList() == null ? "" : String.join(", ",
-                                    permissions.getActionsList().stream().map(Actions::getMnemonic).toList())
+                            permissions.getPurposesList() == null ? ""
+                                    : permissions.getPurposesList().stream()
+                                    .map(Purposes::getMnemonic).collect(Collectors.joining(", ")),
+                            permissions.getActionsList() == null ? ""
+                                    : permissions.getActionsList().stream()
+                                    .map(Actions::getMnemonic).collect(Collectors.joining(", "))
                     ))
             );
         }

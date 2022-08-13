@@ -17,6 +17,7 @@ import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiService {
@@ -78,7 +79,7 @@ public class PermissionsActionsUiServiceImpl implements PermissionsActionsUiServ
                                                 .stream()
                                                 .filter(actions -> !finalActionsList.contains(actions))
                                                 .map(this::toValueItem)
-                                                .toList())
+                                                .collect(Collectors.toList()))
                         ))
                 );
     }

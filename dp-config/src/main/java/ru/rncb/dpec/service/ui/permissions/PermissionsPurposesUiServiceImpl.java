@@ -17,6 +17,7 @@ import ru.rncb.dpec.service.dp.permissions.PermissionsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiService {
@@ -78,7 +79,7 @@ public class PermissionsPurposesUiServiceImpl implements PermissionsPurposesUiSe
                                                 .stream()
                                                 .filter(purposes -> !finalPurposesList.contains(purposes))
                                                 .map(this::toValueItem)
-                                                .toList())
+                                                .collect(Collectors.toList()))
                         ))
                 );
     }

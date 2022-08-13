@@ -19,6 +19,7 @@ import ru.rncb.dpec.service.dp.systems.SystemsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RequestedDocumentsUiServiceImpl implements RequestedDocumentsUiService {
@@ -80,7 +81,7 @@ public class RequestedDocumentsUiServiceImpl implements RequestedDocumentsUiServ
                                         .setValues(documentTypeService.getAll()
                                                 .stream()
                                                 .map(this::toValueItem)
-                                                .toList()),
+                                                .collect(Collectors.toList())),
                                 new Field().setType(FieldType.INPUT)
                                         .setLabel("Версия API (в ЕСИА)")
                                         .setName("api_version")

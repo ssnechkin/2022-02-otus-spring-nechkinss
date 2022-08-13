@@ -19,6 +19,7 @@ import ru.rncb.dpec.service.dp.systems.SystemsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ResponseFilterUiServiceImpl implements ResponseFilterUiService {
@@ -121,7 +122,7 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService {
                                 .setValues(documentTypeService.getAll()
                                         .stream()
                                         .map(this::toValueItem)
-                                        .toList()),
+                                        .collect(Collectors.toList())),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Путь к полю в JSON или оригинальный JSON")
                                 .setName("document_fact_key")
@@ -205,7 +206,7 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService {
                                 .setValues(documentTypeService.getAll()
                                         .stream()
                                         .map(this::toValueItem)
-                                        .toList()),
+                                        .collect(Collectors.toList())),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Путь к полю в JSON или оригинальный JSON")
                                 .setName("document_fact_key")

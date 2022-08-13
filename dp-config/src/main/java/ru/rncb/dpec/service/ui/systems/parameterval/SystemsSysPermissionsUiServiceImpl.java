@@ -16,6 +16,7 @@ import ru.rncb.dpec.service.dp.systems.SysPermissionsService;
 import ru.rncb.dpec.service.dp.systems.SystemsService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissionsUiService {
@@ -67,7 +68,7 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                                         .setValues(permissionsService.getAll()
                                                 .stream()
                                                 .map(this::toValueItem)
-                                                .toList())
+                                                .collect(Collectors.toList()))
                         ))
                 );
     }
@@ -162,7 +163,7 @@ public class SystemsSysPermissionsUiServiceImpl implements SystemsSysPermissions
                                 .setValues(permissionsService.getAll()
                                         .stream()
                                         .map(this::toValueItem)
-                                        .toList())
+                                        .collect(Collectors.toList()))
                 )));
     }
 

@@ -16,6 +16,7 @@ import ru.rncb.dpec.repository.security.RoleRepository;
 import ru.rncb.dpec.security.UserService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersUiServiceImpl implements UsersUiService {
@@ -84,7 +85,7 @@ public class UsersUiServiceImpl implements UsersUiService {
                                 .setValues(roleRepository.findAll()
                                         .stream()
                                         .map(this::toValueItem)
-                                        .toList())
+                                        .collect(Collectors.toList()))
                 )));
     }
 
@@ -140,7 +141,7 @@ public class UsersUiServiceImpl implements UsersUiService {
                                         .setValues(roleRepository.findAll()
                                                 .stream()
                                                 .map(this::toValueItem)
-                                                .toList())
+                                                .collect(Collectors.toList()))
                         ))
                 );
     }
@@ -228,8 +229,7 @@ public class UsersUiServiceImpl implements UsersUiService {
                         new Field().setType(FieldType.SPAN)
                                 .setLabel("Роли")
                                 .setName("roles")
-                                .setValue(String.join(", ",
-                                        userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).toList()))
+                                .setValue(userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).collect(Collectors.joining(", ")))
                 ));
     }
 
@@ -253,8 +253,7 @@ public class UsersUiServiceImpl implements UsersUiService {
                     .setColumns(List.of(
                             userDetail.getUsername(),
                             userDetail.getPublicName() == null ? "" : userDetail.getPublicName(),
-                            userDetail.getRoles() == null ? "" : String.join(", ",
-                                    userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).toList())
+                            userDetail.getRoles() == null ? "" : userDetail.getRoles().stream().map(RoleGrantedAuthority::getRole).collect(Collectors.joining(", "))
                     ))
             );
         }

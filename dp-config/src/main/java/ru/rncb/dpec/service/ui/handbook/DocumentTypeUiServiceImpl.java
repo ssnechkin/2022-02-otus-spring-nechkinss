@@ -17,6 +17,7 @@ import ru.rncb.dpec.service.dp.handbook.ScopeService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
@@ -78,7 +79,7 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                                 .setValues(scopeService.getAll()
                                         .stream()
                                         .map(this::toValueItem)
-                                        .toList())
+                                        .collect(Collectors.toList()))
                 )));
     }
 
@@ -131,7 +132,7 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                                         .setValues(scopeService.getAll()
                                                 .stream()
                                                 .map(this::toValueItem)
-                                                .toList())
+                                                .collect(Collectors.toList()))
                         ))
                 );
     }
