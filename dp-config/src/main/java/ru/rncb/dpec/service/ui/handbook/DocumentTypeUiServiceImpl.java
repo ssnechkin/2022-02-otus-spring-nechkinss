@@ -76,6 +76,7 @@ public class DocumentTypeUiServiceImpl implements DocumentTypeUiService {
                         new Field().setType(FieldType.SELECT)
                                 .setLabel("Область доступа")
                                 .setName("scope")
+                                .setSelectedId(documentType.getScope().getId())
                                 .setValues(scopeService.getAll()
                                         .stream()
                                         .map(this::toValueItem)
