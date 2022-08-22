@@ -1,0 +1,37 @@
+ .divTable{
+            display: table;
+            width: 100%;
+            background-color: white;
+        }
+        .divTableRow {
+            display: table-row;
+        }
+        .divTableHeading {
+            background-color: #54ba53;
+            display: table-header-group;
+        }
+        .divTableCell, .divTableHead {
+            border: 1px solid #999999;
+            display: table-cell;
+            padding: 3px 10px;
+        }
+        .divTableHeading {
+            background-color: #54ba53;
+            display: table-header-group;
+            font-weight: bold;
+        }
+        .divTableFoot {
+            background-color: #54ba53;
+            display: table-footer-group;
+            font-weight: bold;
+        }
+        .divTableBody {
+            display: table-row-group;
+        }
+        .divTabTitle {
+            background: #ccc;
+            font-weight: bold;
+        }
+        .selector:hover {
+            background: #7dd8ec;
+        }
