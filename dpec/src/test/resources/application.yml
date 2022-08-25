@@ -1,0 +1,54 @@
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    # Включает информацию о сборке (spring-boot-maven-plugin)
+    build:
+      enabled: true
+    # Включает информацию о приложении из application.yml
+    env:
+      enabled: true
+    # Включает информацию о git (git-commit-id-plugin)
+    git:
+      mode: "full"
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  sql:
+    init:
+      mode: always
+  main:
+    allow-circular-references: true
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+      show-sql: true
+
+hystrix:
+  command:
+    getFallKey:
+      execution:
+        isolation:
+          thread:
+            timeoutIntMilliseconds: 3000
+logging:
+  level:
+    ROOT: INFO
+  file:
+    name: dp-config.log
