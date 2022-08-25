@@ -2,16 +2,16 @@ package ru.dpec.service.ui.systems.parameterval.sub;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import ru.dpec.domain.dto.in.dp.systems.parameterval.sub.ResponseFilerDto;
 import ru.dpec.domain.dto.out.Content;
 import ru.dpec.domain.dto.out.content.*;
+import ru.dpec.domain.dto.out.content.table.Row;
+import ru.dpec.domain.dto.out.content.table.Table;
+import ru.dpec.domain.dto.out.enums.Color;
 import ru.dpec.domain.dto.out.enums.FieldType;
 import ru.dpec.domain.dto.out.enums.NotificationType;
 import ru.dpec.domain.entity.dp.SysResponse;
 import ru.dpec.domain.entity.dp.handbook.DocumentType;
-import ru.dpec.domain.dto.in.dp.systems.parameterval.sub.ResponseFilerDto;
-import ru.dpec.domain.dto.out.content.table.Row;
-import ru.dpec.domain.dto.out.content.table.Table;
-import ru.dpec.domain.dto.out.enums.Color;
 import ru.dpec.service.dp.handbook.DocumentTypeService;
 import ru.dpec.service.dp.systems.SysPermissionsService;
 import ru.dpec.service.dp.systems.SysResponseService;
@@ -75,10 +75,14 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService {
                                 )
                 ))
                 .setForm(new Form().setFields(List.of(
-                        new Field().setType(FieldType.INPUT)
+                        new Field().setType(FieldType.SELECT)
                                 .setLabel("Тип документа")
                                 .setName("document_type_id")
-                                .setValue(sysResponse.getDocumentType().getMnemonic()),
+                                .setSelectedId(sysResponse.getDocumentType().getId())
+                                .setValues(documentTypeService.getAll()
+                                        .stream()
+                                        .map(this::toValueItem)
+                                        .collect(Collectors.toList())),
                         new Field().setType(FieldType.INPUT)
                                 .setLabel("Путь к полю в JSON или оригинальный JSON")
                                 .setName("document_fact_key")
@@ -199,15 +203,11 @@ public class ResponseFilterUiServiceImpl implements ResponseFilterUiService {
                                 )
                 ))
                 .setFields(List.of(
-                        new Field().setType(FieldType.SELECT)
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Тип документа")
                                 .setName("document_type_id")
-                                .setSelectedId(sysResponse.getDocumentType().getId())
-                                .setValues(documentTypeService.getAll()
-                                        .stream()
-                                        .map(this::toValueItem)
-                                        .collect(Collectors.toList())),
-                        new Field().setType(FieldType.INPUT)
+                                .setValue(sysResponse.getDocumentType().getMnemonic()),
+                        new Field().setType(FieldType.SPAN)
                                 .setLabel("Путь к полю в JSON или оригинальный JSON")
                                 .setName("document_fact_key")
                                 .setValue(sysResponse.getDocumentFactKey())
